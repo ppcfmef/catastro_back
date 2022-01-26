@@ -17,6 +17,7 @@ django-filter = "*"
 djangorestframework-camel-case = "*"
 markdown = "*"
 drf-yasg = "*"
+djangorestframework-jwt = "*"
 
 [requires]
 python_version = "3.6"
