@@ -32,6 +32,12 @@ DATABASES = {
     'default': DB_DEFAULT_CONFIG
 }
 
+# API Rest
+CORS_ALLOW_CREDENTIALS = env.bool("CORS_ALLOW_CREDENTIALS", True)  # noqa: F405
+CORS_ORIGIN_ALLOW_ALL = env.bool("CORS_ORIGIN_ALLOW_ALL", True)  # noqa: F405
+if not CORS_ORIGIN_ALLOW_ALL:
+    CORS_ORIGIN_WHITELIST = env.list("CORS_ORIGIN_WHITELIST")  # noqa: F405
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 

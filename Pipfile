@@ -11,6 +11,12 @@ django = "<3.2"
 pillow = "*"
 django-environ = "*"
 dj-database-url = "*"
+djangorestframework = "*"
+django-cors-headers = "*"
+django-filter = "*"
+djangorestframework-camel-case = "*"
+markdown = "*"
+drf-yasg = "*"
 
 [requires]
 python_version = "3.6"
