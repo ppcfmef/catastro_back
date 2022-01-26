@@ -37,7 +37,9 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = []
 
-LOCAL_APPS = []
+LOCAL_APPS = [
+    'apps.users.apps.UsersConfig',
+]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -102,3 +104,5 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = False
+
+AUTH_USER_MODEL = 'users.User'
