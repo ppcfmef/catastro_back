@@ -47,6 +47,7 @@ LOCAL_APPS = [
     'apps.users.apps.UsersConfig',
     'apps.common.apps.CommonConfig',
     'apps.master_data.apps.MasterDataConfig',
+    'apps.places.apps.PlacesConfig',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
