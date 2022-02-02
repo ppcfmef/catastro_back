@@ -2,8 +2,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from drf_yasg.utils import swagger_auto_schema
-from .serializers import UserProfileShortSerializer, UserSerializer, UserListSerializer, UserDetailSerializer
-from .models import User
+from .serializers import (
+    UserProfileShortSerializer, UserSerializer, UserListSerializer, UserDetailSerializer, RoleSerializer
+)
+from .models import User, Role
 from .filters import UserCustomFilter
 
 
@@ -45,3 +47,8 @@ class UserViewSet(ModelViewSet):
     def get_queryset(self):
         queryset = super(UserViewSet, self).get_queryset().exclude(is_superuser=True)
         return queryset
+
+
+class RoleViewSet(ModelViewSet):
+    queryset = Role.objects.all()
+    serializer_class = RoleSerializer

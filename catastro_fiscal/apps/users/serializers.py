@@ -4,6 +4,12 @@ from apps.places.serializers import DepartmentSerializer, ProvinceSerializer, Di
 from .models import User, Role
 
 
+class RoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Role
+        fields = '__all__'
+
+
 class RoleShortSerializer(serializers.ModelSerializer):
     class Meta:
         model = Role
