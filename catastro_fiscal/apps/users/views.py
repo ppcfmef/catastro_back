@@ -1,9 +1,11 @@
+from rest_framework import mixins
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from drf_yasg.utils import swagger_auto_schema
 from .serializers import (
-    UserProfileShortSerializer, UserSerializer, UserListSerializer, UserDetailSerializer, RoleSerializer
+    UserProfileShortSerializer, UserSerializer, UserListSerializer, UserDetailSerializer, RoleSerializer,
+    RoleShortSerializer
 )
 from .models import User, Role
 from .filters import UserCustomFilter
@@ -52,3 +54,9 @@ class UserViewSet(ModelViewSet):
 class RoleViewSet(ModelViewSet):
     queryset = Role.objects.all()
     serializer_class = RoleSerializer
+
+
+class RoleSelectViewSet(mixins.ListModelMixin, GenericViewSet):
+    queryset = Role.objects.all()
+    serializer_class = RoleShortSerializer
+    pagination_class = None

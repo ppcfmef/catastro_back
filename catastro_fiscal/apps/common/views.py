@@ -1,5 +1,5 @@
 from rest_framework import mixins
-from rest_framework.viewsets import GenericViewSet, ModelViewSet
+from rest_framework.viewsets import GenericViewSet
 from drf_yasg.utils import swagger_auto_schema
 from .serializers import NavigationTreeSerializer, NavigationSerializer
 from .models import Navigation
