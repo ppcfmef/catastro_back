@@ -130,7 +130,7 @@ class PermissionNavigation(AbstractAudit):
         db_table = 'PERMISO_NAVEGACION'
 
     def __str__(self):
-        return f'{self.permission.description} | {self.type.description}'
+        return f'{self.permission.description} | {self.type.description} | {self.navigation_view.title}'
 
 
 class RolePermission(AbstractAudit):
