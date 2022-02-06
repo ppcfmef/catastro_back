@@ -3,11 +3,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from drf_yasg.utils import swagger_auto_schema
+from core.views import CustomListMixin
 from .serializers import (
     UserProfileShortSerializer, UserSerializer, UserListSerializer, UserDetailSerializer, RoleSerializer,
-    RoleShortSerializer
+    RoleShortSerializer, PermissionSerializer, PermissionListSerializer
 )
-from .models import User, Role
+from .models import User, Role, Permission
 from .filters import UserCustomFilter
 
 
@@ -60,3 +61,13 @@ class RoleSelectViewSet(mixins.ListModelMixin, GenericViewSet):
     queryset = Role.objects.all()
     serializer_class = RoleShortSerializer
     pagination_class = None
+
+
+class PermissionViewSet(CustomListMixin, ModelViewSet):
+    queryset = Permission.objects.all()
+    serializer_class = PermissionSerializer
+    list_serializer_class = PermissionListSerializer
+
+    @swagger_auto_schema(responses={200: PermissionListSerializer()})
+    def list(self, request, *args, **kwargs):
+        return super(PermissionViewSet, self).custom_list(request, *args, **kwargs)
