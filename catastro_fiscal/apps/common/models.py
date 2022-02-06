@@ -22,6 +22,10 @@ class Navigation(models.Model):
         ordering = ['order']
 
     def __str__(self):
+        return self.full_title
+
+    @property
+    def full_title(self):
         if not self.parent:
             return self.title
         if not self.parent.parent:

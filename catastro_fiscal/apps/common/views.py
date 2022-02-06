@@ -39,3 +39,13 @@ class NavigationViewset(mixins.ListModelMixin, GenericViewSet):
 class NavigationManageViewset(ModelViewSet):
     queryset = Navigation.objects.all()
     serializer_class = NavigationSerializer
+
+
+class NavigationViewViewset(mixins.ListModelMixin, GenericViewSet):
+    queryset = Navigation.objects.all()
+    serializer_class = NavigationSerializer
+    pagination_class = None
+
+    def get_queryset(self):
+        queryset = super(NavigationViewViewset, self).get_queryset()
+        return queryset.filter(parent__isnull=False, type='basic')

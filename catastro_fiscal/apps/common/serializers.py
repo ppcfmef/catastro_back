@@ -3,6 +3,8 @@ from .models import Navigation
 
 
 class NavigationSerializer(serializers.ModelSerializer):
+    full_title = serializers.CharField(read_only=True)
+
     class Meta:
         model = Navigation
         fields = '__all__'
