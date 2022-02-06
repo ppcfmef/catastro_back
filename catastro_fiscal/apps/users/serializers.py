@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from apps.master_data.serializers import InstitutionSerializer
 from apps.places.serializers import DepartmentSerializer, ProvinceSerializer, DistrictSerializer
-from .models import User, Role, Permission, PermissionNavigation
+from .models import User, Role, Permission, PermissionNavigation, PermissionType
 
 
 class RoleSerializer(serializers.ModelSerializer):
@@ -124,3 +124,9 @@ class PermissionSerializer(serializers.ModelSerializer):
             'type': permission_navigation.get('type'),
             'navigation_view': permission_navigation.get('navigation_view')
         }
+
+
+class PermissionTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PermissionType
+        fields = ('code', 'description')

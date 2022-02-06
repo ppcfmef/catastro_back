@@ -6,9 +6,9 @@ from drf_yasg.utils import swagger_auto_schema
 from core.views import CustomListMixin
 from .serializers import (
     UserProfileShortSerializer, UserSerializer, UserListSerializer, UserDetailSerializer, RoleSerializer,
-    RoleShortSerializer, PermissionSerializer, PermissionListSerializer
+    RoleShortSerializer, PermissionSerializer, PermissionListSerializer, PermissionTypeSerializer
 )
-from .models import User, Role, Permission
+from .models import User, Role, Permission, PermissionType
 from .filters import UserCustomFilter
 
 
@@ -71,3 +71,9 @@ class PermissionViewSet(CustomListMixin, ModelViewSet):
     @swagger_auto_schema(responses={200: PermissionListSerializer()})
     def list(self, request, *args, **kwargs):
         return super(PermissionViewSet, self).custom_list(request, *args, **kwargs)
+
+
+class PermissionTypeViewSet(mixins.ListModelMixin, GenericViewSet):
+    queryset = PermissionType.objects.all()
+    serializer_class = PermissionTypeSerializer
+    pagination_class = None
