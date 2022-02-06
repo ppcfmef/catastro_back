@@ -89,9 +89,11 @@ class User(AbstractUser):
 class PermissionType(models.Model):
     code = models.CharField(_('code'), max_length=20, primary_key=True)
     description = models.CharField(_('description'), max_length=50)
+    order = models.PositiveSmallIntegerField(_('order'))
 
     class Meta:
         db_table = 'TIPO_PERMISO'
+        ordering = ['order']
 
     def __str__(self):
         return self.description
