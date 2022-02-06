@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractUser
+from core.models import AbstractAudit
+from apps.common.models import Navigation
 from apps.master_data.models import Institution
 from apps.places.models import Department, Province, District
 
@@ -82,3 +84,67 @@ class User(AbstractUser):
             return scope
 
         return {'name': 'national', 'ubigeo': None}
+
+
+class PermissionType(models.Model):
+    code = models.CharField(_('code'), max_length=20, primary_key=True)
+    description = models.CharField(_('description'), max_length=50)
+
+    class Meta:
+        db_table = 'TIPO_PERMISO'
+
+    def __str__(self):
+        return self.description
+
+
+class Permission(models.Model):
+    description = models.CharField(_('description'), max_length=50)
+
+    class Meta:
+        db_table = 'PERMISO'
+
+
+class PermissionNavigation(AbstractAudit):
+    permission = models.ForeignKey(
+        Permission,
+        models.CASCADE,
+        verbose_name=_('permission'),
+        related_name='permissions'
+    )
+    type = models.ForeignKey(
+        PermissionType,
+        models.CASCADE,
+        verbose_name=_('permission type'),
+        related_name='permissions'
+    )
+    navigation_view = models.ForeignKey(
+        Navigation,
+        models.CASCADE,
+        verbose_name=_('navigation view'),
+        related_name='permissions'
+    )
+
+    class Meta:
+        db_table = 'PERMISO_NAVEGACION'
+
+    def __str__(self):
+        return f'{self.permission.description} | {self.type.description}'
+
+
+class RolePermission(AbstractAudit):
+    role = models.ForeignKey(
+        Role,
+        models.CASCADE,
+        verbose_name=_('role')
+    )
+    permission = models.ForeignKey(
+        Permission,
+        models.CASCADE,
+        verbose_name=_('permission')
+    )
+
+    class Meta:
+        db_table = 'ROL_PERMISO'
+
+    def __str__(self):
+        return f'{self.role.description} | {self.permission.description}'
