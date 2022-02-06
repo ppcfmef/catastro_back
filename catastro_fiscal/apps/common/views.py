@@ -1,5 +1,5 @@
 from rest_framework import mixins
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from drf_yasg.utils import swagger_auto_schema
 from .serializers import NavigationTreeSerializer, NavigationSerializer
 from .models import Navigation
@@ -36,10 +36,6 @@ class NavigationViewset(mixins.ListModelMixin, GenericViewSet):
         return group_list
 
 
-class NavigationManageViewset(mixins.CreateModelMixin,
-                              mixins.RetrieveModelMixin,
-                              mixins.UpdateModelMixin,
-                              mixins.DestroyModelMixin,
-                              GenericViewSet):
+class NavigationManageViewset(ModelViewSet):
     queryset = Navigation.objects.all()
     serializer_class = NavigationSerializer
