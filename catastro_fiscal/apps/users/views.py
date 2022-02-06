@@ -7,7 +7,7 @@ from core.views import CustomListMixin
 from .serializers import (
     UserProfileShortSerializer, UserSerializer, UserListSerializer, UserDetailSerializer, RoleSerializer,
     RoleShortSerializer, PermissionSerializer, PermissionListSerializer, PermissionTypeSerializer,
-    PermissionNavigationSerializer
+    PermissionNavigationSerializer, RoleListSerializer
 )
 from .models import User, Role, Permission, PermissionType, PermissionNavigation
 from .filters import UserCustomFilter
@@ -53,9 +53,14 @@ class UserViewSet(ModelViewSet):
         return queryset
 
 
-class RoleViewSet(ModelViewSet):
+class RoleViewSet(CustomListMixin, ModelViewSet):
     queryset = Role.objects.all()
     serializer_class = RoleSerializer
+    list_serializer_class = RoleListSerializer
+
+    @swagger_auto_schema(responses={200: RoleListSerializer()})
+    def list(self, request, *args, **kwargs):
+        return super(RoleViewSet, self).custom_list(request, *args, **kwargs)
 
 
 class RoleSelectViewSet(mixins.ListModelMixin, GenericViewSet):

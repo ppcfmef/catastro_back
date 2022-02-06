@@ -1,13 +1,40 @@
 from rest_framework import serializers
 from apps.master_data.serializers import InstitutionSerializer
 from apps.places.serializers import DepartmentSerializer, ProvinceSerializer, DistrictSerializer
-from .models import User, Role, Permission, PermissionNavigation, PermissionType
+from .models import User, Role, Permission, PermissionNavigation, PermissionType, RolePermission
 
 
-class RoleSerializer(serializers.ModelSerializer):
+class RoleListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Role
         fields = '__all__'
+
+
+class RoleSerializer(serializers.ModelSerializer):
+    permissions = serializers.PrimaryKeyRelatedField(queryset=Permission.objects.all(), many=True)
+
+    class Meta:
+        model = Role
+        fields = '__all__'
+
+    def create(self, validated_data):
+        permissions = validated_data.pop('permissions')
+        instance = super(RoleSerializer, self).create(validated_data)
+        instance.permissions.add(*permissions)
+        return instance
+
+    def update(self, instance, validated_data):
+        permissions = validated_data.pop('permissions')
+        instance = super(RoleSerializer, self).update(instance, validated_data)
+        permissions_ids = []
+        for permission in permissions:
+            obj, create = RolePermission.objects.get_or_create(
+                role=instance,
+                permission=permission
+            )
+            permissions_ids.append(obj.pk)
+        RolePermission.objects.exclude(id__in=permissions_ids).delete()
+        return instance
 
 
 class RoleShortSerializer(serializers.ModelSerializer):

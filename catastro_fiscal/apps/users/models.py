@@ -7,10 +7,38 @@ from apps.master_data.models import Institution
 from apps.places.models import Department, Province, District
 
 
+class PermissionType(models.Model):
+    code = models.CharField(_('code'), max_length=20, primary_key=True)
+    description = models.CharField(_('description'), max_length=50)
+    order = models.PositiveSmallIntegerField(_('order'))
+
+    class Meta:
+        db_table = 'TIPO_PERMISO'
+        ordering = ['order']
+
+    def __str__(self):
+        return self.description
+
+
+class Permission(models.Model):
+    description = models.CharField(_('description'), max_length=50)
+
+    class Meta:
+        db_table = 'PERMISO'
+
+    def __str__(self):
+        return self.description
+
+
 class Role(models.Model):
     name = models.CharField(_('name'), max_length=150)
     is_active = models.BooleanField(_('is active'), default=True)
     description = models.TextField(_('description'), blank=True, null=True)
+    permissions = models.ManyToManyField(
+        Permission,
+        verbose_name=_('permissions'),
+        through='RolePermission'
+    )
 
     class Meta:
         db_table = 'ROL'
@@ -86,26 +114,6 @@ class User(AbstractUser):
         return {'name': 'national', 'ubigeo': None}
 
 
-class PermissionType(models.Model):
-    code = models.CharField(_('code'), max_length=20, primary_key=True)
-    description = models.CharField(_('description'), max_length=50)
-    order = models.PositiveSmallIntegerField(_('order'))
-
-    class Meta:
-        db_table = 'TIPO_PERMISO'
-        ordering = ['order']
-
-    def __str__(self):
-        return self.description
-
-
-class Permission(models.Model):
-    description = models.CharField(_('description'), max_length=50)
-
-    class Meta:
-        db_table = 'PERMISO'
-
-
 class PermissionNavigation(AbstractAudit):
     permission = models.ForeignKey(
         Permission,
@@ -149,4 +157,4 @@ class RolePermission(AbstractAudit):
         db_table = 'ROL_PERMISO'
 
     def __str__(self):
-        return f'{self.role.description} | {self.permission.description}'
+        return f'{self.role.name} | {self.permission.description}'
