@@ -79,6 +79,12 @@ class PermissionViewSet(CustomListMixin, ModelViewSet):
         return super(PermissionViewSet, self).custom_list(request, *args, **kwargs)
 
 
+class PermissionSelectViewSet(mixins.ListModelMixin, GenericViewSet):
+    queryset = Permission.objects.all()
+    serializer_class = PermissionListSerializer
+    pagination_class = None
+
+
 class PermissionTypeViewSet(mixins.ListModelMixin, GenericViewSet):
     queryset = PermissionType.objects.all()
     serializer_class = PermissionTypeSerializer
