@@ -50,6 +50,7 @@ class Role(models.Model):
 class User(AbstractUser):
     """Custom user model"""
     dni = models.CharField(_('dni'), max_length=8, null=True)
+    avatar = models.ImageField(_('avatar'), upload_to='users/user', null=True)
     job_title = models.CharField(_('job_title'), max_length=150, blank=True, null=True)
     role = models.ForeignKey(
         Role,

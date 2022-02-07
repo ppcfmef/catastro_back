@@ -49,14 +49,14 @@ class UserProfileShortSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'name', 'email')
+        fields = ('id', 'name', 'avatar', 'email')
 
 
 class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'institution', 'dni', 'first_name', 'last_name', 'email', 'job_title', 'role', 'username',
+        fields = ('id', 'institution', 'avatar', 'dni', 'first_name', 'last_name', 'email', 'job_title', 'role', 'username',
                   'password', 'is_active', 'department', 'province', 'district', 'observation')
 
 

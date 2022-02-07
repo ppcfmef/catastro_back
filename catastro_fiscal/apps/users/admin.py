@@ -12,7 +12,9 @@ class RoleAdmin(admin.ModelAdmin):
 @admin.register(User)
 class UserAdmin(UserAdmin):
     fieldsets = (
-        (_('Personal info'), {'fields': ('institution', 'dni', 'first_name', 'last_name', 'email', 'job_title')}),
+        (_('Personal info'), {
+            'fields': ('avatar', 'institution', 'dni', 'first_name', 'last_name', 'email','job_title')
+        }),
         (_('User account'), {'fields': ('role', 'username', 'password', 'is_active')}),
         (_('User scope'), {'fields': ('department', 'province', 'district')}),
         (_('Detail account'), {'fields': ('observation',)}),
