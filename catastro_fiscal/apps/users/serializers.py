@@ -56,8 +56,19 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'institution', 'avatar', 'dni', 'first_name', 'last_name', 'email', 'job_title', 'role', 'username',
-                  'password', 'is_active', 'department', 'province', 'district', 'observation')
+        fields = ('id', 'institution', 'avatar', 'dni', 'first_name', 'last_name', 'email', 'job_title', 'role',
+                  'username', 'password', 'is_active', 'department', 'province', 'district', 'observation')
+
+    def create(self, validated_data):
+        return User.objects.create_user(**validated_data)
+
+    def update(self, instance, validated_data):
+        validated_data.pop('username', None)  # ToDo: El usuario no se edita
+        password = validated_data.pop('password', None)
+        instance = super(UserSerializer, self).update(instance, validated_data)
+        if password:
+            instance.set_password(password)
+        return instance
 
 
 class UserListSerializer(serializers.ModelSerializer):
@@ -78,7 +89,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        exclude = ('is_staff', 'last_login', 'is_superuser', 'groups', 'user_permissions')
+        exclude = ('is_staff', 'last_login', 'is_superuser', 'groups', 'user_permissions', 'password')
 
 
 class PermissionNavigationSerializer(serializers.ModelSerializer):

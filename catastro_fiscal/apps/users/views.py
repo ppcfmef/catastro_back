@@ -18,7 +18,7 @@ class UserProfileShortView(APIView):
     serializer_class = UserProfileShortSerializer
 
     def get(self, request, *args, **kwargs):
-        serializer = self.serializer_class(request.user)
+        serializer = self.serializer_class(request.user, context={"request": request})
         return Response(serializer.data)
 
 
@@ -32,7 +32,7 @@ class UserViewSet(ModelViewSet):
 
     @swagger_auto_schema(responses={200: UserListSerializer()})
     def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
+        queryset = self.filter_queryset(self.get_queryset().exclude(is_superuser=True))
 
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -45,12 +45,8 @@ class UserViewSet(ModelViewSet):
     @swagger_auto_schema(responses={200: UserListSerializer()})
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
-        serializer = self.detail_serializer_class(instance)
+        serializer = self.detail_serializer_class(instance, context={"request": request})
         return Response(serializer.data)
-
-    def get_queryset(self):
-        queryset = super(UserViewSet, self).get_queryset().exclude(is_superuser=True)
-        return queryset
 
 
 class RoleViewSet(CustomListMixin, ModelViewSet):
