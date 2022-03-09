@@ -1,3 +1,7 @@
 from django.contrib import admin  # noqa: F401
+from .models import PlaceScope
 
-# Register your models here.
+
+@admin.register(PlaceScope)
+class PlaceScopeAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
