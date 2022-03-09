@@ -49,3 +49,13 @@ class District(models.Model):
     @property
     def department(self):
         return getattr(self.province, 'department_id')
+
+
+class PlaceScope(models.Model):
+    name = models.CharField(_('name'), max_length=150)
+
+    class Meta:
+        db_table = 'AMBITO'
+
+    def __str__(self):
+        return f'{self.name}'

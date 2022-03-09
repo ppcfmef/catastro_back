@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from apps.master_data.serializers import InstitutionSerializer
-from apps.places.serializers import DepartmentSerializer, ProvinceSerializer, DistrictSerializer
+from apps.places.serializers import (
+    DepartmentSerializer, ProvinceSerializer, DistrictSerializer, PlaceScopeSerializer
+)
 from .models import User, Role, Permission, PermissionNavigation, PermissionType, RolePermission
 
 
@@ -44,12 +46,12 @@ class RoleShortSerializer(serializers.ModelSerializer):
 
 
 class UserProfileShortSerializer(serializers.ModelSerializer):
-
     name = serializers.CharField()
+    place_scope = PlaceScopeSerializer()
 
     class Meta:
         model = User
-        fields = ('id', 'name', 'avatar', 'email')
+        fields = ('id', 'name', 'avatar', 'email', 'place_scope', 'ubigeo')
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -57,7 +59,8 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'institution', 'avatar', 'dni', 'first_name', 'last_name', 'email', 'job_title', 'role',
-                  'username', 'password', 'is_active', 'department', 'province', 'district', 'observation')
+                  'username', 'password', 'is_active', 'department', 'province', 'district', 'observation',
+                  'place_scope')
 
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
@@ -86,6 +89,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
     department = DepartmentSerializer()
     province = ProvinceSerializer()
     district = DistrictSerializer()
+    place_scope = PlaceScopeSerializer()
 
     class Meta:
         model = User
