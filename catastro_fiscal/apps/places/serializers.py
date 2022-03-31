@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Department, Province, District, PlaceScope
+from .models import Department, Province, District, PlaceScope, Extension, Resource
 
 
 class DepartmentSerializer(serializers.ModelSerializer):
@@ -27,3 +27,25 @@ class PlaceScopeSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlaceScope
         fields = ('id', 'name')
+
+
+class ExtensionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Extension
+        fields = '__all__'
+
+
+class ResourceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Resource
+        fields = '__all__'
+
+
+class DistrictResourceSerializer(serializers.ModelSerializer):
+    department = serializers.CharField()
+    extensions = ExtensionSerializer(many=True)
+    resources = ResourceSerializer(many=True)
+
+    class Meta:
+        model = District
+        fields = ('code', 'name', 'department', 'province', 'extensions', 'resources')
