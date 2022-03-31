@@ -59,3 +59,39 @@ class PlaceScope(models.Model):
 
     def __str__(self):
         return f'{self.name}'
+
+
+class Extension(models.Model):
+    ubigeo = models.ForeignKey(
+        District,
+        models.CASCADE,
+        verbose_name=_('ubigeo'),
+        related_name='extensions',
+        blank=True, null=True,
+    )
+    x_min = models.CharField(max_length=20)
+    x_max = models.CharField(max_length=20)
+    y_min = models.CharField(max_length=20)
+    y_max = models.CharField(max_length=20)
+    x = models.CharField(max_length=20)
+    y = models.CharField(max_length=20)
+    id_dist = models.IntegerField(null=True)
+
+    class Meta:
+        db_table = 'UBICACION_EXTENDIDO'
+
+
+class Resource(models.Model):
+    ubigeo = models.ForeignKey(
+        District,
+        models.CASCADE,
+        verbose_name=_('ubigeo'),
+        related_name='resources',
+        blank=True, null=True
+    )
+    source = models.CharField(_('source'), max_length=50, null=True)
+    utm = models.IntegerField(_('utm'))
+    gis_service = models.CharField(_('gis service'), max_length=255)
+
+    class Meta:
+        db_table = 'UBICACION_RECURSOS'
