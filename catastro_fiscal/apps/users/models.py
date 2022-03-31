@@ -117,6 +117,21 @@ class User(AbstractUser):
 
         return None
 
+    def save(self, *args, **kwargs):
+        if self.place_scope is None:
+            self.set_place_scope()
+        super(User, self).save(*args, **kwargs)
+
+    def set_place_scope(self):
+        if self.department is None and self.province is None and self.district is None:
+            self.place_scope_id = 1
+        elif self.department and self.province is None and self.district is None:
+            self.place_scope_id = 2
+        elif self.department and self.province and self.district is None:
+            self.place_scope_id = 3
+        else:
+            self.place_scope_id = 4
+
 
 class PermissionNavigation(AbstractAudit):
     permission = models.ForeignKey(
