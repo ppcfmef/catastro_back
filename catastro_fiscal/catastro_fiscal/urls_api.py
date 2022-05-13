@@ -8,4 +8,5 @@ urlpatterns = [
     path('common/', include('apps.common.urls', namespace='api_common')),
     path('places/', include('apps.places.urls', namespace='api_places')),
     path('master/', include('apps.master_data.urls', namespace='api_master')),
+    path('lands/', include('apps.lands.urls', namespace='api_lands')),
 ]

@@ -12,3 +12,11 @@ class CustomListMixin:
 
         serializer = self.list_serializer_class(queryset, many=True)
         return Response(serializer.data)
+
+
+class CustomSerializerMixin:
+    def get_serializer_class(self):
+        serializer_action_class = getattr(self, f'{self.action}_serializer_class', None)
+        if serializer_action_class:
+            return serializer_action_class
+        return super(CustomSerializerMixin, self).get_serializer_class()
