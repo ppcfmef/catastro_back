@@ -1,4 +1,5 @@
 import openpyxl
+from django.db.models import Count
 from .models import UploadHistory, TemploralUploadRecord, Land, LandOwner
 
 
@@ -87,8 +88,13 @@ class UploadLandRecordService:
             land_owners_bulk.append(land_owner)
         LandOwner.objects.bulk_create(land_owners_bulk)
 
+    def count_lands_by_owner(self):
+        lands = Land.objects.values('owner').annotate(number_lands=Count('owner'))
+        for land in lands:
+            LandOwner.objects.filter(id=land['owner']).update(number_lands=land['number_lands'])
+
     def execute(self, upload_history: UploadHistory):
         records = self.read(upload_history)
         self.temporal_upload(upload_history, records)
-        upload_history = UploadHistory.objects.get(pk=33)
         self.land_upload(upload_history)
+        self.count_lands_by_owner()

@@ -76,7 +76,7 @@ class LandOwner(models.Model):
     paternal_surname = models.CharField(max_length=150, blank=True, null=True)
     maternal_surname = models.CharField(max_length=150, blank=True, null=True)
     tax_address = models.CharField(max_length=255, blank=True, null=True)
-    numberLands = models.IntegerField(default=0)
+    number_lands = models.IntegerField(default=0)
 
     class Meta:
         db_table = 'PROPIETARIO'
