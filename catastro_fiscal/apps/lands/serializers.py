@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import UploadHistory
+from .services import UploadLandRecordService
 
 
 class UploadHistoryListSerializer(serializers.ModelSerializer):
@@ -23,4 +24,4 @@ class UploadHistorySerializer(serializers.ModelSerializer):
         return instance
 
     def load_file_upload(self, instance):
-        pass
+        UploadLandRecordService().execute(instance)

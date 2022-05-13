@@ -1,13 +1,15 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-
-class UploadHistory(models.Model):
-    STATUS_CHOICE = (
+UPLOAD_STATUS = (
         ('INITIAL', _('Initiated')),
         ('IN_PROGRESS', _('In Progress')),
         ('LOADED', _('Loaded')),
     )
+
+
+class UploadHistory(models.Model):
+    STATUS_CHOICE = UPLOAD_STATUS
 
     APPROVED_STATUS_CHOICE = (
         ('NOT_REQUIRED', _('Not required')),
@@ -40,3 +42,26 @@ class UploadHistory(models.Model):
     @property
     def total_land_notmapping(self):
         return int(self.total_land or 0) - int(self.total_land_mapping or 0)
+
+
+class TemploralUploadRecord(models.Model):
+    UPLOAD_STATUS_CHOICE = UPLOAD_STATUS
+
+    STATUS_CHOICE = (
+        ('ERROR', _('contains errors')),
+        ('OK_NEW', _('ok and new')),
+        ('OK_OLD', _('ok to update')),
+    )
+
+    record = models.JSONField(blank=True, null=True)
+    upload_history = models.ForeignKey(UploadHistory, on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, choices=UPLOAD_STATUS_CHOICE)
+    upload_status = models.CharField(max_length=20, choices=UPLOAD_STATUS_CHOICE, default='INITIAL')
+
+    class Meta:
+        db_table = 'TMP_CARGA_REGISTROS'
+        verbose_name = _('temporal upload redord')
+        verbose_name_plural = _('temporal upload redords')
+
+    def __str__(self):
+        return f'{self.id}'

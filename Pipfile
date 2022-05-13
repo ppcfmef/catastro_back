@@ -19,6 +19,7 @@ markdown = "*"
 drf-yasg = "*"
 djangorestframework-jwt = "*"
 django-crum = "*"
+openpyxl = "*"
 
 [requires]
 python_version = "3.6"
