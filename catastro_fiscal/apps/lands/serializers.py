@@ -31,6 +31,18 @@ class UploadHistorySerializer(serializers.ModelSerializer):
 class LandSerializer(serializers.ModelSerializer):
     class Meta:
         model = Land
+        fields = '__all__'  # ToDo: estandarizar listado de predios
+
+
+class LandDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Land
+        fields = '__all__'
+
+
+class LandSaveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Land
         fields = '__all__'
 
 

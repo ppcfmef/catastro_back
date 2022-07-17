@@ -8,7 +8,7 @@ from core.views import CustomSerializerMixin
 from .models import UploadHistory, Land, LandOwner
 from .serializers import (
     UploadHistorySerializer, UploadHistoryListSerializer, LandSerializer, LandOwnerSerializer,
-    LandOwnerDetailSerializer, LandOwnerSaveSerializer
+    LandOwnerDetailSerializer, LandOwnerSaveSerializer, LandDetailSerializer, LandSaveSerializer
 )
 
 
@@ -29,6 +29,16 @@ class LandViewSet(mixins.ListModelMixin, GenericViewSet):
     filter_backends = [DjangoFilterBackend, SearchFilter]
     search_fields = ['habilitacion_name', 'steet_name', ]
     filterset_fields = ['owner', ]
+
+
+class LandDetailViewSet(mixins.RetrieveModelMixin, GenericViewSet):
+    queryset = Land.objects.all()
+    serializer_class = LandDetailSerializer
+
+
+class LandCreateAndEditViewset(mixins.CreateModelMixin, mixins.UpdateModelMixin, GenericViewSet):
+    queryset = Land.objects.all()
+    serializer_class = LandSaveSerializer
 
 
 class LandOwnerViewSet(mixins.ListModelMixin, GenericViewSet):
