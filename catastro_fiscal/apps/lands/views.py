@@ -8,7 +8,7 @@ from core.views import CustomSerializerMixin
 from .models import UploadHistory, Land, LandOwner
 from .serializers import (
     UploadHistorySerializer, UploadHistoryListSerializer, LandSerializer, LandOwnerSerializer,
-    LandOwnerDetailSerializer
+    LandOwnerDetailSerializer, LandOwnerSaveSerializer
 )
 
 
@@ -41,12 +41,13 @@ class LandOwnerViewSet(mixins.ListModelMixin, GenericViewSet):
 
 class OwnerSearchByDocumentViewset(mixins.RetrieveModelMixin, GenericViewSet):
     """
-    Get Owener filter by document (dni, ruc)
+    Get Owner filter by document (dni, ruc)
     """
     queryset = LandOwner.objects.all()
     serializer_class = LandOwnerDetailSerializer
     lookup_field = 'dni'
 
 
-class CreateAndEditOwner(mixins.CreateModelMixin, mixins.UpdateModelMixin, GenericViewSet):
-    pass
+class CreateAndEditOwnerViewset(mixins.CreateModelMixin, mixins.UpdateModelMixin, GenericViewSet):
+    queryset = LandOwner.objects.all()
+    serializer_class = LandOwnerSaveSerializer

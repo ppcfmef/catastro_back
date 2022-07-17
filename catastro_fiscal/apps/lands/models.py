@@ -71,15 +71,15 @@ class LandOwner(models.Model):
     id = models.AutoField(primary_key=True)
     code = models.CharField(max_length=50, blank=True, null=True)
     document_type = models.CharField(max_length=2, blank=True, null=True)
-    dni = models.CharField(max_length=20)  # ToDo: Change for document
+    dni = models.CharField(max_length=20, unique=True)  # ToDo: Change for document
     name = models.CharField(max_length=150)
     paternal_surname = models.CharField(max_length=150, blank=True, null=True)
     maternal_surname = models.CharField(max_length=150, blank=True, null=True)
     description_owner = models.CharField(max_length=150, blank=True, null=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
     email = models.CharField(max_length=150, blank=True, null=True)
-    tax_address = models.CharField(max_length=255, blank=True, null=True)
-    number_lands = models.IntegerField(default=0)
+    tax_address = models.CharField(max_length=255, blank=True, null=True)  # ToDo: This field now is OwnerAddress
+    number_lands = models.IntegerField(default=0, blank=True, null=True)
 
     class Meta:
         db_table = 'PROPIETARIO'

@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import serializers
 from .models import UploadHistory, Land, LandOwner, OwnerAddress
 from .services import UploadLandRecordService
@@ -55,15 +56,26 @@ class LandOwnerDetailSerializer(serializers.ModelSerializer):
 
 class LandOwnerSaveSerializer(serializers.ModelSerializer):
 
-    address = OwnerAddressSerializer(allow_null=True)
+    address = OwnerAddressSerializer(allow_null=True, write_only=True)
 
     class Meta:
         model = LandOwner
         fields = '__all__'
 
+    @transaction.atomic
     def create(self, validated_data):
         address = validated_data.pop('address')
         owner = LandOwner.objects.create(**validated_data)
         address.update({"owner": owner})
         OwnerAddress.objects.create(**address)
         return owner
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        nom_update_fiels = ['dni', 'document_type']
+        address = validated_data.pop('address')
+        if set(nom_update_fiels).intersection(set(validated_data.keys())):
+            raise serializers.ValidationError(f'Los campos {nom_update_fiels} no pueden ser modificados')
+        instance = super(LandOwnerSaveSerializer, self).update(instance, validated_data)
+        OwnerAddress.objects.filter(owner=instance).update(**address)
+        return instance
