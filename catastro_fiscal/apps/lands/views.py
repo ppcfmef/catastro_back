@@ -6,7 +6,10 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
 from core.views import CustomSerializerMixin
 from .models import UploadHistory, Land, LandOwner
-from .serializers import UploadHistorySerializer, UploadHistoryListSerializer, LandSerializer, LandOwnerSerializer
+from .serializers import (
+    UploadHistorySerializer, UploadHistoryListSerializer, LandSerializer, LandOwnerSerializer,
+    LandOwnerDetailSerializer
+)
 
 
 class UploadHistoryViewset(CustomSerializerMixin, mixins.ListModelMixin, mixins.CreateModelMixin, GenericViewSet):
@@ -34,6 +37,15 @@ class LandOwnerViewSet(mixins.ListModelMixin, GenericViewSet):
     filter_backends = [DjangoFilterBackend, SearchFilter]
     search_fields = ['dni', 'name', 'paternal_surname', 'maternal_surname', ]
     filterset_fields = ['id', ]
+
+
+class OwnerSearchByDocumentViewset(mixins.RetrieveModelMixin, GenericViewSet):
+    """
+    Get Owener filter by document (dni, ruc)
+    """
+    queryset = LandOwner.objects.all()
+    serializer_class = LandOwnerDetailSerializer
+    lookup_field = 'dni'
 
 
 class CreateAndEditOwner(mixins.CreateModelMixin, mixins.UpdateModelMixin, GenericViewSet):

@@ -45,6 +45,14 @@ class OwnerAddressSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class LandOwnerDetailSerializer(serializers.ModelSerializer):
+    address = OwnerAddressSerializer(allow_null=True)
+
+    class Meta:
+        model = LandOwner
+        fields = '__all__'
+
+
 class LandOwnerSaveSerializer(serializers.ModelSerializer):
 
     address = OwnerAddressSerializer(allow_null=True)
@@ -54,7 +62,6 @@ class LandOwnerSaveSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
-        print(validated_data)
         address = validated_data.pop('address')
         owner = LandOwner.objects.create(**validated_data)
         address.update({"owner": owner})
