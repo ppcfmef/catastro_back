@@ -34,3 +34,7 @@ class LandOwnerViewSet(mixins.ListModelMixin, GenericViewSet):
     filter_backends = [DjangoFilterBackend, SearchFilter]
     search_fields = ['dni', 'name', 'paternal_surname', 'maternal_surname', ]
     filterset_fields = ['id', ]
+
+
+class CreateAndEditOwner(mixins.CreateModelMixin, mixins.UpdateModelMixin, GenericViewSet):
+    pass
