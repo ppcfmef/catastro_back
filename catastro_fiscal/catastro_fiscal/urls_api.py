@@ -9,4 +9,5 @@ urlpatterns = [
     path('places/', include('apps.places.urls', namespace='api_places')),
     path('master/', include('apps.master_data.urls', namespace='api_master')),
     path('lands/', include('apps.lands.urls', namespace='api_lands')),
+    path('documents/', include('apps.documents.urls', namespace='api_documents')),
 ]
