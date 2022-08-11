@@ -45,6 +45,14 @@ class LandSaveSerializer(serializers.ModelSerializer):
         model = Land
         fields = '__all__'
 
+    def create(self, validated_data):
+        instance = super(LandSaveSerializer, self).create(validated_data)
+        return instance
+
+    def update(self, instance, validated_data):
+        instance = super(LandSaveSerializer, self).update(instance, validated_data)
+        return instance
+
 
 class LandOwnerSerializer(serializers.ModelSerializer):
     class Meta:

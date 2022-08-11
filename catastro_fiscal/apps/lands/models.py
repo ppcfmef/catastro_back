@@ -124,7 +124,7 @@ class Land(models.Model):
     urban_lot_number = models.CharField(max_length=10, blank=True, null=True)
     cod_street = models.CharField(max_length=20, blank=True, null=True)
     street_type = models.CharField(max_length=20, blank=True, null=True)
-    steet_name = models.CharField(max_length=255, blank=True, null=True)
+    street_name = models.CharField(max_length=255, blank=True, null=True)
     street_name_alt = models.CharField(max_length=255, blank=True, null=True)
     municipal_number = models.CharField(max_length=6, blank=True, null=True)
     block = models.CharField(max_length=6, blank=True, null=True)

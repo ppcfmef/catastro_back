@@ -36,7 +36,12 @@ class LandDetailViewSet(mixins.RetrieveModelMixin, GenericViewSet):
     serializer_class = LandDetailSerializer
 
 
-class LandCreateAndEditViewset(mixins.CreateModelMixin, mixins.UpdateModelMixin, GenericViewSet):
+class LandCreateAndEditViewset(mixins.CreateModelMixin,
+                               mixins.UpdateModelMixin,  # ToDo: only patch
+                               GenericViewSet):
+    """
+    Create and Update Land Record
+    """
     queryset = Land.objects.all()
     serializer_class = LandSaveSerializer
 
