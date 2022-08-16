@@ -108,6 +108,8 @@ class OwnerAddress(models.Model):
 class Land(models.Model):
     id = models.AutoField(primary_key=True)
     id_land_cartographic = models.CharField(max_length=18, blank=True, null=True, help_text=_('id land cartographic'))
+    id_plot = models.CharField(max_length=25, blank=True, null=True, help_text=_('id plot'))
+    id_cartographic_img = models.CharField(max_length=26, blank=True, null=True, help_text=_('id cartographic image'))
     cpm = models.CharField(max_length=100, blank=True, null=True)
     sec_ejec = models.CharField(max_length=6, blank=True, null=True)
     ubigeo = models.CharField(max_length=6, blank=True, null=True)
