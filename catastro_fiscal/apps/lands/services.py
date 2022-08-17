@@ -58,7 +58,7 @@ class UploadLandRecordService:
                 urban_lot_number=record.get('lot_urb'),
                 site=None,
                 municipal_number=None,
-                dpto_number=None,
+                apartment_number=None,
                 indoor=record.get('interior'),
                 block=record.get('block'),
                 latitude=record.get('coor_y'),
