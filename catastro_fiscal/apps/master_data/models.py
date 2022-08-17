@@ -51,3 +51,10 @@ class MasterPropertyType(MasterDomain):
         db_table = 'M_TIPO_PREDIO'
         verbose_name = _('Property Type')
         verbose_name_plural = _('Property Type')
+
+
+class MasterResolutionType(MasterDomain):
+    class Meta:
+        db_table = 'M_TDOC_RES'
+        verbose_name = _('Resolution Type')
+        verbose_name_plural = _('Resolution Type')

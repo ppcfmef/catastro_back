@@ -25,3 +25,8 @@ class MasterCodeStreetAdmin(MasterAdminMixin, ImportExportModelAdmin):
 @admin.register(MasterPropertyType)
 class MasterPropertyTypeAdmin(MasterAdminMixin, ImportExportModelAdmin):
     pass
+
+
+@admin.register(MasterResolutionType)
+class MasterResolutionTypeAdmin(MasterAdminMixin, ImportExportModelAdmin):
+    pass

@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 from .serializers import InstitutionSerializer, MasterDomainSerilizer
 from .models import (
-    Institution, MasterTypeUrbanUnit, MasterSide, MasterCodeStreet, MasterPropertyType
+    Institution, MasterTypeUrbanUnit, MasterSide, MasterCodeStreet, MasterPropertyType, MasterResolutionType
 )
 
 
@@ -22,7 +22,8 @@ class MasterDomainView(APIView):
             "uu_type": MasterTypeUrbanUnit.objects.all(),
             "cod_street": MasterCodeStreet.objects.all(),
             "property_type": MasterPropertyType.objects.all(),
-            "cod_side": MasterSide.objects.all()
+            "cod_side": MasterSide.objects.all(),
+            'resolution_type': MasterResolutionType.objects.all(),
         }
         serializer = MasterDomainSerilizer(data)
         return Response(serializer.data)
