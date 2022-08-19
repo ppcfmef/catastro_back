@@ -47,6 +47,8 @@ class LandSaveSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         instance = super(LandSaveSerializer, self).create(validated_data)
+        instance.owner.number_lands = Land.objects.filter(owner=instance.owner).count()
+        instance.owner.save()
         return instance
 
     def update(self, instance, validated_data):
