@@ -52,6 +52,8 @@ LOCAL_APPS = [
     'apps.lands.apps.LandsConfig',
     'apps.documents.apps.DocumentsConfig',
     'apps.gis.apps.GisConfig',
+    'apps.integrations.persons.apps.PersonsConfig',
+    'apps.integrations.business.apps.BusinessConfig',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

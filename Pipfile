@@ -21,6 +21,7 @@ djangorestframework-jwt = "*"
 django-crum = "*"
 openpyxl = "*"
 django-import-export = "*"
+requests = "*"
 
 [requires]
 python_version = "3.6"

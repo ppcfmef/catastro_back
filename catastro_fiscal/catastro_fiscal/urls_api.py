@@ -11,4 +11,5 @@ urlpatterns = [
     path('lands/', include('apps.lands.urls', namespace='api_lands')),
     path('documents/', include('apps.documents.urls', namespace='api_documents')),
     path('gis/', include('apps.gis.urls', namespace='api_gis')),
+    path('integrations/', include('apps.integrations.urls', namespace='api_integrations')),
 ]

@@ -49,3 +49,8 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'  # noqa: F405
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'  # noqa: F405
+
+URL_API_PERSONS = env("URL_API_PERSONS", default='')   # noqa: F405
+KEY_API_PERSONS = env("KEY_API_PERSONS", default='')   # noqa: F405
+URL_API_BUSINESS = env("URL_API_BUSINESS", default='')  # noqa: F405
+KEY_API_BUSINESS = env("KEY_API_BUSINESS", default='')  # noqa: F405
