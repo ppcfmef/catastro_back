@@ -105,7 +105,7 @@ class OwnerAddress(models.Model):
     km = models.CharField(max_length=100, blank=True, null=True)
 
 
-class Land(models.Model):
+class LandBase(models.Model):
     id = models.AutoField(primary_key=True)
     id_land_cartographic = models.CharField(max_length=18, blank=True, null=True, help_text=_('id land cartographic'))
     id_plot = models.CharField(max_length=25, blank=True, null=True, help_text=_('id plot'))
@@ -163,6 +163,57 @@ class Land(models.Model):
     owner = models.ForeignKey(LandOwner, models.SET_NULL, blank=True, null=True)
 
     class Meta:
+        abstract = True
+
+
+class Land(LandBase):
+
+    class Meta:
         db_table = 'PREDIO'
         verbose_name = _('land')
         verbose_name_plural = _('land')
+
+
+class LandAudit(LandBase):
+    SOURCE_CHOICES = (
+        ('manual', 'Carga Manual'),
+        ('masivo', 'Carga Masiva')
+    )
+
+    TYPE_CHOICES = (
+        ('editar', 'Editar Registro'),
+        ('inactivar', 'Inactivar Registro')
+    )
+    id_reference = models.IntegerField()
+    source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True, null=True)
+    type = models.CharField(max_length=50, choices=TYPE_CHOICES, blank=True, null=True)
+    creation_date = models.DateTimeField(
+        _('creation date'),
+        auto_now_add=True,
+        help_text=_('record creation date')
+    )
+    created_by = models.CharField(
+        _('username created'),
+        max_length=100,  # max length of User.username
+        blank=True,
+        null=True,
+        help_text=_('username that created the record')
+    )
+    update_date = models.DateTimeField(
+        _('update date'),
+        auto_now=True,
+        help_text=_('record update date')
+    )
+
+    update_by = models.CharField(
+        _('username updated'),
+        max_length=100,  # max length of User.username
+        blank=True,
+        null=True,
+        help_text=_('username that updated the record')
+    )
+
+    class Meta:
+        db_table = 'PREDIO_AUDITORIA'
+        verbose_name = _('land audit')
+        verbose_name_plural = _('land audit')

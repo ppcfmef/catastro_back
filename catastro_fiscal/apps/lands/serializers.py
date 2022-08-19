@@ -1,6 +1,6 @@
 from django.db import transaction
 from rest_framework import serializers
-from .models import UploadHistory, Land, LandOwner, OwnerAddress
+from .models import UploadHistory, Land, LandOwner, OwnerAddress, LandAudit
 from .services import UploadLandRecordService
 
 
@@ -51,6 +51,16 @@ class LandSaveSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance = super(LandSaveSerializer, self).update(instance, validated_data)
+        validated_data['id_reference'] = instance.id
+        validated_data['created_by'] = 'admin'
+        validated_data['update_by'] = 'admin'
+
+        if 'id' in validated_data:
+            del validated_data['id']
+
+        validated_data['source'] = 'manual'
+        validated_data['type'] = 'editar'
+        LandAudit.objects.create(**validated_data)
         return instance
 
 
