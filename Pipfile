@@ -7,7 +7,7 @@ verify_ssl = true
 flake8 = "*"
 
 [packages]
-django = "<3.2"
+django = "<4"
 pillow = "*"
 django-environ = "*"
 dj-database-url = "*"
