@@ -110,6 +110,7 @@ class LandBase(models.Model):
     id_land_cartographic = models.CharField(max_length=18, blank=True, null=True, help_text=_('id land cartographic'))
     id_plot = models.CharField(max_length=25, blank=True, null=True, help_text=_('id plot'))
     id_cartographic_img = models.CharField(max_length=26, blank=True, null=True, help_text=_('id cartographic image'))
+    id_object_img = models.IntegerField(blank=True, null=True, help_text=_('id object image'))
     cpm = models.CharField(max_length=100, blank=True, null=True)
     sec_ejec = models.CharField(max_length=6, blank=True, null=True)
     ubigeo = models.CharField(max_length=6, blank=True, null=True)
