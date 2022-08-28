@@ -158,3 +158,5 @@ JWT_AUTH = {
     'JWT_AUTH_HEADER_PREFIX': 'Bearer',
     'JWT_AUTH_COOKIE': 'Authorization'
 }
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
