@@ -174,6 +174,7 @@ class LandBase(models.Model):
     site = models.IntegerField(blank=True, null=True)
     built_area = models.FloatField(blank=True, null=True)
     owner = models.ForeignKey(LandOwner, models.SET_NULL, blank=True, null=True)
+    inactive_reason = models.TextField(blank=True, null=True)
 
     class Meta:
         abstract = True
