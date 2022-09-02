@@ -66,3 +66,9 @@ class OwnerSearchByDocumentViewset(mixins.RetrieveModelMixin, GenericViewSet):
 class CreateAndEditOwnerViewset(mixins.CreateModelMixin, mixins.UpdateModelMixin, GenericViewSet):
     queryset = LandOwner.objects.all()
     serializer_class = LandOwnerSaveSerializer
+
+
+class SearchInactiveLandByCpu(mixins.RetrieveModelMixin, GenericViewSet):
+    queryset = Land.objects.filter(status=3)
+    serializer_class = LandDetailSerializer
+    lookup_field = 'cup'
