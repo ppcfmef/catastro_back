@@ -9,4 +9,4 @@ class UploadHistoryAdmin(admin.ModelAdmin):
 
 @admin.register(LandAudit)
 class LandAuditAdmin(admin.ModelAdmin):
-    list_display = ('id', 'id_reference', 'source', 'type', 'update_date', 'update_by')
+    list_display = ('id', 'id_reference', 'source_change', 'type', 'update_date', 'update_by')

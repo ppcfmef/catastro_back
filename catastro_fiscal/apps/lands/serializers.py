@@ -60,7 +60,7 @@ class LandSaveSerializer(serializers.ModelSerializer):
         if 'id' in validated_data:
             del validated_data['id']
 
-        validated_data['source'] = 'manual'
+        validated_data['source_change'] = 'asignar_lote'
         validated_data['type'] = 'editar'
         LandAudit.objects.create(**validated_data)
         return instance

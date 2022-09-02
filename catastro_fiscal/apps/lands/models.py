@@ -106,7 +106,20 @@ class OwnerAddress(models.Model):
 
 
 class LandBase(models.Model):
+    SOURCE_CHOICES = (
+        ('carga_masiva', 'Carga Masiva'),
+        ('asignar_lote', 'Asignar Lote'),
+        ('asignar_img', 'Asignar Imagen'),
+    )
+    STATUS_CHOICE = (
+        (0, 'Sin Cartografia'),
+        (1, 'Con cartografia (Lote)'),
+        (2, 'Con cartografia (Imagen)'),
+        (3, 'Inactivo'),
+    )
     id = models.AutoField(primary_key=True)
+    source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True, null=True)
+    status = models.PositiveSmallIntegerField(choices=STATUS_CHOICE, blank=True, null=True)
     id_land_cartographic = models.CharField(max_length=18, blank=True, null=True, help_text=_('id land cartographic'))
     id_plot = models.CharField(max_length=25, blank=True, null=True, help_text=_('id plot'))
     id_cartographic_img = models.CharField(max_length=26, blank=True, null=True, help_text=_('id cartographic image'))
@@ -141,7 +154,6 @@ class LandBase(models.Model):
     longitude = models.FloatField(blank=True, null=True)
     latitude = models.FloatField(blank=True, null=True)
     id_aranc = models.IntegerField(blank=True, null=True)
-    status = models.PositiveSmallIntegerField(blank=True, null=True)
     status_img = models.PositiveSmallIntegerField(blank=True, null=True)
     land_area = models.FloatField(blank=True, null=True)
     front_length = models.FloatField(blank=True, null=True)
@@ -176,9 +188,10 @@ class Land(LandBase):
 
 
 class LandAudit(LandBase):
-    SOURCE_CHOICES = (
-        ('manual', 'Carga Manual'),
-        ('masivo', 'Carga Masiva')
+    SOURCE_CHANGE_CHOICES = (
+        ('carga_masiva', 'Carga Masiva'),
+        ('asignar_lote', 'Asignar Lote'),
+        ('asignar_img', 'Asignar Imagen'),
     )
 
     TYPE_CHOICES = (
@@ -186,7 +199,7 @@ class LandAudit(LandBase):
         ('inactivar', 'Inactivar Registro')
     )
     id_reference = models.IntegerField()
-    source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True, null=True)
+    source_change = models.CharField(max_length=50, choices=SOURCE_CHANGE_CHOICES, blank=True, null=True)
     type = models.CharField(max_length=50, choices=TYPE_CHOICES, blank=True, null=True)
     creation_date = models.DateTimeField(
         _('creation date'),
