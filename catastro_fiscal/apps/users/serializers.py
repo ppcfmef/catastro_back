@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import serializers
 from apps.master_data.serializers import InstitutionSerializer
 from apps.places.serializers import (
@@ -115,15 +116,22 @@ class PermissionSerializer(serializers.ModelSerializer):
         model = Permission
         fields = ('id', 'description', 'permissions_navigation')
 
+    @transaction.atomic
     def create(self, validated_data):
         permissions_navigation = validated_data.pop('permissions_navigation')
-        instance = super(PermissionSerializer, self).create(validated_data)
+        # Creamos el permiso y Rol con los mismos datos y la relacion entre ambos
+        instance = super(PermissionSerializer, self).create(validated_data)  # permiso
+        role = Role.objects.create(name=validated_data.get('description'))  # Rol
+        role.permissions.add(instance)  # Rol/Permiso
+
+        # Agregando permisos de navegacion
         self.create_permissions_navigation(
             permission=instance,
             permissions_navigation=permissions_navigation
         )
         return instance
 
+    @transaction.atomic
     def update(self, instance, validated_data):
         permissions_navigation = validated_data.pop('permissions_navigation')
         instance = super(PermissionSerializer, self).update(instance, validated_data)
@@ -158,7 +166,7 @@ class PermissionSerializer(serializers.ModelSerializer):
             permission_navigation_ids.append(obj.pk)
 
         # deleting records not sent in permissions_navigation
-        PermissionNavigation.objects.exclude(id__in=permission_navigation_ids).delete()
+        PermissionNavigation.objects.filter(permission=permission).exclude(id__in=permission_navigation_ids).delete()
 
     def get_permissions_navigation_data(self, permission, permission_navigation):
         return {
