@@ -2,6 +2,8 @@ from rest_framework import mixins
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework.filters import SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
 from core.views import CustomListMixin
 from .serializers import (
@@ -23,12 +25,14 @@ class UserProfileShortView(APIView):
 
 
 class UserViewSet(ModelViewSet):
-    queryset = User.objects.all()
+    queryset = User.objects.all().order_by('-id')
     serializer_class = UserSerializer
     list_serializer_class = UserListSerializer
     detail_serializer_class = UserDetailSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter]
     filter_class = UserCustomFilter
     filterset_fields = ['is_active', 'role', 'start_date', 'end_date']
+    search_fields = ['dni', 'district__code', 'district__name']
 
     @swagger_auto_schema(responses={200: UserListSerializer()})
     def list(self, request, *args, **kwargs):

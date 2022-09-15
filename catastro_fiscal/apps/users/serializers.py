@@ -81,7 +81,7 @@ class UserListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'institution', 'role', 'is_active', 'date_joined')
+        fields = ('id', 'dni', 'username', 'institution', 'district', 'role', 'is_active', 'date_joined')
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
