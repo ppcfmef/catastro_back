@@ -1,4 +1,6 @@
 from rest_framework import mixins
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 from djangorestframework_camel_case.parser import CamelCaseMultiPartParser
 from rest_framework.filters import SearchFilter
@@ -8,7 +10,8 @@ from core.views import CustomSerializerMixin
 from .models import UploadHistory, Land, LandOwner
 from .serializers import (
     UploadHistorySerializer, UploadHistoryListSerializer, LandSerializer, LandOwnerSerializer,
-    LandOwnerDetailSerializer, LandOwnerSaveSerializer, LandDetailSerializer, LandSaveSerializer
+    LandOwnerDetailSerializer, LandOwnerSaveSerializer, LandDetailSerializer, LandSaveSerializer,
+    SummaryRecordSerializer
 )
 
 
@@ -72,3 +75,22 @@ class SearchInactiveLandByCpu(mixins.RetrieveModelMixin, GenericViewSet):
     queryset = Land.objects.filter(status=3)
     serializer_class = LandDetailSerializer
     lookup_field = 'cup'
+
+
+class SummaryRecord(APIView):
+    queryset = Land.objects.exclude(status=3)
+    serializer_class = SummaryRecordSerializer
+
+    def get(self, request, *args, **kwargs):
+        serializer = self.serializer_class(self.get_object(), context={"request": request})
+        return Response(serializer.data)
+
+    def get_object(self):
+        total_records = self.queryset.count()
+        mapping_records = self.queryset.filter(longitude__isnull=False, latitude__isnull=False).count()
+        without_mapping_records = total_records - mapping_records
+        return {
+            'total_records': total_records,
+            'mapping_records': mapping_records,
+            'without_mapping_records': without_mapping_records
+        }

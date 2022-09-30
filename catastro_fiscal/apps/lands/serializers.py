@@ -111,3 +111,9 @@ class LandOwnerSaveSerializer(serializers.ModelSerializer):
         instance = super(LandOwnerSaveSerializer, self).update(instance, validated_data)
         OwnerAddress.objects.filter(owner=instance).update(**address)
         return instance
+
+
+class SummaryRecordSerializer(serializers.Serializer):
+    total_records = serializers.IntegerField()
+    mapping_records = serializers.IntegerField()
+    without_mapping_records = serializers.IntegerField()

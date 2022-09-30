@@ -1,7 +1,8 @@
+from django.urls import path
 from rest_framework.routers import DefaultRouter
 from .views import (
     UploadHistoryViewset, LandViewSet, LandOwnerViewSet, OwnerSearchByDocumentViewset, CreateAndEditOwnerViewset,
-    LandDetailViewSet, LandCreateAndEditViewset, SearchInactiveLandByCpu
+    LandDetailViewSet, LandCreateAndEditViewset, SearchInactiveLandByCpu, SummaryRecord
 )
 
 app_name = 'api_lands'
@@ -15,5 +16,6 @@ router.register('detail', LandDetailViewSet)
 router.register('register', LandCreateAndEditViewset)
 router.register('owners/search', OwnerSearchByDocumentViewset)
 router.register('owners/register', CreateAndEditOwnerViewset)
-
-urlpatterns = router.urls
+urlpatterns = router.urls + [
+    path('summary/', SummaryRecord.as_view())
+]
