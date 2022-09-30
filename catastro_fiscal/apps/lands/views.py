@@ -27,7 +27,7 @@ class LandViewSet(mixins.ListModelMixin, GenericViewSet):
     queryset = Land.objects.all()
     serializer_class = LandSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter]
-    search_fields = ['habilitacion_name', 'steet_name', ]
+    search_fields = ['cup', 'cpm', 'id_cartographic_img', 'id_plot', ]
     filterset_fields = ['owner', ]
 
 
