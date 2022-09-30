@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from core.models import AbstractAudit
 
 UPLOAD_STATUS = (
         ('INITIAL', _('Initiated')),
@@ -67,7 +68,7 @@ class TemploralUploadRecord(models.Model):
         return f'{self.id}'
 
 
-class LandOwner(models.Model):
+class LandOwner(AbstractAudit):
     id = models.AutoField(primary_key=True)
     code = models.CharField(max_length=50, blank=True, null=True)
     document_type = models.CharField(max_length=2, blank=True, null=True)
@@ -105,7 +106,7 @@ class OwnerAddress(models.Model):
     km = models.CharField(max_length=100, blank=True, null=True)
 
 
-class LandBase(models.Model):
+class LandBase(AbstractAudit):
     SOURCE_CHOICES = (
         ('carga_masiva', 'Carga Masiva'),
         ('asignar_lote', 'Asignar Lote'),
@@ -202,31 +203,6 @@ class LandAudit(LandBase):
     id_reference = models.IntegerField()
     source_change = models.CharField(max_length=50, choices=SOURCE_CHANGE_CHOICES, blank=True, null=True)
     type = models.CharField(max_length=50, choices=TYPE_CHOICES, blank=True, null=True)
-    creation_date = models.DateTimeField(
-        _('creation date'),
-        auto_now_add=True,
-        help_text=_('record creation date')
-    )
-    created_by = models.CharField(
-        _('username created'),
-        max_length=100,  # max length of User.username
-        blank=True,
-        null=True,
-        help_text=_('username that created the record')
-    )
-    update_date = models.DateTimeField(
-        _('update date'),
-        auto_now=True,
-        help_text=_('record update date')
-    )
-
-    update_by = models.CharField(
-        _('username updated'),
-        max_length=100,  # max length of User.username
-        blank=True,
-        null=True,
-        help_text=_('username that updated the record')
-    )
 
     class Meta:
         db_table = 'PREDIO_AUDITORIA'
