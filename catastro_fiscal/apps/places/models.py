@@ -39,6 +39,7 @@ class District(models.Model):
         related_name='districts'
     )
     name = models.CharField(_('name'), max_length=150)
+    zone = models.CharField(_('zone'), max_length=2)
 
     class Meta:
         db_table = 'DISTRITO'
