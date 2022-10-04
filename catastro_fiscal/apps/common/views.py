@@ -1,6 +1,7 @@
 from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from drf_yasg.utils import swagger_auto_schema
+from apps.users.models import RolePermission, PermissionNavigation
 from .serializers import NavigationTreeSerializer, NavigationSerializer
 from .models import Navigation
 
@@ -15,11 +16,12 @@ class NavigationViewset(mixins.ListModelMixin, GenericViewSet):
         return super(NavigationViewset, self).list(mixins.ListModelMixin, GenericViewSet)
 
     def get_queryset(self):
-        if self.request.user.is_superuser:
-            return self.get_recursive(queryset=self.queryset)
-        return self.get_recursive(queryset=self.queryset)
+        user = self.request.user
+        if user.is_superuser:
+            return self.get_recursive_admin(queryset=self.queryset)
+        return self.get_recursive(role=user.role, queryset=self.queryset)
 
-    def get_recursive(self, queryset):
+    def get_recursive_admin(self, queryset):
         queryset_group = queryset.filter(parent__isnull=True)
         group_values = list(queryset_group.values())
         group_list = []
@@ -32,6 +34,22 @@ class NavigationViewset(mixins.ListModelMixin, GenericViewSet):
                 module.update({'children': list(queryset_item)})
                 module_list.append(module)
             group.update({'children': module_list})
+            group_list.append(group)
+        return group_list
+
+    def get_recursive(self, role, queryset):
+        permissions = RolePermission.objects.filter(role=role).values_list('permission', flat=True)
+        permission_navigation = PermissionNavigation.objects \
+            .filter(permission__in=permissions, type__code__startswith='read')
+        navigations = permission_navigation.values_list('navigation_view', flat=True)
+        parents = list(Navigation.objects.filter(id__in=navigations).values_list('parent', flat=True))
+        parents.append('home')
+        queryset_group = Navigation.objects.filter(id__in=parents)
+        group_values = list(queryset_group.values())
+        group_list = []
+        for group in group_values:
+            queryset_item = queryset.filter(parent_id=group['id']).values()
+            group.update({'children': list(queryset_item)})
             group_list.append(group)
         return group_list
 
