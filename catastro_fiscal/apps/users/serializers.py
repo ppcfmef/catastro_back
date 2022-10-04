@@ -49,10 +49,16 @@ class RoleShortSerializer(serializers.ModelSerializer):
 class UserProfileShortSerializer(serializers.ModelSerializer):
     name = serializers.CharField()
     place_scope = PlaceScopeSerializer()
+    permissions_navigation = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
-        fields = ('id', 'name', 'avatar', 'email', 'place_scope', 'ubigeo')
+        fields = ('id', 'name', 'avatar', 'email', 'place_scope', 'ubigeo', 'permissions_navigation')
+
+    def get_permissions_navigation(self, obj):
+        permissions = RolePermission.objects.filter(role=obj.role).values_list('permission', flat=True)
+        permission_navigation = PermissionNavigation.objects.filter(permission__in=permissions)
+        return PermissionNavigationSerializer(permission_navigation, many=True).data
 
 
 class UserSerializer(serializers.ModelSerializer):
