@@ -135,7 +135,7 @@ class LandBase(AbstractAudit):
     cpm = models.CharField(max_length=100, blank=True, null=True)
     sec_ejec = models.CharField(max_length=6, blank=True, null=True)
     ubigeo = models.CharField(max_length=6, blank=True, null=True)
-    cup = models.CharField(max_length=15, blank=True, null=True)
+    cup = models.CharField(max_length=20, blank=True, null=True)
     cod_sect = models.CharField(max_length=2, blank=True, null=True)
     cod_uu = models.CharField(max_length=4, blank=True, null=True)
     cod_mzn = models.CharField(max_length=3, blank=True, null=True)

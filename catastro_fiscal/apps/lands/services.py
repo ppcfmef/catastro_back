@@ -174,6 +174,7 @@ class UploadLandRecordService:
                 })
             Land.objects.filter(id=land_record.get('id')).update(**land_record)
 
+        upload_history.status = 'LOADED'
     def land_mapper(self):
         return {
                 # 'id': 'id_pred',
