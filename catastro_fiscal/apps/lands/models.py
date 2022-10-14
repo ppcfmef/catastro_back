@@ -55,6 +55,12 @@ class TemploralUploadRecord(models.Model):
     )
 
     record = models.JSONField(blank=True, null=True)
+    error_record = models.JSONField(blank=True, null=True)
+    error_code = models.CharField(max_length=20, blank=True, null=True)
+    land_record = models.JSONField(blank=True, null=True)
+    owner_record = models.JSONField(blank=True, null=True)
+    owner_record_status = models.PositiveSmallIntegerField(default=1)  # 1 nuevo 2 actualozar
+    land_record_status = models.PositiveSmallIntegerField(default=1)  # 1 nuevo 2 actualozar
     upload_history = models.ForeignKey(UploadHistory, on_delete=models.CASCADE)
     status = models.CharField(max_length=20, choices=UPLOAD_STATUS_CHOICE)
     upload_status = models.CharField(max_length=20, choices=UPLOAD_STATUS_CHOICE, default='INITIAL')
@@ -72,8 +78,8 @@ class LandOwner(AbstractAudit):
     id = models.AutoField(primary_key=True)
     code = models.CharField(max_length=50, blank=True, null=True)
     document_type = models.CharField(max_length=2, blank=True, null=True)
-    dni = models.CharField(max_length=20, unique=True)  # ToDo: Change for document
-    name = models.CharField(max_length=150)
+    dni = models.CharField(max_length=20)  # ToDo: Change for document
+    name = models.CharField(max_length=150, blank=True, null=True)
     paternal_surname = models.CharField(max_length=150, blank=True, null=True)
     maternal_surname = models.CharField(max_length=150, blank=True, null=True)
     description_owner = models.CharField(max_length=150, blank=True, null=True)
@@ -81,6 +87,7 @@ class LandOwner(AbstractAudit):
     email = models.CharField(max_length=150, blank=True, null=True)
     tax_address = models.CharField(max_length=255, blank=True, null=True)  # ToDo: This field now is OwnerAddress
     number_lands = models.IntegerField(default=0, blank=True, null=True)
+    upload_history = models.ForeignKey(UploadHistory, blank=True, null=True, on_delete=models.SET_NULL)
 
     class Meta:
         db_table = 'PROPIETARIO'
@@ -120,7 +127,7 @@ class LandBase(AbstractAudit):
     )
     id = models.AutoField(primary_key=True)
     source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True, null=True)
-    status = models.PositiveSmallIntegerField(choices=STATUS_CHOICE, blank=True, null=True)
+    status = models.PositiveSmallIntegerField(choices=STATUS_CHOICE, blank=True, null=True, default=0)
     id_land_cartographic = models.CharField(max_length=18, blank=True, null=True, help_text=_('id land cartographic'))
     id_plot = models.CharField(max_length=25, blank=True, null=True, help_text=_('id plot'))
     id_cartographic_img = models.CharField(max_length=26, blank=True, null=True, help_text=_('id cartographic image'))
@@ -182,6 +189,7 @@ class LandBase(AbstractAudit):
 
 
 class Land(LandBase):
+    upload_history = models.ForeignKey(UploadHistory, blank=True, null=True, on_delete=models.SET_NULL)
 
     class Meta:
         db_table = 'PREDIO'
