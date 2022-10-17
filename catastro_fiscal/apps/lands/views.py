@@ -1,4 +1,4 @@
-from rest_framework import mixins
+from rest_framework import mixins, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
@@ -11,7 +11,7 @@ from .models import UploadHistory, Land, LandOwner
 from .serializers import (
     UploadHistorySerializer, UploadHistoryListSerializer, LandSerializer, LandOwnerSerializer,
     LandOwnerDetailSerializer, LandOwnerSaveSerializer, LandDetailSerializer, LandSaveSerializer,
-    SummaryRecordSerializer
+    SummaryRecordSerializer, TemporalUploadSummarySerializer
 )
 
 
@@ -21,9 +21,18 @@ class UploadHistoryViewset(CustomSerializerMixin, mixins.ListModelMixin, mixins.
     create_serializer_class = UploadHistorySerializer
     parser_classes = (CamelCaseMultiPartParser, )
 
+    """
     @swagger_auto_schema(request_body=UploadHistorySerializer)
     def create(self, request, *args, **kwargs):
         return super(UploadHistoryViewset, self).create(request, *args, **kwargs)
+    """
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        a = serializer.save()
+        serializer_response = TemporalUploadSummarySerializer(a)
+        return Response(serializer_response.data, status=status.HTTP_201_CREATED)
 
 
 class LandViewSet(mixins.ListModelMixin, GenericViewSet):

@@ -1,7 +1,8 @@
 from django.db import transaction
-from rest_framework import serializers
+from rest_framework import serializers, status
+from rest_framework.response import Response
 from .models import UploadHistory, Land, LandOwner, OwnerAddress, LandAudit
-from .services import UploadLandRecordService
+from .services.upload_temporal import UploadTemporalService
 
 
 class UploadHistoryListSerializer(serializers.ModelSerializer):
@@ -22,10 +23,10 @@ class UploadHistorySerializer(serializers.ModelSerializer):
         })
         instance = super(UploadHistorySerializer, self).create(validated_data)
         self.load_file_upload(instance)
-        return instance
+        return UploadTemporalService().get_temporal_summary(instance)
 
     def load_file_upload(self, instance):
-        UploadLandRecordService().execute(instance)
+        UploadTemporalService().execute(instance)
 
 
 class LandSerializer(serializers.ModelSerializer):
@@ -117,3 +118,11 @@ class SummaryRecordSerializer(serializers.Serializer):
     total_records = serializers.IntegerField()
     mapping_records = serializers.IntegerField()
     without_mapping_records = serializers.IntegerField()
+
+
+class TemporalUploadSummarySerializer(serializers.Serializer):
+    total = serializers.IntegerField()
+    erros = serializers.IntegerField()
+    corrects = serializers.IntegerField()
+    new = serializers.IntegerField()
+    updates = serializers.IntegerField()

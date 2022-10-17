@@ -1,44 +1,23 @@
-import openpyxl
-from django.db.models import Count
-from .models import UploadHistory, TemploralUploadRecord, Land, LandOwner
+from ..models import UploadHistory, TemploralUploadRecord, Land, LandOwner
+from .read_xlsx import ReadXlsxService
+from .upload_land import UploadLandService
 
 
-class ReadXlsService:
-    def __init__(self, file):
-        self.file = file
-        self.headers = []
+class UploadTemporalService:
 
-    def read(self):
-        datos = []
-        wb = openpyxl.load_workbook(self.file)
-        ws = wb.worksheets[0]
+    read_file_service = ReadXlsxService
 
-        for row in ws.rows:
-            for cell in row:
-                self.headers.append(str(cell.value).strip().lower().replace(' ', '_'))
-            break
-
-        header_range = range(len(self.headers))
-
-        for row in ws.iter_rows(min_row=2):
-            record = []
-            for i in header_range:
-                record.append((self.headers[i], row[i].value))
-            datos.append(dict(record))
-
-        return datos
-
-
-class UploadLandRecordService:
-
-    read_file_service = ReadXlsService
+    def execute(self, upload_history: UploadHistory):
+        records = self.read(upload_history)
+        self.temporal_upload(upload_history, records)
+        UploadLandService().execute(upload_history)
+        return self.get_temporal_summary(upload_history)
 
     def read(self, upload_history):
         return self.read_file_service(file=upload_history.file_upload.file).read()
 
     def temporal_upload(self, upload_history, records):
         temploral_upload_record_bulk = []
-
         land_document_all = self.get_owner_documents_upload(records)
         land_owner_exist = list(LandOwner.objects.filter(dni__in=land_document_all).values_list('dni', flat=True))
         land_owner_news = list(set(land_document_all) - set(land_owner_exist))
@@ -48,7 +27,7 @@ class UploadLandRecordService:
             owner_record_status = 0
             owner_record = None
             document_type = record.get('tip_doc')
-            if document_type is not None and str(document_type).strip() != "":
+            if self.document_exists(document_type):
                 document = self.make_document(record)
                 owner_record = self.land_owner_map(upload_history, record)
                 if document in land_owner_news:
@@ -138,43 +117,6 @@ class UploadLandRecordService:
 
         TemploralUploadRecord.objects.bulk_create(temploral_upload_record_bulk)
 
-    def land_upload(self, upload_history):
-        temploral_records = TemploralUploadRecord.objects.filter(upload_history=upload_history, land_record_status=1)
-        land_bulk = []
-        for temploral in temploral_records:
-            record = temploral.record
-            land_record = temploral.land_record
-            document_type = record.get('tip_doc')
-
-            if document_type is not None and document_type != "":
-                document = self.make_document(record)
-                land_record.update({
-                    'owner': LandOwner.objects.filter(
-                        document_type=record.get('tip_doc'),
-                        dni=document
-                    ).first()
-                })
-            land_bulk.append(Land(**land_record))
-        Land.objects.bulk_create(land_bulk)
-
-        temploral_records = TemploralUploadRecord.objects.filter(upload_history=upload_history, land_record_status=2)
-
-        for temploral in temploral_records:
-            record = temploral.record
-            land_record = temploral.land_record
-            document_type = record.get('tip_doc')
-
-            if document_type is not None and document_type != "":
-                document = self.make_document(record)
-                land_record.update({
-                    'owner': LandOwner.objects.filter(
-                        document_type=record.get('tip_doc'),
-                        dni=document
-                    ).first()
-                })
-            Land.objects.filter(id=land_record.get('id')).update(**land_record)
-
-        upload_history.status = 'LOADED'
     def land_mapper(self):
         return {
                 # 'id': 'id_pred',
@@ -251,44 +193,19 @@ class UploadLandRecordService:
             'tax_address': record.get('dir_fiscal'),
             'upload_history_id': upload_history.id
         }
-    def land_owner_upload(self, upload_history):
-        # Insertar nuevos
-        temploral_records = TemploralUploadRecord.objects.filter(upload_history=upload_history, owner_record_status=1)
-        land_owners_bulk = []
-        for temploral in temploral_records:
-            land_owners_bulk.append(LandOwner(**temploral.owner_record))
-        LandOwner.objects.bulk_create(land_owners_bulk)
-
-        # actualizacion diferencial
-
-    def count_lands_by_owner(self):
-        lands = Land.objects.values('owner').annotate(number_lands=Count('owner'))
-        for land in lands:
-            LandOwner.objects.filter(id=land['owner']).update(number_lands=land['number_lands'])
-
-    def execute(self, upload_history: UploadHistory):
-        records = self.read(upload_history)
-        self.temporal_upload(upload_history, records)
-        self.land_owner_upload(upload_history)
-        self.land_upload(upload_history)
-        self.count_lands_by_owner()
 
     def make_document(self, record):
+        nonunique_document_types = ['00', '08']
         document_type = record.get('tip_doc')
         document = record.get('doc_iden')
         ubigeo = record.get('ubigeo')
-        return '-'.join([ubigeo, document]) if document_type in ['00', '08'] else document
-
-    def get_documents_upload(self, temploral_records):
-        land_document = []
-        for temploral in temploral_records:
-            record = temploral.record
-            document_type = record.get('tip_doc')
-            if document_type is not None and str(document_type).strip() != "":
-                land_document.append(self.make_document(record))
-        return list(set(land_document))
+        return '-'.join([ubigeo, document]) if document_type in nonunique_document_types else document
 
     def get_owner_documents_upload(self, records):
+        """
+        :param records: todos los registros leidos
+        :return documents: Listado de numero de documentos unicos de los registros
+        """
         land_document = []
         for record in records:
             document_type = record.get('tip_doc')
@@ -296,16 +213,15 @@ class UploadLandRecordService:
                 land_document.append(self.make_document(record))
         return list(set(land_document))
 
-    def get_land_upload(self, temploral_records):
-        land_cpu_all = []
-        land_cpm_all = []
-        for temploral in temploral_records:
-            record = temploral.record
-            cpu = record.get('cod_cpu')
-            cpm = record.get('cod_pre')
-            if cpu is not None and cpu != '':
-                land_cpu_all.append(cpu)
-            if (cpu is None or cpu == '') and (cpm is not None and cpm != ''):
-                land_cpm_all.append(cpm)
-        land_cpu_all = list(set(land_cpu_all))
-        land_cpm_all = list(set(land_cpm_all))
+    def document_exists(self, document_type):
+        return document_type is not None and str(document_type).strip() != ''
+
+    def get_temporal_summary(self, upload_history):
+        temporal_records = TemploralUploadRecord.objects.filter(upload_history=upload_history)
+        return {
+            'total': temporal_records.count(),
+            'erros': temporal_records.filter(status='ERROR').count(),
+            'corrects': temporal_records.filter(status__in=['OK_NEW', 'OK_OLD']).count(),
+            'new': temporal_records.filter(status='OK_NEW').count(),
+            'updates': temporal_records.filter(status='OK_OLD').count()
+        }
