@@ -30,3 +30,8 @@ class MasterPropertyTypeAdmin(MasterAdminMixin, ImportExportModelAdmin):
 @admin.register(MasterResolutionType)
 class MasterResolutionTypeAdmin(MasterAdminMixin, ImportExportModelAdmin):
     pass
+
+
+@admin.register(Institution)
+class InstitutionAdmin(MasterAdminMixin, ImportExportModelAdmin):
+    pass
