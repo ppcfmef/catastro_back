@@ -5,7 +5,7 @@ from rest_framework.viewsets import GenericViewSet
 from djangorestframework_camel_case.parser import CamelCaseMultiPartParser
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
-from drf_yasg.utils import swagger_auto_schema
+from core.filters import CamelCaseOrderFilter
 from core.views import CustomSerializerMixin
 from .models import UploadHistory, Land, LandOwner
 from .serializers import (
@@ -38,9 +38,12 @@ class UploadHistoryViewset(CustomSerializerMixin, mixins.ListModelMixin, mixins.
 class LandViewSet(mixins.ListModelMixin, GenericViewSet):
     queryset = Land.objects.all()
     serializer_class = LandSerializer
-    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filter_backends = [DjangoFilterBackend, SearchFilter, CamelCaseOrderFilter]
     search_fields = ['cup', 'cpm', 'id_cartographic_img', 'id_plot', 'street_name']
     filterset_fields = ['owner', ]
+    ordering_fields = ['ubigeo', 'cup', 'cpm', 'id_plot', 'id_cartographic_img', 'habilitacion_name', 'street_name',
+                       'creation_date']
+    ordering = ['-creation_date']
 
 
 class LandDetailViewSet(mixins.RetrieveModelMixin, GenericViewSet):
@@ -61,9 +64,11 @@ class LandCreateAndEditViewset(mixins.CreateModelMixin,
 class LandOwnerViewSet(mixins.ListModelMixin, GenericViewSet):
     queryset = LandOwner.objects.all()
     serializer_class = LandOwnerSerializer
-    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filter_backends = [DjangoFilterBackend, SearchFilter, CamelCaseOrderFilter]
     search_fields = ['dni', 'name', 'paternal_surname', 'maternal_surname', ]
     filterset_fields = ['id', ]
+    ordering_fields = ['document_type', 'dni', 'name', 'paternal_surname', 'maternal_surname', 'creation_date']
+    ordering = ['-creation_date']
 
 
 class OwnerSearchByDocumentViewset(mixins.RetrieveModelMixin, GenericViewSet):
