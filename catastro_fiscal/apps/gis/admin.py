@@ -9,13 +9,14 @@ class GisCategoryAdmin(admin.ModelAdmin):
     list_filter = ['parent']
 
 
+class GisServiceInline(admin.TabularInline):
+    list_display = ['id', 'name', 'catalog']
+    model = GisService
+    extra = 1
+
+
 @admin.register(GisCatalog)
 class GisCatalogAdmin(admin.ModelAdmin):
     list_display = ['id', 'title', 'category']
     list_filter = ['category']
-
-
-@admin.register(GisService)
-class GisServiceAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'catalog']
-    list_filter = ['catalog']
+    inlines = [GisServiceInline, ]
