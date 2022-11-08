@@ -40,7 +40,7 @@ class LandViewSet(mixins.ListModelMixin, GenericViewSet):
     serializer_class = LandSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, CamelCaseOrderFilter]
     search_fields = ['cup', 'cpm', 'id_cartographic_img', 'id_plot', 'street_name']
-    filterset_fields = ['owner', ]
+    filterset_fields = ['owner', 'status']
     ordering_fields = ['ubigeo', 'cup', 'cpm', 'id_plot', 'id_cartographic_img', 'habilitacion_name', 'street_name',
                        'creation_date']
     ordering = ['-creation_date']
