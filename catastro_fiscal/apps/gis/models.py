@@ -25,6 +25,7 @@ class GisCatalog(models.Model):
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=255)
     description = models.TextField()
+    thumbnail = models.FileField(upload_to='gis', null=True, blank=True, default=None)
     category = models.ForeignKey('gis.GisCategory', on_delete=models.SET_NULL, null=True, blank=True, default=None)
 
     class Meta:

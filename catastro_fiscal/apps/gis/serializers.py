@@ -18,7 +18,7 @@ class GisServiceSerializer(serializers.ModelSerializer):
 class GisCatalogListSerializer(serializers.ModelSerializer):
     class Meta:
         model = GisCatalog
-        fields = '__all__'
+        fields = ('id', 'title', 'thumbnail', 'category')
 
 
 class GisCatalogDetailSerializer(serializers.ModelSerializer):
