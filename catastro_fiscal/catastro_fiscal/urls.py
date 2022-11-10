@@ -26,6 +26,7 @@ urlpatterns = [
     re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('admin/', admin.site.urls),
     path('api/v1/', include('catastro_fiscal.urls_api', namespace='api')),
+    path('export/', include('catastro_fiscal.urls_export', namespace='export')),
 ]
 
 if settings.DEBUG:
