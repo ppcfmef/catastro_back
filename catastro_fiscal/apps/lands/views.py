@@ -40,7 +40,7 @@ class LandViewSet(mixins.ListModelMixin, GenericViewSet):
     serializer_class = LandSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, CamelCaseOrderFilter]
     search_fields = ['cup', 'cpm', 'id_cartographic_img', 'id_plot', 'street_name']
-    filterset_fields = ['owner', 'status']
+    filterset_fields = ['owner', 'status', 'id']
     ordering_fields = ['ubigeo', 'cup', 'cpm', 'id_plot', 'id_cartographic_img', 'habilitacion_name', 'street_name',
                        'creation_date']
     ordering = ['-creation_date']
@@ -69,6 +69,14 @@ class LandOwnerViewSet(mixins.ListModelMixin, GenericViewSet):
     filterset_fields = ['id', ]
     ordering_fields = ['document_type', 'dni', 'name', 'paternal_surname', 'maternal_surname', 'creation_date']
     ordering = ['-creation_date']
+
+
+class LandOwnerDetailViewSet(mixins.RetrieveModelMixin, GenericViewSet):
+    """
+    Get Owner filter by id
+    """
+    queryset = LandOwner.objects.all()
+    serializer_class = LandOwnerDetailSerializer
 
 
 class OwnerSearchByDocumentViewset(mixins.RetrieveModelMixin, GenericViewSet):

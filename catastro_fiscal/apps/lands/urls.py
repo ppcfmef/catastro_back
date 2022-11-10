@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
     UploadHistoryViewset, LandViewSet, LandOwnerViewSet, OwnerSearchByDocumentViewset, CreateAndEditOwnerViewset,
-    LandDetailViewSet, LandCreateAndEditViewset, SearchInactiveLandByCpu, SummaryRecord
+    LandDetailViewSet, LandCreateAndEditViewset, SearchInactiveLandByCpu, SummaryRecord, LandOwnerDetailViewSet
 )
 
 app_name = 'api_lands'
@@ -12,6 +12,7 @@ router.register('registry', UploadHistoryViewset)  # ToDo: cambiar por upload (c
 router.register('records/search-inactive', SearchInactiveLandByCpu)
 router.register('records', LandViewSet)
 router.register('owners', LandOwnerViewSet)
+router.register('owners', LandOwnerDetailViewSet)
 router.register('detail', LandDetailViewSet)
 router.register('register', LandCreateAndEditViewset)
 router.register('owners/search', OwnerSearchByDocumentViewset)
