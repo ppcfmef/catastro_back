@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db.models import Q
 
 from core.utils.exports import ExportView
@@ -5,7 +6,6 @@ from ..models import Land
 
 
 class ExportRecordsView(ExportView):
-    filename = 'records.xlsx'
     page_title = 'Listado de predios'
     headers = [
         'ID_PRED', 'COD_PRE', 'SEC_EJEC', 'UBIGEO', 'COD_CPU', 'COD_SECT', 'COD_UU', 'COD_MZN', 'COD_LOTE', 'COD_CUC',
@@ -76,3 +76,6 @@ class ExportRecordsView(ExportView):
                 land.owner.description_owner if land.owner else '',
             ])
         return content
+
+    def get_filename(self):
+        return f'listado_predios_{datetime.now().strftime("%m%d%Y%H%M%S")}.xlsx'
