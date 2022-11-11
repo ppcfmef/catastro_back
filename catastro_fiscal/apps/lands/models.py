@@ -7,6 +7,7 @@ UPLOAD_STATUS = (
         ('IN_PROGRESS', _('In Progress')),
         ('LOADED', _('Loaded')),
         ('ERROR', _('Error Loaded')),
+        ('CANCEL', _('Cancel by user')),
     )
 
 

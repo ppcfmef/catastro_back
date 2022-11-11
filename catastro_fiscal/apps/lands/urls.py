@@ -2,13 +2,15 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
     UploadHistoryViewset, LandViewSet, LandOwnerViewSet, OwnerSearchByDocumentViewset, CreateAndEditOwnerViewset,
-    LandDetailViewSet, LandCreateAndEditViewset, SearchInactiveLandByCpu, SummaryRecord, LandOwnerDetailViewSet
+    LandDetailViewSet, LandCreateAndEditViewset, SearchInactiveLandByCpu, SummaryRecord, LandOwnerDetailViewSet,
+    UploadStatusViewSet
 )
 
 app_name = 'api_lands'
 
 router = DefaultRouter()
 router.register('registry', UploadHistoryViewset)  # ToDo: cambiar por upload (carga masiva)
+router.register('upload/status', UploadStatusViewSet)
 router.register('records/search-inactive', SearchInactiveLandByCpu)
 router.register('records', LandViewSet)
 router.register('owners', LandOwnerViewSet)

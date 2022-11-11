@@ -8,6 +8,8 @@ class UploadLandService:
         self.land_owner_upload(upload_history)
         self.land_upload(upload_history)
         self.count_lands_by_owner()
+        upload_history.status = 'LOADED'
+        upload_history.save()
 
     def land_owner_upload(self, upload_history):
         # Insertar nuevos

@@ -11,7 +11,7 @@ from .models import UploadHistory, Land, LandOwner
 from .serializers import (
     UploadHistorySerializer, UploadHistoryListSerializer, LandSerializer, LandOwnerSerializer,
     LandOwnerDetailSerializer, LandOwnerSaveSerializer, LandDetailSerializer, LandSaveSerializer,
-    SummaryRecordSerializer, TemporalUploadSummarySerializer
+    SummaryRecordSerializer, TemporalUploadSummarySerializer, UploadStatusSerializer
 )
 
 
@@ -33,6 +33,11 @@ class UploadHistoryViewset(CustomSerializerMixin, mixins.ListModelMixin, mixins.
         a = serializer.save()
         serializer_response = TemporalUploadSummarySerializer(a)
         return Response(serializer_response.data, status=status.HTTP_201_CREATED)
+
+
+class UploadStatusViewSet(mixins.UpdateModelMixin, GenericViewSet):
+    queryset = UploadHistory.objects.all()
+    serializer_class = UploadStatusSerializer
 
 
 class LandViewSet(mixins.ListModelMixin, GenericViewSet):
