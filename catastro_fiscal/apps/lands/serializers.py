@@ -135,6 +135,7 @@ class SummaryRecordSerializer(serializers.Serializer):
 
 
 class TemporalUploadSummarySerializer(serializers.Serializer):
+    upload_history_id = serializers.IntegerField()
     total = serializers.IntegerField()
     errors = serializers.IntegerField()
     corrects = serializers.IntegerField()
