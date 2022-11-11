@@ -1,9 +1,9 @@
 from django.urls import path
 
-from .views import ExportRecordsView
+from .views.lands import LandExportView
 
 app_name = 'export_land'
 
 urlpatterns = [
-    path('records/', ExportRecordsView.as_view())
+    path('records/', LandExportView.as_view())
 ]
