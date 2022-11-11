@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from core.models import AbstractAudit
+from apps.places.models import District
 
 UPLOAD_STATUS = (
         ('INITIAL', _('Initiated')),
@@ -33,6 +34,7 @@ class UploadHistory(models.Model):
     total_update_records = models.PositiveSmallIntegerField(null=True, default=None)
     total_land = models.PositiveSmallIntegerField(null=True, default=None)
     total_land_mapping = models.PositiveSmallIntegerField(null=True, default=None)
+    ubigeo = models.ForeignKey(District, on_delete=models.SET_NULL, blank=True, null=True)
 
     class Meta:
         db_table = 'HISTORIAL_CARGA'
