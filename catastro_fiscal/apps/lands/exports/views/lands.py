@@ -2,10 +2,10 @@ from datetime import datetime
 from django.db.models import Q
 
 from core.utils.exports import ExportView
-from ..models import Land
+from apps.lands.models import Land
 
 
-class ExportRecordsView(ExportView):
+class LandExportView(ExportView):
     page_title = 'Listado de predios'
     headers = [
         'ID_PRED', 'COD_PRE', 'SEC_EJEC', 'UBIGEO', 'COD_CPU', 'COD_SECT', 'COD_UU', 'COD_MZN', 'COD_LOTE', 'COD_CUC',
@@ -17,7 +17,7 @@ class ExportRecordsView(ExportView):
     filters = ['ubigeo', 'status']
 
     def filter_queryset(self, queryset):
-        queryset = super(ExportRecordsView, self).filter_queryset(queryset)
+        queryset = super(LandExportView, self).filter_queryset(queryset)
         search = self.request.GET.get('search')
         if search:
             queryset = queryset.filter(
