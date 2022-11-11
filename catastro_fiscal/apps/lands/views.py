@@ -17,7 +17,7 @@ from .services.upload_temporal import UploadTemporalService
 
 
 class UploadHistoryViewset(CustomSerializerMixin, mixins.ListModelMixin, mixins.CreateModelMixin, GenericViewSet):
-    queryset = UploadHistory.objects.all()
+    queryset = UploadHistory.objects.all().order_by('-id')
     serializer_class = UploadHistoryListSerializer
     create_serializer_class = UploadHistorySerializer
     parser_classes = (CamelCaseMultiPartParser, )

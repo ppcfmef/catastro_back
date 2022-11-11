@@ -10,6 +10,7 @@ class UploadTemporalService:
     def execute(self, upload_history: UploadHistory):
         records = self.read(upload_history)
         self.temporal_upload(upload_history, records)
+        self.cancel_last_upload(upload_history)
 
     def read(self, upload_history):
         return self.read_file_service(file=upload_history.file_upload.file).read()
@@ -230,3 +231,6 @@ class UploadTemporalService:
             'errors_data': errors_data.values('record', 'error_code', 'status'),
             'corrects_data': corrects_data.values('record', 'status'),
         }
+
+    def cancel_last_upload(self, upload_history):
+        UploadHistory.objects.exclude(id=upload_history.id).filter(status="INITIAL").update(status='CANCEL')
