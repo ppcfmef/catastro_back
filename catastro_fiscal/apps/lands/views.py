@@ -13,6 +13,7 @@ from .serializers import (
     LandOwnerDetailSerializer, LandOwnerSaveSerializer, LandDetailSerializer, LandSaveSerializer,
     SummaryRecordSerializer, TemporalUploadSummarySerializer, UploadStatusSerializer
 )
+from .services.upload_temporal import UploadTemporalService
 
 
 class UploadHistoryViewset(CustomSerializerMixin, mixins.ListModelMixin, mixins.CreateModelMixin, GenericViewSet):
@@ -38,6 +39,17 @@ class UploadHistoryViewset(CustomSerializerMixin, mixins.ListModelMixin, mixins.
 class UploadStatusViewSet(mixins.UpdateModelMixin, GenericViewSet):
     queryset = UploadHistory.objects.all()
     serializer_class = UploadStatusSerializer
+
+
+class UploadHistorySummaryViewSet(mixins.RetrieveModelMixin, GenericViewSet):
+    queryset = UploadHistory.objects.all()
+    serializer_class = UploadHistoryListSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        upload_sumary = UploadTemporalService().get_temporal_summary(upload_history=instance)
+        serializer_response = TemporalUploadSummarySerializer(upload_sumary)
+        return Response(serializer_response.data, status=status.HTTP_201_CREATED)
 
 
 class LandViewSet(mixins.ListModelMixin, GenericViewSet):

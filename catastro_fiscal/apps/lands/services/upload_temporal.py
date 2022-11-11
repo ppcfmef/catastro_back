@@ -221,6 +221,7 @@ class UploadTemporalService:
         corrects_data = temporal_records.filter(status__in=['OK_NEW', 'OK_OLD'])
         return {
             'upload_history_id': upload_history.id,
+            'status': upload_history.status,
             'total': temporal_records.count(),
             'errors': errors_data.count(),
             'corrects': corrects_data.count(),
