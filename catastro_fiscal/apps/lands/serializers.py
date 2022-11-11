@@ -122,7 +122,15 @@ class SummaryRecordSerializer(serializers.Serializer):
 
 class TemporalUploadSummarySerializer(serializers.Serializer):
     total = serializers.IntegerField()
-    erros = serializers.IntegerField()
+    errors = serializers.IntegerField()
     corrects = serializers.IntegerField()
     new = serializers.IntegerField()
     updates = serializers.IntegerField()
+    errors_data = serializers.SerializerMethodField()
+    corrects_data = serializers.SerializerMethodField()
+
+    def get_errors_data(self, obj):
+        return list(obj.get('errors_data', []))
+
+    def get_corrects_data(self, obj):
+        return list(obj.get('corrects_data', []))
