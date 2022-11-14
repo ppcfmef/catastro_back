@@ -8,6 +8,7 @@ class UploadLandService:
         self.land_owner_upload(upload_history)
         self.land_upload(upload_history)
         self.count_lands_by_owner()
+        self.sumary_status_history(upload_history)
 
     def land_owner_upload(self, upload_history):
         # Insertar nuevos
@@ -65,3 +66,9 @@ class UploadLandService:
         lands = Land.objects.values('owner').annotate(number_lands=Count('owner'))
         for land in lands:
             LandOwner.objects.filter(id=land['owner']).update(number_lands=land['number_lands'])
+
+    def sumary_status_history(self, upload_history):
+        upload_history.status = 'LOADED'
+        upload_history.total_land = upload_history.land_set.count()
+        upload_history.total_land_mapping = upload_history.land_set.filter(status=1).count()
+        upload_history.save()

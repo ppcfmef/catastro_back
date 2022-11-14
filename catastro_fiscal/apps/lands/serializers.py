@@ -3,6 +3,7 @@ from rest_framework import serializers, status
 from rest_framework.response import Response
 from .models import UploadHistory, Land, LandOwner, OwnerAddress, LandAudit
 from .services.upload_temporal import UploadTemporalService
+from .services.upload_land import UploadLandService
 
 
 class UploadHistoryListSerializer(serializers.ModelSerializer):
@@ -27,6 +28,19 @@ class UploadHistorySerializer(serializers.ModelSerializer):
 
     def load_file_upload(self, instance):
         UploadTemporalService().execute(instance)
+
+
+class UploadStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UploadHistory
+        fields = ('status', )
+
+    def update(self, instance, validated_data):
+        instance = super(UploadStatusSerializer, self).update(instance, validated_data)
+        if instance.status == 'IN_PROGRESS':
+            UploadLandService().execute(upload_history=instance)
+
+        return instance
 
 
 class LandSerializer(serializers.ModelSerializer):
@@ -121,8 +135,18 @@ class SummaryRecordSerializer(serializers.Serializer):
 
 
 class TemporalUploadSummarySerializer(serializers.Serializer):
+    upload_history_id = serializers.IntegerField()
+    status = serializers.CharField()
     total = serializers.IntegerField()
-    erros = serializers.IntegerField()
+    errors = serializers.IntegerField()
     corrects = serializers.IntegerField()
     new = serializers.IntegerField()
     updates = serializers.IntegerField()
+    errors_data = serializers.SerializerMethodField()
+    corrects_data = serializers.SerializerMethodField()
+
+    def get_errors_data(self, obj):
+        return list(obj.get('errors_data', []))
+
+    def get_corrects_data(self, obj):
+        return list(obj.get('corrects_data', []))

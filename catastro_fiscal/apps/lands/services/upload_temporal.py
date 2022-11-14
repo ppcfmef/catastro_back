@@ -9,12 +9,18 @@ class UploadTemporalService:
 
     def execute(self, upload_history: UploadHistory):
         records = self.read(upload_history)
+        #self.update_ubigeo(upload_history, records)
         self.temporal_upload(upload_history, records)
-        UploadLandService().execute(upload_history)
-        return self.get_temporal_summary(upload_history)
+        self.cancel_last_upload(upload_history)
 
     def read(self, upload_history):
         return self.read_file_service(file=upload_history.file_upload.file).read()
+
+    def update_ubigeo(self, upload_history, records):
+        if len(records) > 0:
+            record = records[0]
+            upload_history.ubigeo_id = str(record.get('ubigeo')).strip()
+            upload_history.save()
 
     def temporal_upload(self, upload_history, records):
         temploral_upload_record_bulk = []
@@ -22,6 +28,8 @@ class UploadTemporalService:
         land_owner_exist = list(LandOwner.objects.filter(dni__in=land_document_all).values_list('dni', flat=True))
         land_owner_news = list(set(land_document_all) - set(land_owner_exist))
 
+        land_record_cpu = []
+        land_record_cpm = []
         for record in records:
             # owner
             owner_record_status = 0
@@ -47,8 +55,6 @@ class UploadTemporalService:
             ubigeo = record.get('ubigeo')
             cpm = record.get('cod_pre')
 
-            land_record_cpu = []
-            land_record_cpm = []
             error_code = None
             if (cpu is not None and cpu != "") or (cpm is not None and cpm != ""):
                 land_mappers = self.land_mapper()
@@ -95,6 +101,7 @@ class UploadTemporalService:
 
             # actualizanod codigos de error
             status = 'ERROR'
+
             if land_record_status == 0:
                 status = 'ERROR'
             elif land_record_status == 1:
@@ -218,10 +225,20 @@ class UploadTemporalService:
 
     def get_temporal_summary(self, upload_history):
         temporal_records = TemploralUploadRecord.objects.filter(upload_history=upload_history)
+        errors_data = temporal_records.filter(status='ERROR')
+        corrects_data = temporal_records.filter(status__in=['OK_NEW', 'OK_OLD'])
         return {
+            'upload_history_id': upload_history.id,
+            'status': upload_history.status,
             'total': temporal_records.count(),
-            'erros': temporal_records.filter(status='ERROR').count(),
-            'corrects': temporal_records.filter(status__in=['OK_NEW', 'OK_OLD']).count(),
+            'errors': errors_data.count(),
+            'corrects': corrects_data.count(),
             'new': temporal_records.filter(status='OK_NEW').count(),
-            'updates': temporal_records.filter(status='OK_OLD').count()
+            'updates': temporal_records.filter(status='OK_OLD').count(),
+            'errors_data': errors_data.values('record', 'error_code', 'status'),
+            'corrects_data': corrects_data.values('record', 'status'),
         }
+
+    def cancel_last_upload(self, upload_history):
+        UploadHistory.objects.exclude(id=upload_history.id).filter(status="INITIAL", ubigeo=upload_history.ubigeo)\
+            .update(status='CANCEL')

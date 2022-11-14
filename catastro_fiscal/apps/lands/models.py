@@ -1,11 +1,14 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from core.models import AbstractAudit
+from apps.places.models import District
 
 UPLOAD_STATUS = (
         ('INITIAL', _('Initiated')),
         ('IN_PROGRESS', _('In Progress')),
         ('LOADED', _('Loaded')),
+        ('ERROR', _('Error Loaded')),
+        ('CANCEL', _('Cancel by user')),
     )
 
 
@@ -31,6 +34,7 @@ class UploadHistory(models.Model):
     total_update_records = models.PositiveSmallIntegerField(null=True, default=None)
     total_land = models.PositiveSmallIntegerField(null=True, default=None)
     total_land_mapping = models.PositiveSmallIntegerField(null=True, default=None)
+    ubigeo = models.ForeignKey(District, on_delete=models.SET_NULL, blank=True, null=True)
 
     class Meta:
         db_table = 'HISTORIAL_CARGA'
@@ -62,7 +66,7 @@ class TemploralUploadRecord(models.Model):
     owner_record_status = models.PositiveSmallIntegerField(default=1)  # 1 nuevo 2 actualozar
     land_record_status = models.PositiveSmallIntegerField(default=1)  # 1 nuevo 2 actualozar
     upload_history = models.ForeignKey(UploadHistory, on_delete=models.CASCADE)
-    status = models.CharField(max_length=20, choices=UPLOAD_STATUS_CHOICE)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICE)
     upload_status = models.CharField(max_length=20, choices=UPLOAD_STATUS_CHOICE, default='INITIAL')
 
     class Meta:

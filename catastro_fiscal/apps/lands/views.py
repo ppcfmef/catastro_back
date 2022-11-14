@@ -11,12 +11,13 @@ from .models import UploadHistory, Land, LandOwner
 from .serializers import (
     UploadHistorySerializer, UploadHistoryListSerializer, LandSerializer, LandOwnerSerializer,
     LandOwnerDetailSerializer, LandOwnerSaveSerializer, LandDetailSerializer, LandSaveSerializer,
-    SummaryRecordSerializer, TemporalUploadSummarySerializer
+    SummaryRecordSerializer, TemporalUploadSummarySerializer, UploadStatusSerializer
 )
+from .services.upload_temporal import UploadTemporalService
 
 
 class UploadHistoryViewset(CustomSerializerMixin, mixins.ListModelMixin, mixins.CreateModelMixin, GenericViewSet):
-    queryset = UploadHistory.objects.all()
+    queryset = UploadHistory.objects.all().order_by('-id')
     serializer_class = UploadHistoryListSerializer
     create_serializer_class = UploadHistorySerializer
     parser_classes = (CamelCaseMultiPartParser, )
@@ -35,12 +36,28 @@ class UploadHistoryViewset(CustomSerializerMixin, mixins.ListModelMixin, mixins.
         return Response(serializer_response.data, status=status.HTTP_201_CREATED)
 
 
+class UploadStatusViewSet(mixins.UpdateModelMixin, GenericViewSet):
+    queryset = UploadHistory.objects.all()
+    serializer_class = UploadStatusSerializer
+
+
+class UploadHistorySummaryViewSet(mixins.RetrieveModelMixin, GenericViewSet):
+    queryset = UploadHistory.objects.all()
+    serializer_class = UploadHistoryListSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        upload_sumary = UploadTemporalService().get_temporal_summary(upload_history=instance)
+        serializer_response = TemporalUploadSummarySerializer(upload_sumary)
+        return Response(serializer_response.data, status=status.HTTP_201_CREATED)
+
+
 class LandViewSet(mixins.ListModelMixin, GenericViewSet):
     queryset = Land.objects.all()
     serializer_class = LandSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, CamelCaseOrderFilter]
     search_fields = ['cup', 'cpm', 'id_cartographic_img', 'id_plot', 'street_name']
-    filterset_fields = ['owner', 'status']
+    filterset_fields = ['owner', 'status', 'id']
     ordering_fields = ['ubigeo', 'cup', 'cpm', 'id_plot', 'id_cartographic_img', 'habilitacion_name', 'street_name',
                        'creation_date']
     ordering = ['-creation_date']
@@ -69,6 +86,14 @@ class LandOwnerViewSet(mixins.ListModelMixin, GenericViewSet):
     filterset_fields = ['id', ]
     ordering_fields = ['document_type', 'dni', 'name', 'paternal_surname', 'maternal_surname', 'creation_date']
     ordering = ['-creation_date']
+
+
+class LandOwnerDetailViewSet(mixins.RetrieveModelMixin, GenericViewSet):
+    """
+    Get Owner filter by id
+    """
+    queryset = LandOwner.objects.all()
+    serializer_class = LandOwnerDetailSerializer
 
 
 class OwnerSearchByDocumentViewset(mixins.RetrieveModelMixin, GenericViewSet):

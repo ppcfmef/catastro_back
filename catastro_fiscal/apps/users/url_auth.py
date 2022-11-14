@@ -18,8 +18,6 @@ obtain_jwt_token_1 = ObtainJSONWebToken.as_view(
 )
 
 
-
-
 urlpatterns = [
     path('sign-in/', obtain_jwt_token_1),
     path('verify-access-token/', verify_jwt_token),
