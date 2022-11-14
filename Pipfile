@@ -22,6 +22,7 @@ django-crum = "*"
 openpyxl = "*"
 django-import-export = "*"
 requests = "*"
+django-admin-interface = "*"
 
 [requires]
 python_version = "3.6"
