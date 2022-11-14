@@ -26,6 +26,9 @@ urlpatterns = [
     re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('admin/', admin.site.urls),
     path('api/v1/', include('catastro_fiscal.urls_api', namespace='api')),
+    #path('captcha/', include('captcha.urls')),
+    path('captchae/', include('apps.captchae.urls')), #capthca urls
+    path('api/captcha/', include('rest_captcha.urls')),
     path('export/', include('catastro_fiscal.urls_export', namespace='export')),
 ]
 

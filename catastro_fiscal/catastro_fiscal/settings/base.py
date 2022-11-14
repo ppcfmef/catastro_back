@@ -44,6 +44,8 @@ THIRD_PARTY_APPS = [
     'corsheaders',
     'drf_yasg',
     'import_export',
+    'captcha',
+    'rest_captcha',
 ]
 
 LOCAL_APPS = [
@@ -56,6 +58,7 @@ LOCAL_APPS = [
     'apps.gis.apps.GisConfig',
     'apps.integrations.persons.apps.PersonsConfig',
     'apps.integrations.business.apps.BusinessConfig',
+    'apps.captchae.apps.CaptchaExampleConfig',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -162,3 +165,11 @@ JWT_AUTH = {
 }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+CACHES={
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'rest-captcha',
+        'MAX_ENTRIES': 10000,
+    }
+}

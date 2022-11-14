@@ -6,6 +6,7 @@ from apps.places.serializers import (
 )
 from .models import User, Role, Permission, PermissionNavigation, PermissionType, RolePermission
 
+from rest_captcha.serializers import RestCaptchaSerializer
 
 class RoleListSerializer(serializers.ModelSerializer):
     class Meta:
