@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-27 01:38-0500\n"
+"POT-Creation-Date: 2022-11-27 11:33-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,447 +17,446 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: .\apps\common\apps.py:8
+#: apps/common/apps.py:8
 msgid "common"
 msgstr "común"
 
-#: .\apps\common\models.py:23
+#: apps/common/models.py:23
 msgid "navigation"
 msgstr "navegación"
 
-#: .\apps\common\models.py:24
+#: apps/common/models.py:24
 msgid "navigations"
 msgstr "navegaciones"
 
-#: .\apps\documents\apps.py:7 .\apps\documents\models.py:41
+#: apps/documents/apps.py:7 apps/documents/models.py:41
 msgid "documents"
-msgstr "documentos"
+msgstr "asistencia tecnica"
 
-#: .\apps\documents\models.py:17
+#: apps/documents/models.py:17
 msgid "category"
 msgstr "categoría"
 
-#: .\apps\documents\models.py:18
+#: apps/documents/models.py:18
 msgid "categories"
 msgstr "categorías"
 
-#: .\apps\documents\models.py:26
+#: apps/documents/models.py:26
 msgid "User manual"
 msgstr "manual de usuario"
 
-#: .\apps\documents\models.py:27
+#: apps/documents/models.py:27
 msgid "Video tutorial"
 msgstr "video tutorial"
 
-#: .\apps\documents\models.py:28
+#: apps/documents/models.py:28
 msgid "FAQ"
 msgstr "FAQ"
 
-#: .\apps\documents\models.py:40
+#: apps/documents/models.py:40
 msgid "document"
 msgstr "documento"
 
-#: .\apps\gis\models.py:17
+#: apps/gis/apps.py:7
+msgid "metadata GIS"
+msgstr "metadatos GIS"
+
+#: apps/gis/models.py:17
 msgid "GIS category"
 msgstr "categoría GIS"
 
-#: .\apps\gis\models.py:18
+#: apps/gis/models.py:18
 msgid "GIS categories"
 msgstr "categorías GIS"
 
-#: .\apps\gis\models.py:33
+#: apps/gis/models.py:33
 msgid "GIS catalog"
 msgstr "catálogo GIS"
 
-#: .\apps\gis\models.py:34
+#: apps/gis/models.py:34
 msgid "GIS catalogs"
 msgstr "catálogos GIS"
 
-#: .\apps\gis\models.py:53
+#: apps/gis/models.py:53
 msgid "GIS service"
 msgstr "servicio GIS"
 
-#: .\apps\gis\models.py:54
+#: apps/gis/models.py:54
 msgid "GIS services"
 msgstr "servicios GIS"
 
-#: .\apps\lands\apps.py:7 .\apps\lands\models.py:201
+#: apps/lands/apps.py:7 apps/lands/models.py:201
 msgid "lands"
 msgstr "predios"
 
-#: .\apps\lands\models.py:7
+#: apps/lands/models.py:7
 msgid "Initiated"
 msgstr "Iniciado"
 
-#: .\apps\lands\models.py:8
+#: apps/lands/models.py:8
 msgid "In Progress"
 msgstr "En Progreso"
 
-#: .\apps\lands\models.py:9
+#: apps/lands/models.py:9
 msgid "Loaded"
 msgstr "Cargado"
 
-#: .\apps\lands\models.py:10
+#: apps/lands/models.py:10
 msgid "Error Loaded"
 msgstr "Cargado con error"
 
-#: .\apps\lands\models.py:11
+#: apps/lands/models.py:11
 msgid "Cancel by user"
 msgstr "Cancelado por el usuario"
 
-#: .\apps\lands\models.py:19
+#: apps/lands/models.py:19
 msgid "Not required"
 msgstr "No requerido"
 
-#: .\apps\lands\models.py:20
+#: apps/lands/models.py:20
 msgid "Pending approval"
 msgstr "Aprobación pendiente"
 
-#: .\apps\lands\models.py:21
+#: apps/lands/models.py:21
 msgid "In approval process"
 msgstr "En proceso de aprobación"
 
-#: .\apps\lands\models.py:22
+#: apps/lands/models.py:22
 msgid "Approved"
 msgstr "Aprobado"
 
-#: .\apps\lands\models.py:41 .\apps\lands\models.py:42
+#: apps/lands/models.py:41 apps/lands/models.py:42
 msgid "upload history"
 msgstr "historial de carga"
 
-#: .\apps\lands\models.py:56
+#: apps/lands/models.py:56
 msgid "contains errors"
 msgstr "contiene errores"
 
-#: .\apps\lands\models.py:57
+#: apps/lands/models.py:57
 msgid "ok and new"
 msgstr "ok y nuevo"
 
-#: .\apps\lands\models.py:58
+#: apps/lands/models.py:58
 msgid "ok to update"
 msgstr "ok para actualizar"
 
-#: .\apps\lands\models.py:74
+#: apps/lands/models.py:74
 msgid "temporal upload record"
 msgstr "registro de carga temporal"
 
-#: .\apps\lands\models.py:75
+#: apps/lands/models.py:75
 msgid "temporal upload records"
 msgstr "registros de carga temporal"
 
-#: .\apps\lands\models.py:98
+#: apps/lands/models.py:98
 msgid "land owner"
 msgstr "propietario"
 
-#: .\apps\lands\models.py:99
+#: apps/lands/models.py:99
 msgid "land owners"
 msgstr "propietarios"
 
-#: .\apps\lands\models.py:135
+#: apps/lands/models.py:135
 msgid "id land cartographic"
 msgstr "id predio cartografico"
 
-#: .\apps\lands\models.py:136
+#: apps/lands/models.py:136
 msgid "id plot"
 msgstr "id lote"
 
-#: .\apps\lands\models.py:137
+#: apps/lands/models.py:137
 msgid "id cartographic image"
 msgstr "id imagen cartografica"
 
-#: .\apps\lands\models.py:138
+#: apps/lands/models.py:138
 msgid "id object image"
 msgstr "id imagen objeto"
 
-#: .\apps\lands\models.py:200
+#: apps/lands/models.py:200
 msgid "land"
 msgstr "predio"
 
-#: .\apps\lands\models.py:221
+#: apps/lands/models.py:221
 msgid "land audit"
 msgstr "auditoria de predio"
 
-#: .\apps\lands\models.py:222
+#: apps/lands/models.py:222
 msgid "land audits"
 msgstr "auditorias de predio"
 
-#: .\apps\master_data\apps.py:7
+#: apps/master_data/apps.py:7
 msgid "master data"
 msgstr "datos maestros"
 
-#: .\apps\master_data\models.py:6 .\apps\master_data\models.py:19
-#: .\apps\places\models.py:7 .\apps\places\models.py:26
-#: .\apps\places\models.py:45 .\apps\places\models.py:62
-#: .\apps\users\models.py:38
+#: apps/master_data/models.py:6 apps/master_data/models.py:19
+#: apps/places/models.py:7 apps/places/models.py:26 apps/places/models.py:45
+#: apps/places/models.py:62 apps/users/models.py:38
 msgid "name"
 msgstr "nombre"
 
-#: .\apps\master_data\models.py:10 .\apps\users\models.py:71
+#: apps/master_data/models.py:10 apps/users/models.py:71
 msgid "institution"
 msgstr "institución"
 
-#: .\apps\master_data\models.py:11
+#: apps/master_data/models.py:11
 msgid "institutions"
 msgstr "instituciones"
 
-#: .\apps\master_data\models.py:18
+#: apps/master_data/models.py:18
 msgid "key id"
 msgstr "llave id"
 
-#: .\apps\master_data\models.py:20 .\apps\users\models.py:12
-#: .\apps\users\models.py:26 .\apps\users\models.py:40
+#: apps/master_data/models.py:20 apps/users/models.py:12
+#: apps/users/models.py:26 apps/users/models.py:40
 msgid "description"
 msgstr "descripción"
 
-#: .\apps\master_data\models.py:21
+#: apps/master_data/models.py:21
 msgid "short name"
 msgstr "nombre corto"
 
-#: .\apps\master_data\models.py:33
+#: apps/master_data/models.py:33
 msgid "urban unit type"
 msgstr "tipo de unidad urbana"
 
-#: .\apps\master_data\models.py:34
+#: apps/master_data/models.py:34
 msgid "urban unit types"
 msgstr "tipo de unidad urbana"
 
-#: .\apps\master_data\models.py:40
+#: apps/master_data/models.py:40
 msgid "side"
 msgstr "lado"
 
-#: .\apps\master_data\models.py:41
+#: apps/master_data/models.py:41
 msgid "sides"
 msgstr "lados"
 
-#: .\apps\master_data\models.py:47
+#: apps/master_data/models.py:47
 msgid "street code"
 msgstr "código de vía"
 
-#: .\apps\master_data\models.py:48
+#: apps/master_data/models.py:48
 msgid "street codes"
 msgstr "código de vía"
 
-#: .\apps\master_data\models.py:54
+#: apps/master_data/models.py:54
 msgid "property type"
 msgstr "tipo de propiedad"
 
-#: .\apps\master_data\models.py:55
+#: apps/master_data/models.py:55
 msgid "property types"
 msgstr "tipos de propiedad"
 
-#: .\apps\master_data\models.py:61
+#: apps/master_data/models.py:61
 msgid "resolution type"
 msgstr "tipo de resolución"
 
-#: .\apps\master_data\models.py:62
+#: apps/master_data/models.py:62
 msgid "resolution types"
 msgstr "tipos de resolución"
 
-#: .\apps\places\apps.py:7
+#: apps/places/apps.py:7
 msgid "places"
 msgstr "lugares"
 
-#: .\apps\places\models.py:6 .\apps\places\models.py:19
-#: .\apps\places\models.py:38 .\apps\users\models.py:11
+#: apps/places/models.py:6 apps/places/models.py:19 apps/places/models.py:38
+#: apps/users/models.py:11
 msgid "code"
 msgstr "código"
 
-#: .\apps\places\models.py:11 .\apps\places\models.py:23
-#: .\apps\users\models.py:85
+#: apps/places/models.py:11 apps/places/models.py:23 apps/users/models.py:85
 msgid "department"
 msgstr "departamento"
 
-#: .\apps\places\models.py:12
+#: apps/places/models.py:12
 msgid "departments"
 msgstr "departamentos"
 
-#: .\apps\places\models.py:30 .\apps\places\models.py:42
-#: .\apps\users\models.py:92
+#: apps/places/models.py:30 apps/places/models.py:42 apps/users/models.py:92
 msgid "province"
 msgstr "provincia"
 
-#: .\apps\places\models.py:31
+#: apps/places/models.py:31
 msgid "provinces"
 msgstr "provincias"
 
-#: .\apps\places\models.py:46
+#: apps/places/models.py:46
 msgid "zone"
 msgstr "zona"
 
-#: .\apps\places\models.py:50 .\apps\users\models.py:99
+#: apps/places/models.py:50 apps/users/models.py:99
 msgid "district"
 msgstr "distrito"
 
-#: .\apps\places\models.py:51
+#: apps/places/models.py:51
 msgid "districts"
 msgstr "distritos"
 
-#: .\apps\places\models.py:66
+#: apps/places/models.py:66
 msgid "place scope"
 msgstr "ámbito"
 
-#: .\apps\places\models.py:67
+#: apps/places/models.py:67
 msgid "place scopes"
 msgstr "ámbitos"
 
-#: .\apps\places\models.py:77 .\apps\places\models.py:99
+#: apps/places/models.py:77 apps/places/models.py:99
 msgid "ubigeo"
 msgstr "ubigeo"
 
-#: .\apps\places\models.py:91
+#: apps/places/models.py:91
 msgid "extension"
 msgstr "extensión"
 
-#: .\apps\places\models.py:92
+#: apps/places/models.py:92
 msgid "extensions"
 msgstr "extensiones"
 
-#: .\apps\places\models.py:103
+#: apps/places/models.py:103
 msgid "source"
 msgstr "fuente"
 
-#: .\apps\places\models.py:104
+#: apps/places/models.py:104
 msgid "utm"
 msgstr "UTM"
 
-#: .\apps\places\models.py:105
+#: apps/places/models.py:105
 msgid "gis service"
 msgstr "servicio GIS"
 
-#: .\apps\places\models.py:109
+#: apps/places/models.py:109
 msgid "resource"
 msgstr "recurso"
 
-#: .\apps\places\models.py:110
+#: apps/places/models.py:110
 msgid "resources"
 msgstr "recursos"
 
-#: .\apps\users\admin.py:15
+#: apps/users/admin.py:15
 msgid "Personal info"
 msgstr "Información personal"
 
-#: .\apps\users\admin.py:18
+#: apps/users/admin.py:18
 msgid "User account"
 msgstr "Cuenta de usario"
 
-#: .\apps\users\admin.py:19
+#: apps/users/admin.py:19
 msgid "User scope"
 msgstr "Alcance de usuario"
 
-#: .\apps\users\admin.py:20
+#: apps/users/admin.py:20
 msgid "Detail account"
 msgstr "Detalle de cuenta"
 
-#: .\apps\users\apps.py:7 .\apps\users\models.py:109
+#: apps/users/apps.py:7 apps/users/models.py:109
 msgid "users"
 msgstr "usuario"
 
-#: .\apps\users\models.py:13
+#: apps/users/models.py:13
 msgid "order"
 msgstr "orden"
 
-#: .\apps\users\models.py:17 .\apps\users\models.py:154
+#: apps/users/models.py:17 apps/users/models.py:154
 msgid "permission type"
 msgstr "tipo de permiso"
 
-#: .\apps\users\models.py:18
+#: apps/users/models.py:18
 msgid "permission types"
 msgstr "tipos de permiso"
 
-#: .\apps\users\models.py:30 .\apps\users\models.py:148
-#: .\apps\users\models.py:182
+#: apps/users/models.py:30 apps/users/models.py:148 apps/users/models.py:182
 msgid "permission"
 msgstr "permiso"
 
-#: .\apps\users\models.py:31 .\apps\users\models.py:43
+#: apps/users/models.py:31 apps/users/models.py:43
 msgid "permissions"
 msgstr "permisos"
 
-#: .\apps\users\models.py:39
+#: apps/users/models.py:39
 msgid "is active"
 msgstr "es activo"
 
-#: .\apps\users\models.py:49 .\apps\users\models.py:64
-#: .\apps\users\models.py:177
+#: apps/users/models.py:49 apps/users/models.py:64 apps/users/models.py:177
 msgid "role"
 msgstr "rol"
 
-#: .\apps\users\models.py:50
+#: apps/users/models.py:50
 msgid "roles"
 msgstr "roles"
 
-#: .\apps\users\models.py:58
+#: apps/users/models.py:58
 msgid "dni"
 msgstr "dni"
 
-#: .\apps\users\models.py:59
+#: apps/users/models.py:59
 msgid "avatar"
 msgstr "avatar"
 
-#: .\apps\users\models.py:60
+#: apps/users/models.py:60
 msgid "job_title"
 msgstr "puesto de trabajo"
 
-#: .\apps\users\models.py:78
+#: apps/users/models.py:78
 msgid "user place scope"
 msgstr "ámbito de usuario"
 
-#: .\apps\users\models.py:104
+#: apps/users/models.py:104
 msgid "observation"
 msgstr "observación"
 
-#: .\apps\users\models.py:108
+#: apps/users/models.py:108
 msgid "user"
 msgstr "usuario"
 
-#: .\apps\users\models.py:160
+#: apps/users/models.py:160
 msgid "navigation view"
 msgstr "vista de navegación"
 
-#: .\apps\users\models.py:166
+#: apps/users/models.py:166
 msgid "navigation permission"
 msgstr "permiso de navegación"
 
-#: .\apps\users\models.py:167
+#: apps/users/models.py:167
 msgid "navigation permissions"
 msgstr "permisos de navegación"
 
-#: .\apps\users\models.py:187
+#: apps/users/models.py:187
 msgid "role permission"
 msgstr "permiso de rol"
 
-#: .\apps\users\models.py:188
+#: apps/users/models.py:188
 msgid "role permissions"
 msgstr "permisos de rol"
 
-#: .\core\models.py:11
+#: core/models.py:11
 msgid "creation date"
 msgstr "fecha de creación"
 
-#: .\core\models.py:13
+#: core/models.py:13
 msgid "record creation date"
 msgstr "fecha de creación de registro"
 
-#: .\core\models.py:16
+#: core/models.py:16
 msgid "username created"
 msgstr "nombre de usuario creado"
 
-#: .\core\models.py:18
+#: core/models.py:18
 msgid "username that created the record"
 msgstr "nombde de usuario que creó el registro"
 
-#: .\core\models.py:22
+#: core/models.py:22
 msgid "update date"
 msgstr "fecha de actualizacion"
 
-#: .\core\models.py:24
+#: core/models.py:24
 msgid "record update date"
 msgstr "fecha de actualización del registro"
 
-#: .\core\models.py:28
+#: core/models.py:28
 msgid "username updated"
 msgstr "nombre de usuario actualizado"
 
-#: .\core\models.py:30
+#: core/models.py:30
 msgid "username that updated the record"
 msgstr "nombre de usuario que actualizó el registro"
