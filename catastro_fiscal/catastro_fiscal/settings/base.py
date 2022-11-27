@@ -168,7 +168,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 CACHES={
     'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
         'LOCATION': 'rest-captcha',
         'MAX_ENTRIES': 10000,
     }
