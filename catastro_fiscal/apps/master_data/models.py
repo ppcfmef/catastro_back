@@ -7,6 +7,8 @@ class Institution(models.Model):
 
     class Meta:
         db_table = 'INSTITUCION'
+        verbose_name = _('institution')
+        verbose_name_plural = _('institutions')
 
     def __str__(self):
         return self.name
@@ -28,33 +30,33 @@ class MasterDomain(models.Model):
 class MasterTypeUrbanUnit(MasterDomain):
     class Meta:
         db_table = 'M_TIPO_UU'
-        verbose_name = _('Type Urban Unit')
-        verbose_name_plural = _('Type Urban Unit')
+        verbose_name = _('urban unit type')
+        verbose_name_plural = _('urban unit types')
 
 
 class MasterSide(MasterDomain):
     class Meta:
         db_table = 'M_LADO'
-        verbose_name = _('Side')
-        verbose_name_plural = _('Side')
+        verbose_name = _('side')
+        verbose_name_plural = _('sides')
 
 
 class MasterCodeStreet(MasterDomain):
     class Meta:
         db_table = 'M_COD_VIA'
-        verbose_name = _('Code Street')
-        verbose_name_plural = _('Code Street')
+        verbose_name = _('street code')
+        verbose_name_plural = _('street codes')
 
 
 class MasterPropertyType(MasterDomain):
     class Meta:
         db_table = 'M_TIPO_PREDIO'
-        verbose_name = _('Property Type')
-        verbose_name_plural = _('Property Type')
+        verbose_name = _('property type')
+        verbose_name_plural = _('property types')
 
 
 class MasterResolutionType(MasterDomain):
     class Meta:
         db_table = 'M_TDOC_RES'
-        verbose_name = _('Resolution Type')
-        verbose_name_plural = _('Resolution Type')
+        verbose_name = _('resolution type')
+        verbose_name_plural = _('resolution types')

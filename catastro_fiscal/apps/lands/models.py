@@ -71,8 +71,8 @@ class TemploralUploadRecord(models.Model):
 
     class Meta:
         db_table = 'TMP_CARGA_REGISTROS'
-        verbose_name = _('temporal upload redord')
-        verbose_name_plural = _('temporal upload redords')
+        verbose_name = _('temporal upload record')
+        verbose_name_plural = _('temporal upload records')
 
     def __str__(self):
         return f'{self.id}'
@@ -198,7 +198,7 @@ class Land(LandBase):
     class Meta:
         db_table = 'PREDIO'
         verbose_name = _('land')
-        verbose_name_plural = _('land')
+        verbose_name_plural = _('lands')
 
 
 class LandAudit(LandBase):
@@ -219,4 +219,4 @@ class LandAudit(LandBase):
     class Meta:
         db_table = 'PREDIO_AUDITORIA'
         verbose_name = _('land audit')
-        verbose_name_plural = _('land audit')
+        verbose_name_plural = _('land audits')
