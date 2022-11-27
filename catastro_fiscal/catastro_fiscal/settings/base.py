@@ -173,3 +173,5 @@ CACHES={
         'MAX_ENTRIES': 10000,
     }
 }
+
+LOCALE_PATHS = [BASE_DIR / 'locale']

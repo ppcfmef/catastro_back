@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class Navigation(models.Model):
@@ -19,6 +20,8 @@ class Navigation(models.Model):
 
     class Meta:
         db_table = 'MENU'
+        verbose_name = _('navigation')
+        verbose_name_plural = _('navigations')
         ordering = ['order']
 
     def __str__(self):

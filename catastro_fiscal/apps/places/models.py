@@ -8,6 +8,8 @@ class Department(models.Model):
 
     class Meta:
         db_table = 'DEPARTAMENTO'
+        verbose_name = _('department')
+        verbose_name_plural = _('departments')
 
     def __str__(self):
         return f'{self.code} - {self.name}'
@@ -25,6 +27,8 @@ class Province(models.Model):
 
     class Meta:
         db_table = 'PROVINCIA'
+        verbose_name = _('province')
+        verbose_name_plural = _('provinces')
 
     def __str__(self):
         return f'{self.code} - {self.name}'
@@ -43,6 +47,8 @@ class District(models.Model):
 
     class Meta:
         db_table = 'DISTRITO'
+        verbose_name = _('district')
+        verbose_name_plural = _('districts')
 
     def __str__(self):
         return f'{self.code} - {self.name}'
@@ -57,6 +63,8 @@ class PlaceScope(models.Model):
 
     class Meta:
         db_table = 'AMBITO'
+        verbose_name = _('place scope')
+        verbose_name_plural = _('place scopes')
 
     def __str__(self):
         return f'{self.name}'
@@ -80,6 +88,8 @@ class Extension(models.Model):
 
     class Meta:
         db_table = 'UBICACION_EXTENDIDO'
+        verbose_name = _('extension')
+        verbose_name_plural = _('extensions')
 
 
 class Resource(models.Model):
@@ -96,3 +106,5 @@ class Resource(models.Model):
 
     class Meta:
         db_table = 'UBICACION_RECURSOS'
+        verbose_name = _('resource')
+        verbose_name_plural = _('resources')

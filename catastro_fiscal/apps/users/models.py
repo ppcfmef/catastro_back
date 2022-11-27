@@ -14,6 +14,8 @@ class PermissionType(models.Model):
 
     class Meta:
         db_table = 'TIPO_PERMISO'
+        verbose_name = _('permission type')
+        verbose_name_plural = _('permission types')
         ordering = ['order']
 
     def __str__(self):
@@ -25,6 +27,8 @@ class Permission(models.Model):
 
     class Meta:
         db_table = 'PERMISO'
+        verbose_name = _('permission')
+        verbose_name_plural = _('permissions')
 
     def __str__(self):
         return self.description
@@ -42,6 +46,8 @@ class Role(models.Model):
 
     class Meta:
         db_table = 'ROL'
+        verbose_name = _('role')
+        verbose_name_plural = _('roles')
 
     def __str__(self):
         return self.name
@@ -99,6 +105,8 @@ class User(AbstractUser):
 
     class Meta:
         db_table = 'USUARIO'
+        verbose_name = _('user')
+        verbose_name_plural = _('users')
 
     @property
     def name(self):
@@ -155,6 +163,8 @@ class PermissionNavigation(AbstractAudit):
 
     class Meta:
         db_table = 'PERMISO_NAVEGACION'
+        verbose_name = _('navigation permission')
+        verbose_name_plural = _('navigation permissions')
 
     def __str__(self):
         return f'{self.permission.description} | {self.type.description} | {self.navigation_view.title}'
@@ -174,6 +184,8 @@ class RolePermission(AbstractAudit):
 
     class Meta:
         db_table = 'ROL_PERMISO'
+        verbose_name = _('role permission')
+        verbose_name_plural = _('role permissions')
 
     def __str__(self):
         return f'{self.role.name} | {self.permission.description}'
