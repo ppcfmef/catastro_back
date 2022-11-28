@@ -166,10 +166,10 @@ JWT_AUTH = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
-CACHES={
+CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': 'rest-captcha',
+        'LOCATION': 'django_cache',
         'MAX_ENTRIES': 10000,
     }
 }

@@ -163,4 +163,4 @@ cython_debug/
 **/settings/qa.py
 **/settings/production.py
 
-
+**/django_cache/*
