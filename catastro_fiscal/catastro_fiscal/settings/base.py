@@ -166,12 +166,4 @@ JWT_AUTH = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': 'django_cache',
-        'MAX_ENTRIES': 10000,
-    }
-}
-
 LOCALE_PATHS = [BASE_DIR / 'locale']

@@ -58,3 +58,12 @@ DEPLOY_URL_PATH = env("DEPLOY_URL_PATH", default='')  # noqa: F405
 
 X_FRAME_OPTIONS = "SAMEORIGIN"
 SILENCED_SYSTEM_CHECKS = ["security.W019"]
+
+# Cache
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': env("CACHE_LOCATION_DIR", default='django_cache'),  # noqa: F405
+        'MAX_ENTRIES': 10000,
+    }
+}
