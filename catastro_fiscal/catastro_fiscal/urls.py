@@ -18,7 +18,7 @@ from django.urls import path, include
 from django.conf.urls.static import static
 urlpatterns = [
     path(f'{getattr(settings, "DEPLOY_URL_PATH", "")}',
-         include('catastro_fiscal.urls_base', namespace='base')),
+         include('catastro_fiscal.urls_base')),
 ]
 
 if settings.DEBUG:
