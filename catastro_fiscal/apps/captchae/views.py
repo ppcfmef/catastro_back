@@ -1,8 +1,3 @@
-from django.shortcuts import render
-
-from .forms import CaptchaTestForm
-
-
 import uuid
 import base64
 from rest_framework import views, response
@@ -35,8 +30,3 @@ class RestCaptchaView(views.APIView):
             'image_decode': 'base64'
         }
         return response.Response(data)
-
-
-
-
-    

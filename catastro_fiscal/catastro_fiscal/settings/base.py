@@ -44,7 +44,6 @@ THIRD_PARTY_APPS = [
     'corsheaders',
     'drf_yasg',
     'import_export',
-    'captcha',
     'rest_captcha',
 ]
 
