@@ -14,12 +14,12 @@ router.register('upload/status', UploadStatusViewSet)
 router.register('upload/summary', UploadHistorySummaryViewSet)
 router.register('records/search-inactive', SearchInactiveLandByCpu)
 router.register('records', LandViewSet)
+router.register('owners/register', CreateAndEditOwnerViewset)
 router.register('owners', LandOwnerViewSet)
 router.register('owners', LandOwnerDetailViewSet)
 router.register('detail', LandDetailViewSet)
 router.register('register', LandCreateAndEditViewset)
 router.register('owners/search', OwnerSearchByDocumentViewset)
-router.register('owners/register', CreateAndEditOwnerViewset)
 urlpatterns = router.urls + [
     path('summary/', SummaryRecord.as_view()),
     path('exports/', include('apps.lands.exports.urls', namespace='lands_exports')),
