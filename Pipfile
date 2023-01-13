@@ -27,4 +27,4 @@ django-rest-captcha = "*"
 django-simple-captcha = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3"
