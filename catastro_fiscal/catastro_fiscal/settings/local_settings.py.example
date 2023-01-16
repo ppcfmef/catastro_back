@@ -16,6 +16,8 @@ ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=['*'])  # noqa: F405
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+DATABASE_OPTION_DRIVER = env("DATABASE_OPTION_DRIVER", default='ODBC Driver 17 for SQL Server')   # noqa: F405
+
 DB_DEFAULT_CONFIG = dj_database_url.config(
     default=env(  # noqa: F405
         "DATABASE_URL",
@@ -25,7 +27,7 @@ DB_DEFAULT_CONFIG = dj_database_url.config(
 
 if DB_DEFAULT_CONFIG.get("ENGINE") == 'sql_server.pyodbc':
     DB_DEFAULT_CONFIG.update({
-        'OPTIONS': {'driver': 'ODBC Driver 17 for SQL Server'}
+        'OPTIONS': {'driver': DATABASE_OPTION_DRIVER}
     })
 
 DATABASES = {
