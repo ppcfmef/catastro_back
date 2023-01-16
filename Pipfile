@@ -25,6 +25,7 @@ requests = "*"
 django-admin-interface = "*"
 django-rest-captcha = "*"
 django-simple-captcha = "*"
+mssql-django = "*"
 
 [requires]
 python_version = "3"

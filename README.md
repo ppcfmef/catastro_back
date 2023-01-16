@@ -3,8 +3,8 @@
 API rest para el proyecto MEF Catastro Fiscal
 
 ### Requerimientos
-* Python 3.6
-* Django 3.2.X
+* Python 3.7+
+* Django <4
 * Pipenv
 
 #### Instalar requerimientos
