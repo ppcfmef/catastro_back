@@ -26,6 +26,7 @@ django-admin-interface = "*"
 django-rest-captcha = "*"
 django-simple-captcha = "*"
 mssql-django = "*"
+wfastcgi = "*"
 
 [requires]
-python_version = "3"
+python_version = "3.7"
