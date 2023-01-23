@@ -1,6 +1,8 @@
 from django.contrib import admin  # noqa: F401
 from import_export.admin import ImportExportModelAdmin
-from .models import *
+from .models import (
+    MasterTypeUrbanUnit, MasterSide, MasterCodeStreet, MasterPropertyType, MasterResolutionType, Institution
+)
 
 
 class MasterAdminMixin:

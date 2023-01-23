@@ -42,7 +42,8 @@ class NavigationViewset(mixins.ListModelMixin, GenericViewSet):
         permission_navigation = PermissionNavigation.objects \
             .filter(permission__in=permissions, type__code__startswith='read')
         navigations = permission_navigation.values_list('navigation_view', flat=True)
-        parents = list(queryset.filter(id__in=navigations).exclude(parent__isnull=True).values_list('parent', flat=True))
+        parents = list(
+            queryset.filter(id__in=navigations).exclude(parent__isnull=True).values_list('parent', flat=True))
         parent_basic = list(queryset.filter(id__in=navigations, parent__isnull=True).values_list('id', flat=True))
         parents = parents + parent_basic
         parents.append('home')

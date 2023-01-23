@@ -1,6 +1,5 @@
 from django.db import transaction
-from rest_framework import serializers, status
-from rest_framework.response import Response
+from rest_framework import serializers
 from .models import UploadHistory, Land, LandOwner, OwnerAddress, LandAudit
 from .services.upload_temporal import UploadTemporalService
 from .services.upload_land import UploadLandService

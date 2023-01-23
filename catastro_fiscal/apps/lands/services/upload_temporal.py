@@ -1,6 +1,5 @@
 from ..models import UploadHistory, TemploralUploadRecord, Land, LandOwner
 from .read_xlsx import ReadXlsxService
-from .upload_land import UploadLandService
 
 
 class UploadTemporalService:
@@ -9,7 +8,6 @@ class UploadTemporalService:
 
     def execute(self, upload_history: UploadHistory):
         records = self.read(upload_history)
-        #self.update_ubigeo(upload_history, records)
         self.temporal_upload(upload_history, records)
         self.cancel_last_upload(upload_history)
 
@@ -159,17 +157,6 @@ class UploadTemporalService:
                 'longitude': 'coord_x',
                 'latitude': 'coord_y',
                 'id_aranc': 'id_aranc',
-                #'document_type': 'tip_doc',
-                #'document': 'doc_iden',
-                #'cod_owner': 'cod_contr',
-                #'name': 'nombre',
-                #'paternal_surname': 'ap_pat',
-                #'maternal_surname': 'ap_mat',
-                #'description_owner': 'contribuyente',
-                #'phone': '',
-                #'email': '',
-                #'tax_address': 'dir_fiscal',
-                #'status': 'estado',
                 'land_area': 'area_terreno',
                 'front_length': 'longitud_frente',
                 'location_park': 'ubicacion_parque',

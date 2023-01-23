@@ -89,9 +89,11 @@ class LandOwner(AbstractAudit):
     description_owner = models.CharField(max_length=150, blank=True, null=True, db_column='contribuyente')
     phone = models.CharField(max_length=20, blank=True, null=True, db_column='telefono')
     email = models.CharField(max_length=150, blank=True, null=True, db_column='correo_electronico')
-    tax_address = models.CharField(max_length=255, blank=True, null=True, db_column='dir_fiscal')  # ToDo: This field now is OwnerAddress
+    # ToDo: This field now is OwnerAddress
+    tax_address = models.CharField(max_length=255, blank=True, null=True, db_column='dir_fiscal')
     number_lands = models.IntegerField(default=0, blank=True, null=True, db_column='numero_tierras')
-    upload_history = models.ForeignKey(UploadHistory, blank=True, null=True, on_delete=models.SET_NULL, db_column='historial_carga')
+    upload_history = models.ForeignKey(UploadHistory, blank=True, null=True, on_delete=models.SET_NULL,
+                                       db_column='historial_carga')
 
     class Meta:
         db_table = 'PROPIETARIO'
@@ -131,11 +133,15 @@ class LandBase(AbstractAudit):
     )
     id = models.AutoField(primary_key=True)
     source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True, null=True, db_column='origen')
-    status = models.PositiveSmallIntegerField(choices=STATUS_CHOICE, blank=True, null=True, default=0, db_column='estado')
-    id_land_cartographic = models.CharField(max_length=18, blank=True, null=True, help_text=_('id land cartographic'), db_column='id_predio_cartografico')
+    status = models.PositiveSmallIntegerField(choices=STATUS_CHOICE, blank=True, null=True, default=0,
+                                              db_column='estado')
+    id_land_cartographic = models.CharField(max_length=18, blank=True, null=True, help_text=_('id land cartographic'),
+                                            db_column='id_predio_cartografico')
     id_plot = models.CharField(max_length=25, blank=True, null=True, help_text=_('id plot'), db_column='id_lote')
-    id_cartographic_img = models.CharField(max_length=26, blank=True, null=True, help_text=_('id cartographic image'), db_column='id_imagen_cartografica')
-    id_object_img = models.IntegerField(blank=True, null=True, help_text=_('id object image'), db_column='id_imagen_objeto')
+    id_cartographic_img = models.CharField(max_length=26, blank=True, null=True, help_text=_('id cartographic image'),
+                                           db_column='id_imagen_cartografica')
+    id_object_img = models.IntegerField(blank=True, null=True, help_text=_('id object image'),
+                                        db_column='id_imagen_objeto')
     cpm = models.CharField(max_length=100, blank=True, null=True, db_column='cod_pre')
     sec_ejec = models.CharField(max_length=6, blank=True, null=True, db_column='sec_ejec')
     ubigeo = models.CharField(max_length=6, blank=True, null=True, db_column='ubigeo')
@@ -172,7 +178,8 @@ class LandBase(AbstractAudit):
     location_park = models.CharField(max_length=250, blank=True, null=True, db_column='ubicacion_parque')
     group_use_desc = models.CharField(max_length=50, blank=True, null=True, db_column='grupo_uso_desc')
     number_inhabitants = models.IntegerField(blank=True, null=True, db_column='cantidad_habitantes')
-    classification_land_desc = models.CharField(max_length=90, blank=True, null=True, db_column='clasificacion_predio_desc')
+    classification_land_desc = models.CharField(max_length=90, blank=True, null=True,
+                                                db_column='clasificacion_predio_desc')
     build_status_desc = models.CharField(max_length=120, blank=True, null=True, db_column='estado_construccion_desc')
     property_type = models.CharField(max_length=20, blank=True, null=True, db_column='tipo_predio')
     self_assessment_total = models.FloatField(blank=True, null=True, db_column='autoavaluo_total')

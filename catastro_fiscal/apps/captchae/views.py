@@ -3,7 +3,7 @@ import base64
 from rest_framework import views, response
 from django.core.cache import caches
 from rest_captcha.settings import api_settings
-from rest_captcha import utils ,captcha
+from rest_captcha import utils, captcha
 
 
 cache = caches[api_settings.CAPTCHA_CACHE]
@@ -25,7 +25,7 @@ class RestCaptchaView(views.APIView):
 
         data = {
             api_settings.CAPTCHA_KEY: key,
-            api_settings.CAPTCHA_IMAGE:image_b64.decode('utf-8'),
+            api_settings.CAPTCHA_IMAGE: image_b64.decode('utf-8'),
             'image_type': 'image/png',
             'image_decode': 'base64'
         }
