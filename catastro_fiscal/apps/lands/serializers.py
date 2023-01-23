@@ -108,10 +108,16 @@ class LandOwnerSaveSerializer(serializers.ModelSerializer):
         model = LandOwner
         fields = '__all__'
 
+    def exists_owner(self, data):
+        return LandOwner.objects.filter(document_type=data.get('document_type'), dni=data.get('dni')).exists()
+
     @transaction.atomic
     def create(self, validated_data):
+        if self.exists_owner(data=validated_data) :
+            raise serializers.ValidationError(f'Ya existe el propietario con el documento ingresado')
         address = validated_data.pop('address')
         owner = LandOwner.objects.create(**validated_data)
+
         address.update({"owner": owner})
         OwnerAddress.objects.create(**address)
         return owner

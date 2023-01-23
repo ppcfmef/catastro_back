@@ -181,7 +181,7 @@ class UploadTemporalService:
             'document_type': record.get('tip_doc'),
             'dni': document,
             'name': record.get('nombre'),
-            'paternal_surname': record.get('nombre'),
+            'paternal_surname': record.get('ap_pat'),
             'maternal_surname': record.get('ap_mat'),
             'description_owner': record.get('contribuyente'),
             'tax_address': record.get('dir_fiscal'),
