@@ -8,4 +8,4 @@ class UserCustomFilter(django_filters.FilterSet):
 
     class Meta:
         model = User
-        fields = ('is_active', 'role', 'start_date', 'end_date')
+        fields = ('is_active', 'role', 'start_date', 'end_date', 'institution', 'department', 'province', 'district')

@@ -186,3 +186,20 @@ class PermissionTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = PermissionType
         fields = ('code', 'description')
+
+
+class InstitutionListSerializer(serializers.Serializer):
+
+    name = serializers.SerializerMethodField()
+    institution = serializers.IntegerField()
+    place_scope = serializers.IntegerField()
+    department = serializers.IntegerField()
+    province = serializers.IntegerField()
+    district = serializers.IntegerField()
+
+    class Meta:
+        fields = ('name', 'institution', 'department', 'province', 'district')
+
+    def get_name(self, obj):
+        institution = User.get_institution(obj.get("institution"), obj.get("place_scope"), obj.get("department"), obj.get("province"), obj.get("district"))
+        return institution.name
