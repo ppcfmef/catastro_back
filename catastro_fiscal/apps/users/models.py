@@ -140,6 +140,19 @@ class User(AbstractUser):
         else:
             self.place_scope_id = 4
 
+    @staticmethod
+    def get_institution(institution, place_scope, department, province, district):
+        institution = Institution.objects.get(pk=institution)
+        if place_scope == 2:
+            ubigeo = Department.objects.get(pk=department)
+        elif place_scope == 3:
+            ubigeo = Province.objects.get(pk=province)
+        elif place_scope == 4:
+            ubigeo = District.objects.get(pk=district)
+        if place_scope != 1:
+            institution.name = f"{institution.name } de {ubigeo.name}"
+        return institution
+
 
 class PermissionNavigation(AbstractAudit):
     permission = models.ForeignKey(

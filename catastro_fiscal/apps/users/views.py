@@ -1,15 +1,17 @@
+from django.db.models import Q
 from rest_framework import mixins
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework.filters import SearchFilter
+from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
 from core.views import CustomListMixin
 from .serializers import (
     UserProfileShortSerializer, UserSerializer, UserListSerializer, UserDetailSerializer, RoleSerializer,
     RoleShortSerializer, PermissionSerializer, PermissionListSerializer, PermissionTypeSerializer,
-    PermissionNavigationSerializer, RoleListSerializer
+    PermissionNavigationSerializer, RoleListSerializer, InstitutionListSerializer
 )
 from .models import User, Role, Permission, PermissionType, PermissionNavigation
 from .filters import UserCustomFilter
@@ -31,7 +33,7 @@ class UserViewSet(ModelViewSet):
     detail_serializer_class = UserDetailSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filter_class = UserCustomFilter
-    filterset_fields = ['is_active', 'role', 'start_date', 'end_date']
+    filterset_fields = ['is_active', 'role', 'start_date', 'end_date', 'institution', 'department', 'province', 'district']
     search_fields = ['dni', 'district__code', 'district__name']
 
     @swagger_auto_schema(responses={200: UserListSerializer()})
@@ -50,6 +52,18 @@ class UserViewSet(ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.detail_serializer_class(instance, context={"request": request})
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'])
+    def institutions(self, request, *args, **kwargs):
+        queryset = User.objects.select_related('institution').values(
+            'institution', 'place_scope', 'department', 'province', 'district'
+        ).filter(~Q(institution=None))
+        if request.GET.get("search"):
+            search = request.GET.get("search")
+            queryset = queryset.filter(Q(institution__name__icontains=search))
+        queryset = queryset.distinct()
+        serializer = InstitutionListSerializer(queryset, many=True)
         return Response(serializer.data)
 
 
