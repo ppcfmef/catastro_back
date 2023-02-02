@@ -149,8 +149,8 @@ class User(AbstractUser):
             ubigeo = Province.objects.get(pk=province)
         elif place_scope == 4:
             ubigeo = District.objects.get(pk=district)
-        if place_scope != 1:
-            institution.name = f"{institution.name } de {ubigeo.name}"
+        if place_scope > 1:
+            institution.name = f"{institution.name } de {ubigeo.name.title()}"
         return institution
 
 
