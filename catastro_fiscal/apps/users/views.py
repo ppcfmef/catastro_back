@@ -56,9 +56,26 @@ class UserViewSet(ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def institutions(self, request, *args, **kwargs):
+        user = request.user
         queryset = User.objects.select_related('institution').values(
             'institution', 'place_scope', 'department', 'province', 'district'
         ).filter(~Q(institution=None))
+        if user.place_scope_id > 1:
+            if user.place_scope_id == 2:
+                queryset = queryset.filter(
+                    Q(department=user.department),
+                    Q(place_scope_id__gte=user.place_scope_id))
+            elif user.place_scope_id == 3:
+                queryset = queryset.filter(
+                    Q(department=user.department),
+                    Q(province=user.province),
+                    Q(place_scope_id__gte=user.place_scope_id))
+            elif user.place_scope_id == 4:
+                queryset = queryset.filter(
+                    Q(department=user.department),
+                    Q(province=user.province),
+                    Q(district=user.district),
+                    Q(place_scope_id__gte=user.place_scope_id))
         if request.GET.get("search"):
             search = request.GET.get("search")
             queryset = queryset.filter(Q(institution__name__icontains=search))
