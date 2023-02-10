@@ -53,7 +53,7 @@ class UserProfileShortSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'name', 'avatar', 'email', 'place_scope', 'ubigeo', 'permissions_navigation')
+        fields = ('id', 'username', 'name', 'avatar', 'email', 'place_scope', 'ubigeo', 'permissions_navigation')
 
     def get_permissions_navigation(self, obj):
         permissions = RolePermission.objects.filter(role=obj.role).values_list('permission', flat=True)
