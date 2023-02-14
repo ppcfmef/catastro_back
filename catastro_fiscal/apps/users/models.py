@@ -100,7 +100,6 @@ class User(AbstractUser):
         related_name='users',
         blank=True, null=True
     )
-
     observation = models.TextField(_('observation'), blank=True, null=True)
 
     class Meta:
