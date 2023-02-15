@@ -4,12 +4,12 @@ from core.models import AbstractAudit
 from apps.places.models import District
 
 UPLOAD_STATUS = (
-        ('INITIAL', _('Initiated')),
-        ('IN_PROGRESS', _('In Progress')),
-        ('LOADED', _('Loaded')),
-        ('ERROR', _('Error Loaded')),
-        ('CANCEL', _('Cancel by user')),
-    )
+    ('INITIAL', _('Initiated')),
+    ('IN_PROGRESS', _('In Progress')),
+    ('LOADED', _('Loaded')),
+    ('ERROR', _('Error Loaded')),
+    ('CANCEL', _('Cancel by user')),
+)
 
 
 class UploadHistory(models.Model):

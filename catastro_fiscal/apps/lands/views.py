@@ -2,6 +2,7 @@ from rest_framework import mixins, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
+from rest_framework.decorators import action
 from djangorestframework_camel_case.parser import CamelCaseMultiPartParser
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
@@ -11,7 +12,7 @@ from .models import UploadHistory, Land, LandOwner
 from .serializers import (
     UploadHistorySerializer, UploadHistoryListSerializer, LandSerializer, LandOwnerSerializer,
     LandOwnerDetailSerializer, LandOwnerSaveSerializer, LandDetailSerializer, LandSaveSerializer,
-    SummaryRecordSerializer, TemporalUploadSummarySerializer, UploadStatusSerializer
+    SummaryRecordSerializer, TemporalUploadSummarySerializer, UploadStatusSerializer, LandHistorySerializer
 )
 from .services.upload_temporal import UploadTemporalService
 
@@ -61,6 +62,13 @@ class LandViewSet(mixins.ListModelMixin, GenericViewSet):
     ordering_fields = ['ubigeo', 'cup', 'cpm', 'id_plot', 'id_cartographic_img', 'habilitacion_name', 'street_name',
                        'creation_date']
     ordering = ['-creation_date']
+
+    @action(detail=False, methods=['get'])
+    def history_detail(self, request, *args, **kwargs):
+        username = request.GET.get("username") or request.GET.get("search")
+        queryset = Land.objects.filter(created_by=username).order_by('-update_date')
+        serializer_response = LandHistorySerializer(queryset, many=True)
+        return Response(serializer_response.data)
 
 
 class LandDetailViewSet(mixins.RetrieveModelMixin, GenericViewSet):

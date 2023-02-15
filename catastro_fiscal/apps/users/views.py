@@ -1,4 +1,4 @@
-from django.db.models import Q
+from django.db.models import Q, Count, OuterRef, Subquery
 from rest_framework import mixins
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -7,11 +7,12 @@ from rest_framework.filters import SearchFilter
 from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
+from apps.lands.models import Land
 from core.views import CustomListMixin
 from .serializers import (
     UserProfileShortSerializer, UserSerializer, UserListSerializer, UserDetailSerializer, RoleSerializer,
     RoleShortSerializer, PermissionSerializer, PermissionListSerializer, PermissionTypeSerializer,
-    PermissionNavigationSerializer, RoleListSerializer, InstitutionListSerializer
+    PermissionNavigationSerializer, RoleListSerializer, InstitutionListSerializer, HistoryListSerializer
 )
 from .models import User, Role, Permission, PermissionType, PermissionNavigation
 from .filters import UserCustomFilter
@@ -58,7 +59,7 @@ class UserViewSet(ModelViewSet):
     def institutions(self, request, *args, **kwargs):
         user = request.user
         queryset = User.objects.select_related('institution').values(
-            'institution', 'place_scope', 'department', 'province', 'district'
+            'institution', 'place_scope', 'department', 'province', 'district', 'department__name', 'province__name', 'district__name'
         ).filter(~Q(institution=None))
         if user.place_scope_id > 1:
             if user.place_scope_id == 2:
@@ -82,6 +83,25 @@ class UserViewSet(ModelViewSet):
         queryset = queryset.distinct()
         serializer = InstitutionListSerializer(queryset, many=True)
         return Response(serializer.data)
+
+    @action(detail=False, methods=['get'])
+    def history_actions(self, request, *args, **kwargs):
+        department = request.GET.get("department")
+        province = request.GET.get("province")
+        district = request.GET.get("district")
+        institution = request.GET.get("institution")
+        data = dict()
+        if department and province and district and institution:
+            sub_q = Land.objects.values('created_by').annotate(total=Count('created_by')).filter(created_by=OuterRef('username'))
+            queryset = User.objects.values(
+                'id', 'dni', 'first_name', 'last_name', 'role__name'
+                ).annotate(
+                    actions_num=Subquery(sub_q.values('total'))
+                ).filter(
+                    department=department, province=province, district=district, institution=institution)
+            serializer = HistoryListSerializer(queryset, many=True)
+            data = serializer.data
+        return Response(data)
 
 
 class RoleViewSet(CustomListMixin, ModelViewSet):
