@@ -155,19 +155,3 @@ class TemporalUploadSummarySerializer(serializers.Serializer):
 
     def get_corrects_data(self, obj):
         return list(obj.get('corrects_data', []))
-
-
-class LandHistorySerializer(serializers.Serializer):
-    module = serializers.SerializerMethodField()
-    action = serializers.SerializerMethodField()
-    record_date = serializers.SerializerMethodField()
-
-    def get_module(self, obj):
-        module = 'Carga de catografía base' if obj.source == 'carga_masiva' else 'Mantenimiento'
-        return f'Gestion Cartográfica - {module}'
-
-    def get_action(self, obj):
-        return 'Carga zona nueva' if obj.source == 'carga_masiva' else 'Generación punto lote'
-
-    def get_record_date(self, obj):
-        return obj.creation_date if obj.source == 'carga_masiva' else obj.update_date

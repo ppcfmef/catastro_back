@@ -58,6 +58,7 @@ LOCAL_APPS = [
     'apps.integrations.persons.apps.PersonsConfig',
     'apps.integrations.business.apps.BusinessConfig',
     'apps.captchae.apps.CaptchaExampleConfig',
+    'apps.historical.apps.HistoricalConfig',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -151,6 +152,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
+    'DATETIME_FORMAT': '%d/%m/%Y %H:%M',
 }
 
 JWT_AUTH = {
