@@ -12,9 +12,10 @@ from .models import UploadHistory, Land, LandOwner
 from .serializers import (
     UploadHistorySerializer, UploadHistoryListSerializer, LandSerializer, LandOwnerSerializer,
     LandOwnerDetailSerializer, LandOwnerSaveSerializer, LandDetailSerializer, LandSaveSerializer,
-    SummaryRecordSerializer, TemporalUploadSummarySerializer, UploadStatusSerializer, LandHistorySerializer
+    SummaryRecordSerializer, TemporalUploadSummarySerializer, UploadStatusSerializer
 )
 from .services.upload_temporal import UploadTemporalService
+from apps.historical.models import HistoricalRecord
 
 
 class UploadHistoryViewset(CustomSerializerMixin, mixins.ListModelMixin, mixins.CreateModelMixin, GenericViewSet):
@@ -63,13 +64,6 @@ class LandViewSet(mixins.ListModelMixin, GenericViewSet):
                        'creation_date']
     ordering = ['-creation_date']
 
-    @action(detail=False, methods=['get'])
-    def history_detail(self, request, *args, **kwargs):
-        username = request.GET.get("username") or request.GET.get("search")
-        queryset = Land.objects.filter(created_by=username).order_by('-update_date')
-        serializer_response = LandHistorySerializer(queryset, many=True)
-        return Response(serializer_response.data)
-
 
 class LandDetailViewSet(mixins.RetrieveModelMixin, GenericViewSet):
     queryset = Land.objects.all()
@@ -84,6 +78,16 @@ class LandCreateAndEditViewset(mixins.CreateModelMixin,
     """
     queryset = Land.objects.all()
     serializer_class = LandSaveSerializer
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        serializer.save()
+        HistoricalRecord.register(user, serializer.instance, type_event=HistoricalRecord.RecordEvent.CREATED)
+
+    def perform_update(self, serializer):
+        user = self.request.user
+        serializer.save()
+        HistoricalRecord.register(user, serializer.instance, type_event=HistoricalRecord.RecordEvent.UPDATED)
 
 
 class LandOwnerViewSet(mixins.ListModelMixin, GenericViewSet):
@@ -116,6 +120,16 @@ class OwnerSearchByDocumentViewset(mixins.RetrieveModelMixin, GenericViewSet):
 class CreateAndEditOwnerViewset(mixins.CreateModelMixin, mixins.UpdateModelMixin, GenericViewSet):
     queryset = LandOwner.objects.all()
     serializer_class = LandOwnerSaveSerializer
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        serializer.save()
+        HistoricalRecord.register(user, serializer.instance, type_event=HistoricalRecord.RecordEvent.CREATED)
+
+    def perform_update(self, serializer):
+        user = self.request.user
+        serializer.save()
+        HistoricalRecord.register(user, serializer.instance, type_event=HistoricalRecord.RecordEvent.UPDATED)
 
 
 class SearchInactiveLandByCpu(mixins.RetrieveModelMixin, GenericViewSet):

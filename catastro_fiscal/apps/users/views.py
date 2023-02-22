@@ -12,7 +12,7 @@ from core.views import CustomListMixin
 from .serializers import (
     UserProfileShortSerializer, UserSerializer, UserListSerializer, UserDetailSerializer, RoleSerializer,
     RoleShortSerializer, PermissionSerializer, PermissionListSerializer, PermissionTypeSerializer,
-    PermissionNavigationSerializer, RoleListSerializer, InstitutionListSerializer, HistoryListSerializer
+    PermissionNavigationSerializer, RoleListSerializer, InstitutionListSerializer
 )
 from .models import User, Role, Permission, PermissionType, PermissionNavigation
 from .filters import UserCustomFilter
@@ -83,25 +83,6 @@ class UserViewSet(ModelViewSet):
         queryset = queryset.distinct()
         serializer = InstitutionListSerializer(queryset, many=True)
         return Response(serializer.data)
-
-    @action(detail=False, methods=['get'])
-    def history_actions(self, request, *args, **kwargs):
-        department = request.GET.get("department")
-        province = request.GET.get("province")
-        district = request.GET.get("district")
-        institution = request.GET.get("institution")
-        data = dict()
-        if department and province and district and institution:
-            sub_q = Land.objects.values('created_by').annotate(total=Count('created_by')).filter(created_by=OuterRef('username'))
-            queryset = User.objects.values(
-                'id', 'dni', 'first_name', 'last_name', 'role__name'
-                ).annotate(
-                    actions_num=Subquery(sub_q.values('total'))
-                ).filter(
-                    department=department, province=province, district=district, institution=institution)
-            serializer = HistoryListSerializer(queryset, many=True)
-            data = serializer.data
-        return Response(data)
 
 
 class RoleViewSet(CustomListMixin, ModelViewSet):

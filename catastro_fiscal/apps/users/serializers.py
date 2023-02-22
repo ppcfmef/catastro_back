@@ -193,9 +193,9 @@ class InstitutionListSerializer(serializers.Serializer):
     name = serializers.SerializerMethodField()
     institution = serializers.IntegerField()
     place_scope = serializers.IntegerField()
-    department = serializers.IntegerField()
-    province = serializers.IntegerField()
-    district = serializers.IntegerField()
+    department = serializers.CharField()
+    province = serializers.CharField()
+    district = serializers.CharField()
     department_name = serializers.CharField(source='department__name')
     province_name = serializers.CharField(source='province__name')
     district_name = serializers.CharField(source='district__name')
@@ -206,17 +206,3 @@ class InstitutionListSerializer(serializers.Serializer):
     def get_name(self, obj):
         institution = User.get_institution(obj.get("institution"), obj.get("place_scope"), obj.get("department"), obj.get("province"), obj.get("district"))
         return institution.name
-
-
-class HistoryListSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    dni = serializers.CharField()
-    full_name = serializers.SerializerMethodField()
-    role = serializers.CharField(source="role__name")
-    actions = serializers.IntegerField(source="actions_num")
-
-    class Meta:
-        fields = ('id', 'dni', 'full_name', 'role', 'actions')
-
-    def get_full_name(self, obj):
-        return f'{obj.get("first_name")} {obj.get("last_name")}'
