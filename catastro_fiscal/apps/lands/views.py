@@ -43,6 +43,17 @@ class UploadStatusViewSet(mixins.UpdateModelMixin, GenericViewSet):
     serializer_class = UploadStatusSerializer
 
 
+    def perform_update(self, serializer):
+        user = self.request.user
+        serializer.save()
+        HistoricalRecord.register(
+            user,
+            serializer.instance,
+            type_event=HistoricalRecord.RecordEvent.CREATED,
+            event="Carga masiva",
+            module="Gestor de predios - Carga de datos",
+        )
+
 class UploadHistorySummaryViewSet(mixins.RetrieveModelMixin, GenericViewSet):
     queryset = UploadHistory.objects.all()
     serializer_class = UploadHistoryListSerializer
