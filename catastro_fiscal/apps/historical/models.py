@@ -39,22 +39,24 @@ class HistoricalRecord(models.Model):
     def register(cls, user, obj, type_event, event=None, module=None):
         instance = cls(registered_by=user, object_id=obj.pk, type_event=type_event)
         instance.content_type = ContentType.objects.get_for_model(obj.__class__)
+        instance.module = module or ""
+
         if obj.__class__ == User:
             model = "usuario(a)"
-            instance.module = "Gestor de Usuarios - Usuarios"
+            if not module:
+                instance.module = "Gestor de Usuarios - Usuarios"
         elif obj.__class__ == LandOwner:
             model = "propetario(a)"
-            if type_event == HistoricalRecord.RecordEvent.CREATED or type_event == HistoricalRecord.RecordEvent.UPDATED:
+            if not module:
                 instance.module = "Gestor de predios - Registro de Contribuyentes y Predios"
         elif obj.__class__ == Land:
             model = "punto lote"
-            if type_event == HistoricalRecord.RecordEvent.CREATED or type_event == HistoricalRecord.RecordEvent.UPDATED:
+            if not module:
                 instance.module = "Gestor de predios - Registro de Contribuyentes y Predios"
         if event:
-            pass
+            instance.event = event
         else:
             instance.event = f'{cls.RecordEvent(type_event).label} de un {model}'
-            instance.module = module or ""
         instance.save()
 
     def get_content_object(self):
