@@ -142,6 +142,8 @@ class User(AbstractUser):
     @staticmethod
     def get_institution(institution, place_scope, department, province, district):
         institution = Institution.objects.get(pk=institution)
+        if institution.name.lower() in (" bid", " mef"):
+            return institution
         if place_scope == 2:
             ubigeo = Department.objects.get(pk=department)
         elif place_scope == 3:

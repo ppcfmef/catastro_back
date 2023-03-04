@@ -152,7 +152,6 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
-    'DATETIME_FORMAT': '%d/%m/%Y %H:%M',
 }
 
 JWT_AUTH = {

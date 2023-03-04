@@ -1,12 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 from rest_framework import mixins, status
-from .models import HistoricalRecord
-from .serializers import HistoricalSerializer, HistoricalUserSerializer
+from rest_framework.response import Response
+from .serializers import HistoricalSerializer, HistoricalUserSerializer, HistoricalRecordSerializer, HistoricalRecord
 from rest_framework.viewsets import GenericViewSet
 from django.db.models import Count
 
 
-class HistoricalRecordViewset(mixins.ListModelMixin, GenericViewSet):
+class HistoricalRecordViewset(mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericViewSet):
 
     queryset = HistoricalRecord.objects.none()
     serializer_class = HistoricalSerializer
@@ -17,18 +17,27 @@ class HistoricalRecordViewset(mixins.ListModelMixin, GenericViewSet):
         district = self.request.GET.get("district")
         institution = self.request.GET.get("institution")
 
-        if department and province and district and institution:
-            self.queryset = HistoricalRecord.objects.values(
-                'registered_by__id', 'registered_by__dni', 'registered_by__first_name', 'registered_by__last_name', 'registered_by__role__name'
-                ).annotate(
-                    actions_total=Count('registered_by')
-                ).filter(
-                    registered_by__department=department,
-                    registered_by__province=province,
-                    registered_by__district=district,
-                    registered_by__institution=institution
-                )
+        self.queryset = HistoricalRecord.objects.values(
+            'registered_by__id', 'registered_by__dni', 'registered_by__first_name', 'registered_by__last_name', 'registered_by__role__name'
+            ).annotate(
+                actions_total=Count('registered_by')
+            ).filter(
+                registered_by__institution=institution
+            )
+
+        if department.isnumeric():
+            self.queryset = self.queryset.filter(registered_by__department=department)
+        if province.isnumeric():
+            self.queryset = self.queryset.filter(registered_by__province=province)
+        if district.isnumeric():
+            self.queryset = self.queryset.filter(registered_by__district=district)
+
         return self.queryset
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = get_object_or_404(HistoricalRecord, pk=kwargs.get("pk"))
+        serializer = HistoricalRecordSerializer(instance, context={"request": request})
+        return Response(serializer.data)
 
 
 class HistoricalRecordByUserViewset(mixins.ListModelMixin, GenericViewSet):

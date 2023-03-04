@@ -48,12 +48,6 @@ class LandSerializer(serializers.ModelSerializer):
         fields = '__all__'  # ToDo: estandarizar listado de predios
 
 
-class LandDetailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Land
-        fields = '__all__'
-
-
 class LandSaveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Land
@@ -114,7 +108,7 @@ class LandOwnerSaveSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def create(self, validated_data):
         if self.exists_owner(data=validated_data) :
-            raise serializers.ValidationError(f'Ya existe el propietario con el documento ingresado')
+            raise serializers.ValidationError(f'Ya existe el contribuyente con el documento ingresado')
         address = validated_data.pop('address')
         owner = LandOwner.objects.create(**validated_data)
 
@@ -155,3 +149,12 @@ class TemporalUploadSummarySerializer(serializers.Serializer):
 
     def get_corrects_data(self, obj):
         return list(obj.get('corrects_data', []))
+
+
+class LandDetailSerializer(serializers.ModelSerializer):
+
+    owner = LandOwnerDetailSerializer()
+
+    class Meta:
+        model = Land
+        fields = '__all__'

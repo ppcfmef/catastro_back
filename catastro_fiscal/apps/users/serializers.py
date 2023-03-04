@@ -199,10 +199,35 @@ class InstitutionListSerializer(serializers.Serializer):
     department_name = serializers.CharField(source='department__name')
     province_name = serializers.CharField(source='province__name')
     district_name = serializers.CharField(source='district__name')
+    ubigeo_scope = serializers.SerializerMethodField()
 
     class Meta:
-        fields = ('name', 'institution', 'department', 'province', 'district', 'department_name', 'province_name', 'district_name')
+        fields = ('name', 'institution', 'department', 'province', 'district', 'department_name', 'province_name', 'district_name', 'ubigeo_scope')
 
     def get_name(self, obj):
         institution = User.get_institution(obj.get("institution"), obj.get("place_scope"), obj.get("department"), obj.get("province"), obj.get("district"))
         return institution.name
+
+    def get_ubigeo_scope(self, obj):
+        department_name = obj.get('department__name', "")
+        province_name = obj.get('province__name', "")
+        district_name = obj.get('district__name', "")
+        department_name = department_name.title() if department_name else ""
+        province_name = province_name.title() if province_name else ""
+        district_name = district_name.title() if district_name else ""
+        if obj.get("place_scope") == 1:
+            ubigeo_scope = ""
+            if obj.get('department') and obj.get('province') and obj.get('district'):
+                ubigeo_scope = f"{department_name} - {province_name} - {district_name}"
+            elif obj.get('department') and obj.get('province'):
+                ubigeo_scope = f"{department_name} - {province_name}"
+            elif obj.get('department'):
+                ubigeo_scope = department_name
+            return ubigeo_scope or "Nacional"
+        elif obj.get("place_scope") == 2:
+            return department_name
+        elif obj.get("place_scope") == 3:
+            return f"{department_name} - {province_name}"
+        elif obj.get("place_scope") == 4:
+            return f"{department_name} - {province_name} - {district_name}"
+        return ""

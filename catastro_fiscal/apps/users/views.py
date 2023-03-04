@@ -16,6 +16,7 @@ from .serializers import (
 )
 from .models import User, Role, Permission, PermissionType, PermissionNavigation
 from .filters import UserCustomFilter
+from apps.historical.models import HistoricalRecord
 
 
 class UserProfileShortView(APIView):
@@ -36,6 +37,11 @@ class UserViewSet(ModelViewSet):
     filter_class = UserCustomFilter
     filterset_fields = ['is_active', 'role', 'start_date', 'end_date', 'institution', 'department', 'province', 'district']
     search_fields = ['dni', 'district__code', 'district__name']
+
+    def perform_update(self, serializer):
+        user = self.request.user
+        serializer.save()
+        HistoricalRecord.register(user, serializer.instance, type_event=HistoricalRecord.RecordEvent.UPDATED)
 
     @swagger_auto_schema(responses={200: UserListSerializer()})
     def list(self, request, *args, **kwargs):
@@ -61,7 +67,7 @@ class UserViewSet(ModelViewSet):
         queryset = User.objects.select_related('institution').values(
             'institution', 'place_scope', 'department', 'province', 'district', 'department__name', 'province__name', 'district__name'
         ).filter(~Q(institution=None))
-        if user.place_scope_id > 1:
+        if user.place_scope_id > 1 and not user.is_superuser:
             if user.place_scope_id == 2:
                 queryset = queryset.filter(
                     Q(department=user.department),
