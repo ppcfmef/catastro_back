@@ -167,3 +167,5 @@ JWT_AUTH = {
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 LOCALE_PATHS = [BASE_DIR / 'locale']
+
+FIXTURE_DIRS = [BASE_DIR / 'fixtures']
