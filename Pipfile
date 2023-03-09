@@ -5,6 +5,7 @@ verify_ssl = true
 
 [dev-packages]
 flake8 = "*"
+coverage = "*"
 
 [packages]
 django = "<4"
@@ -29,4 +30,4 @@ mssql-django = "*"
 wfastcgi = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "3"

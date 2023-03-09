@@ -23,7 +23,7 @@ obtain_jwt_token_1 = ObtainJSONWebToken.as_view(
 
 
 urlpatterns = [
-    path('sign-in/', obtain_jwt_token_1),
-    path('verify-access-token/', verify_jwt_token),
-    path('refresh-access-token/', refresh_jwt_token)
+    path('sign-in/', obtain_jwt_token_1, name='sign-in'),
+    path('verify-access-token/', verify_jwt_token, name='verify-token'),
+    path('refresh-access-token/', refresh_jwt_token, name='refresh-token')
 ]

@@ -46,9 +46,43 @@ get_random_secret_key()
 ```
 python manage.py runserver --settings=<django_project>.settings.local
 ```
+### Fixture
+* Generar Fixture para datos maestros
+```
+python manage.py dumpdata common master_data places -o fixtures/master.json --settings=<django_project>.settings.local
+```
 
 ### Test
 * Cumplimiento de la guía de estilo de python
 ```
-flake8 .
+pipenv run flake8 .
 ```
+* Generar fixture para test
+```
+pipenv run python manage.py \
+dumpdata --natural-primary --natural-foreign -e contenttypes -e auth.permission -e admin.logentry -e sessions.session \
+-e admin_interface -e colorfield -e rest_captcha --indent 4 -o fixtures/test/db_test.json \
+--settings=<django_project>.settings.local
+```
+* Ejecutar test
+```
+pipenv run python manage.py test <apps.name> --settings=<django_project>.settings.local
+```
+Remplazar `<apps.name>`  por nombre de aplicacion ejemplo la aplicaicon de usuarios `apps.users`
+
+* Ejecutar coverage
+```
+pipenv run coverage run --source='.' manage.py test <apps.name> --settings=catastro_fiscal.settings.local
+```
+Remplazar `<apps.name>`  por nombre de aplicacion ejemplo la aplicaicon de usuarios `apps.users`
+
+* Ver Reporte en consola
+```
+pipenv run coverage report
+```
+
+* Generar Reporte HTML
+```
+pipenv run coverage html
+```
+Abrir la carpeta `htmlcov` y ver el archivo `index.html` en el navegador

@@ -1,0 +1,15 @@
+[run]
+cover_pylib = False
+omit =
+    __init__.py
+    */__init__.py
+    */asgi.py
+    */wsgi.py
+    */migrations/*
+    */tests.py
+    */tests/*
+    */settings/*
+[report]
+exclude_lines =
+    def __str__
+    def __repr__

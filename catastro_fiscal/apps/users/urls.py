@@ -15,7 +15,7 @@ router.register(r'permission/type', PermissionTypeViewSet)
 router.register(r'permission/select', PermissionSelectViewSet)
 router.register(r'permission/(?P<id_permission>[0-9]+)/navigation', PermissionNavigationViewSet)
 router.register(r'permission', PermissionViewSet)
-router.register(r'', UserViewSet)
+router.register(r'', UserViewSet, basename='users')
 
 urlpatterns = [
     path('user/', UserProfileShortView.as_view())
