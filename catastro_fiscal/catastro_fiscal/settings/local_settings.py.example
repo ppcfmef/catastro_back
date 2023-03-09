@@ -65,7 +65,7 @@ SILENCED_SYSTEM_CHECKS = ["security.W019"]
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': env("CACHE_LOCATION_DIR", default='django_cache'),  # noqa: F405
+        'LOCATION': env("CACHE_LOCATION_DIR", default=str(BASE_DIR / 'django_cache')),  # noqa: F405
         'MAX_ENTRIES': 10000,
     }
 }
