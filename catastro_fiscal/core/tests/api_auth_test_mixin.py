@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate
 from rest_framework_jwt.settings import api_settings
-from ..models import User
+from apps.users.models import User
 
 
 class APIAuthTestMixin:
@@ -24,9 +24,23 @@ class APIAuthTestMixin:
             password='password',
             first_name='Admin',
             last_name='Nacional',
+            is_superuser=True
         )
 
         user = authenticate(username='admin', password='password')
+        payload = self.jwt_payload_handler(user)
+
+        self.user_session = {
+            'token': self.jwt_encode_handler(payload),
+            'user': user
+        }
+
+    def auth_login(self, login):
+        """
+        User Auth custom role
+        """
+        self.jwt()
+        user = authenticate(username=login['username'], password=login['password'])
         payload = self.jwt_payload_handler(user)
 
         self.user_session = {

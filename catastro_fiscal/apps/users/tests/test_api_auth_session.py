@@ -1,7 +1,7 @@
 from rest_framework.reverse import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
-from .api_auth_test_mixin import APIAuthTestMixin
+from core.tests.api_auth_test_mixin import APIAuthTestMixin
 
 
 class ApiAuthSessionTest(APIAuthTestMixin, APITestCase):
