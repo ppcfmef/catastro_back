@@ -18,7 +18,7 @@ router.register('owners/register', CreateAndEditOwnerViewset, basename='owners_r
 router.register('owners', LandOwnerViewSet, basename='owners_records')
 router.register('owners', LandOwnerDetailViewSet, basename='owners')
 router.register('detail', LandDetailViewSet, basename='lands')
-router.register('register', LandCreateAndEditViewset)
+router.register('register', LandCreateAndEditViewset, basename='lands_register')
 router.register('owners/search', OwnerSearchByDocumentViewset, basename='owners_search')
 urlpatterns = router.urls + [
     path('summary/', SummaryRecord.as_view()),
