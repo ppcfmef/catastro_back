@@ -13,13 +13,13 @@ router.register('registry', UploadHistoryViewset)  # ToDo: cambiar por upload (c
 router.register('upload/status', UploadStatusViewSet)
 router.register('upload/summary', UploadHistorySummaryViewSet)
 router.register('records/search-inactive', SearchInactiveLandByCpu)
-router.register('records', LandViewSet)
-router.register('owners/register', CreateAndEditOwnerViewset)
-router.register('owners', LandOwnerViewSet)
-router.register('owners', LandOwnerDetailViewSet)
-router.register('detail', LandDetailViewSet)
-router.register('register', LandCreateAndEditViewset)
-router.register('owners/search', OwnerSearchByDocumentViewset)
+router.register('records', LandViewSet, basename='lands_records')
+router.register('owners/register', CreateAndEditOwnerViewset, basename='owners_register')
+router.register('owners', LandOwnerViewSet, basename='owners_records')
+router.register('owners', LandOwnerDetailViewSet, basename='owners')
+router.register('detail', LandDetailViewSet, basename='lands')
+router.register('register', LandCreateAndEditViewset, basename='lands_register')
+router.register('owners/search', OwnerSearchByDocumentViewset, basename='owners_search')
 urlpatterns = router.urls + [
     path('summary/', SummaryRecord.as_view()),
     path('exports/', include('apps.lands.exports.urls', namespace='lands_exports')),

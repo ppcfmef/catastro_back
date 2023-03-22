@@ -119,7 +119,9 @@ class LandOwnerSaveSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def update(self, instance, validated_data):
         nom_update_fiels = ['dni', 'document_type']
-        address = validated_data.pop('address')
+        address = {}
+        if validated_data.get('address'):
+            address = validated_data.pop('address')
         if set(nom_update_fiels).intersection(set(validated_data.keys())):
             raise serializers.ValidationError(f'Los campos {nom_update_fiels} no pueden ser modificados')
         instance = super(LandOwnerSaveSerializer, self).update(instance, validated_data)
