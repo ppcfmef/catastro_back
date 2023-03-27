@@ -51,6 +51,10 @@ class Role(models.Model):
 
     def __str__(self):
         return self.name
+    @property
+    def permission(self):
+        # related one to one
+        return self.permissions.first()
 
 
 class User(AbstractUser):

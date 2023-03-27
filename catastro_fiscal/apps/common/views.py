@@ -1,8 +1,10 @@
-from rest_framework import mixins
+from django.http import Http404
+from rest_framework import mixins, status
+from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from drf_yasg.utils import swagger_auto_schema
 from apps.users.models import RolePermission, PermissionNavigation
-from .serializers import NavigationTreeSerializer, NavigationSerializer
+from .serializers import NavigationTreeSerializer, NavigationSerializer, NavigationAuthorizationSerializer
 from .models import Navigation
 
 
@@ -70,3 +72,14 @@ class NavigationViewViewset(mixins.ListModelMixin, GenericViewSet):
     def get_queryset(self):
         queryset = super(NavigationViewViewset, self).get_queryset()
         return queryset.filter(type='basic').exclude(id='home')
+
+
+class NavigationAuthorizationViewset(mixins.CreateModelMixin, GenericViewSet):
+    queryset = Navigation.objects.all()
+    serializer_class = NavigationAuthorizationSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, context={"request": request})
+        serializer.is_valid(raise_exception=True)
+        # self.perform_create(serializer)
+        return Response(serializer.data, status=status.HTTP_200_OK)
