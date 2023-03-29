@@ -1,6 +1,7 @@
 from rest_framework import mixins, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.decorators import action
 from djangorestframework_camel_case.parser import CamelCaseMultiPartParser
@@ -70,7 +71,7 @@ class LandViewSet(mixins.ListModelMixin, GenericViewSet):
     serializer_class = LandSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, CamelCaseOrderFilter]
     search_fields = ['cup', 'cpm', 'id_cartographic_img', 'id_plot', 'street_name']
-    filterset_fields = ['owner', 'status', 'id']
+    filterset_fields = ['owner', 'status', 'id', 'ubigeo']
     ordering_fields = ['ubigeo', 'cup', 'cpm', 'id_plot', 'id_cartographic_img', 'habilitacion_name', 'street_name',
                        'creation_date']
     ordering = ['-creation_date']
@@ -149,18 +150,22 @@ class SearchInactiveLandByCpu(mixins.RetrieveModelMixin, GenericViewSet):
     lookup_field = 'cup'
 
 
-class SummaryRecord(APIView):
+class SummaryRecord(GenericAPIView):
     queryset = Land.objects.exclude(status=3)
     serializer_class = SummaryRecordSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter, CamelCaseOrderFilter]
+    filterset_fields = ['ubigeo']
 
     def get(self, request, *args, **kwargs):
-        serializer = self.serializer_class(self.get_object(), context={"request": request})
+        queryset = self.filter_queryset(self.get_queryset())
+        summary = self.get_summary(queryset)
+        serializer = self.serializer_class(summary, context={"request": request})
         return Response(serializer.data)
 
-    def get_object(self):
-        total_records = self.queryset.count()
-        mapping_records = self.queryset.filter(longitude__isnull=False, latitude__isnull=False).count()
-        without_mapping_records = total_records - mapping_records
+    def get_summary(self, queryset):
+        total_records = queryset.count()
+        without_mapping_records = queryset.filter(status=0).count()
+        mapping_records = total_records - without_mapping_records
         return {
             'total_records': total_records,
             'mapping_records': mapping_records,
