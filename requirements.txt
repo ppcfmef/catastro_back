@@ -45,6 +45,7 @@ ruamel.yaml==0.17.21
 ruamel.yaml.clib==0.2.7
 sqlparse==0.4.3
 tablib==3.3.0
+typing-extensions==4.5.0
 uritemplate==4.1.1
 urllib3==1.26.14
 wfastcgi==3.0.0
