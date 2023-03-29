@@ -7,4 +7,4 @@ class LandOwnerFilter(django_filters.FilterSet):
 
     class Meta:
         model = LandOwner
-        fields = ['dni', 'name', 'paternal_surname', 'maternal_surname', 'ubigeo', ]
+        fields = ['id', 'dni', 'ubigeo', ]
