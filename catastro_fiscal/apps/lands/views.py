@@ -1,9 +1,7 @@
 from rest_framework import mixins, status
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView
 from rest_framework.viewsets import GenericViewSet
-from rest_framework.decorators import action
 from djangorestframework_camel_case.parser import CamelCaseMultiPartParser
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
@@ -17,7 +15,7 @@ from .serializers import (
 )
 from .services.upload_temporal import UploadTemporalService
 from apps.historical.models import HistoricalRecord
-
+from .filters import LandOwnerFilter
 
 class UploadHistoryViewset(CustomSerializerMixin, mixins.ListModelMixin, mixins.CreateModelMixin, GenericViewSet):
     queryset = UploadHistory.objects.all().order_by('-id')
@@ -105,8 +103,9 @@ class LandCreateAndEditViewset(mixins.CreateModelMixin,
 class LandOwnerViewSet(mixins.ListModelMixin, GenericViewSet):
     queryset = LandOwner.objects.all()
     serializer_class = LandOwnerSerializer
+    filter_class = LandOwnerFilter
     filter_backends = [DjangoFilterBackend, SearchFilter, CamelCaseOrderFilter]
-    search_fields = ['dni', 'name', 'paternal_surname', 'maternal_surname', ]
+    search_fields = ['dni', 'name', 'paternal_surname', 'maternal_surname', 'ubigeo', ]
     filterset_fields = ['id', ]
     ordering_fields = ['document_type', 'dni', 'name', 'paternal_surname', 'maternal_surname', 'creation_date']
     ordering = ['-creation_date']
