@@ -94,6 +94,7 @@ class LandOwner(AbstractAudit):
     number_lands = models.IntegerField(default=0, blank=True, null=True, db_column='numero_tierras')
     upload_history = models.ForeignKey(UploadHistory, blank=True, null=True, on_delete=models.SET_NULL,
                                        db_column='historial_carga')
+    lands = models.ManyToManyField('Land', through='LandOwnerDetail', related_name='owners')
 
     class Meta:
         db_table = 'PROPIETARIO'
@@ -192,6 +193,7 @@ class LandBase(AbstractAudit):
     apartment_number = models.CharField(max_length=20, blank=True, null=True, db_column='numero_departamento')
     site = models.IntegerField(blank=True, null=True, db_column='lugar')
     built_area = models.FloatField(blank=True, null=True, db_column='area_construida')
+    # ToDo: Este campo sera eliminado no utilizar
     owner = models.ForeignKey(LandOwner, models.SET_NULL, blank=True, null=True, db_column='id_propietario')
     inactive_reason = models.TextField(blank=True, null=True, db_column='razon_inactivo')
 
@@ -206,6 +208,17 @@ class Land(LandBase):
         db_table = 'PREDIO'
         verbose_name = _('land')
         verbose_name_plural = _('lands')
+
+
+class LandOwnerDetail(models.Model):
+    land = models.ForeignKey(Land, on_delete=models.CASCADE, db_column='id_predio')
+    owner = models.ForeignKey(LandOwner, on_delete=models.CASCADE, db_column='id_propietario')
+    ubigeo = models.ForeignKey(District, on_delete=models.SET_NULL, blank=True, null=True, db_column='ubigeo')
+
+    class Meta:
+        db_table = 'PREDIO_PROPIETARIO'
+        verbose_name = _('land Owner Detail')
+        verbose_name_plural = _('lands Owner Detail')
 
 
 class LandAudit(LandBase):
