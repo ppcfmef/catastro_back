@@ -80,8 +80,9 @@ class TemploralUploadRecord(models.Model):
 
 class LandOwner(AbstractAudit):
     id = models.AutoField(primary_key=True)
-    code = models.CharField(max_length=50, blank=True, null=True, db_column='cod_contr')
-    document_type = models.CharField(max_length=2, blank=True, null=True, db_column='tip_doc')
+    ubigeo = models.ForeignKey(District, on_delete=models.CASCADE, db_column='ubigeo')
+    code = models.CharField(max_length=50, db_column='cod_contr')
+    document_type = models.CharField(max_length=2, db_column='tip_doc')
     dni = models.CharField(max_length=20, db_column='doc_iden')  # ToDo: Change for document
     name = models.CharField(max_length=150, blank=True, null=True, db_column='nombre')
     paternal_surname = models.CharField(max_length=150, blank=True, null=True, db_column='ap_pat')
@@ -98,6 +99,7 @@ class LandOwner(AbstractAudit):
 
     class Meta:
         db_table = 'PROPIETARIO'
+        unique_together = ["ubigeo", "code"]
         verbose_name = _('land owner')
         verbose_name_plural = _('land owners')
 
@@ -133,6 +135,8 @@ class LandBase(AbstractAudit):
         (3, 'Inactivo'),
     )
     id = models.AutoField(primary_key=True)
+    ubigeo = models.ForeignKey(District, on_delete=models.CASCADE, db_column='ubigeo')
+    cpm = models.CharField(max_length=15, db_column='cod_pre')
     source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True, null=True, db_column='origen')
     status = models.PositiveSmallIntegerField(choices=STATUS_CHOICE, blank=True, null=True, default=0,
                                               db_column='estado')
@@ -143,9 +147,7 @@ class LandBase(AbstractAudit):
                                            db_column='id_imagen_cartografica')
     id_object_img = models.IntegerField(blank=True, null=True, help_text=_('id object image'),
                                         db_column='id_imagen_objeto')
-    cpm = models.CharField(max_length=100, blank=True, null=True, db_column='cod_pre')
     sec_ejec = models.CharField(max_length=6, blank=True, null=True, db_column='sec_ejec')
-    ubigeo = models.CharField(max_length=6, blank=True, null=True, db_column='ubigeo')
     cup = models.CharField(max_length=20, blank=True, null=True, db_column='cod_cpu')
     cod_sect = models.CharField(max_length=2, blank=True, null=True, db_column='cod_sect')
     cod_uu = models.CharField(max_length=4, blank=True, null=True, db_column='cod_uu')
@@ -206,6 +208,7 @@ class Land(LandBase):
 
     class Meta:
         db_table = 'PREDIO'
+        unique_together = ["ubigeo", "cpm"]
         verbose_name = _('land')
         verbose_name_plural = _('lands')
 
