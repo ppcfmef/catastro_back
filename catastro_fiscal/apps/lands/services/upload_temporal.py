@@ -8,6 +8,7 @@ class UploadTemporalService:
 
     def execute(self, upload_history: UploadHistory):
         records = self.read(upload_history)
+        upload_history = self.update_ubigeo(upload_history, records)
         self.temporal_upload(upload_history, records)
         self.cancel_last_upload(upload_history)
 
@@ -17,8 +18,9 @@ class UploadTemporalService:
     def update_ubigeo(self, upload_history, records):
         if len(records) > 0:
             record = records[0]
-            upload_history.ubigeo_id = str(record.get('ubigeo')).strip()
-            upload_history.save()
+            ubigeo = str(record.get('ubigeo')).strip()
+            UploadHistory.objects.filter(id=upload_history.id).update(ubigeo_id=ubigeo)
+        return UploadHistory.objects.filter(id=upload_history.id).first()
 
     def _validate_empty_field(self, field):
         return field is None or str(field).strip('') == ''
@@ -183,7 +185,7 @@ class UploadTemporalService:
                 'cpm': 'cod_pre',
                 'id_plot': 'id_lote',
                 'sec_ejec': 'sec_ejec',
-                'ubigeo': 'ubigeo',
+                'ubigeo_id': 'ubigeo',
                 'cup': 'cod_cpu',
                 'cod_sect': 'cod_sect',
                 'cod_uu': 'cod_uu',
@@ -230,6 +232,7 @@ class UploadTemporalService:
 
     def land_owner_map(self, upload_history, record):
         return {
+            'ubigeo_id': record.get('ubigeo'),
             'code': record.get('cod_contr'),
             'document_type': record.get('tip_doc'),
             'dni': record.get('doc_iden'),
