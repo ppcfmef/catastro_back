@@ -141,18 +141,21 @@ class UploadTemporalService:
                 })
             elif owner_key not in owner_records_unique:
                 owner_records_unique.append(owner_key)
-                owner_item_document = LandOwner.objects.filter(
-                    ubigeo=ubigeo, document_type=document_type, dni=document
-                )
 
-                if owner_item_document.exists():
-                    tmp_upload_record = self._make_tmp_upload_record(
-                        upload_history, records,
-                        status='ERROR',
-                        error_code='NOT_INSERT[exists_owner_with_document]'
+                if document_type is not None and document is not None:
+
+                    owner_item_document = LandOwner.objects.filter(
+                        ubigeo=ubigeo, document_type=document_type, dni=document
                     )
-                    temploral_upload_record_bulk.append(tmp_upload_record)
-                    continue
+
+                    if owner_item_document.exists():
+                        tmp_upload_record = self._make_tmp_upload_record(
+                            upload_history, records,
+                            status='ERROR',
+                            error_code='NOT_INSERT[exists_owner_with_document]'
+                        )
+                        temploral_upload_record_bulk.append(tmp_upload_record)
+                        continue
 
                 owner_record_status = 1
             else:

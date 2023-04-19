@@ -82,8 +82,8 @@ class LandOwner(AbstractAudit):
     id = models.AutoField(primary_key=True)
     ubigeo = models.ForeignKey(District, on_delete=models.CASCADE, db_column='ubigeo')
     code = models.CharField(max_length=50, db_column='cod_contr')
-    document_type = models.CharField(max_length=2, db_column='tip_doc')
-    dni = models.CharField(max_length=20, db_column='doc_iden')  # ToDo: Change for document
+    document_type = models.CharField(max_length=2, blank=True, null=True, db_column='tip_doc')
+    dni = models.CharField(max_length=20, blank=True, null=True, db_column='doc_iden')  # ToDo: Change for document
     name = models.CharField(max_length=150, blank=True, null=True, db_column='nombre')
     paternal_surname = models.CharField(max_length=150, blank=True, null=True, db_column='ap_pat')
     maternal_surname = models.CharField(max_length=150, blank=True, null=True, db_column='ap_mat')
