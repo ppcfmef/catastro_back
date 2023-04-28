@@ -75,6 +75,25 @@ class LandViewSet(mixins.ListModelMixin, GenericViewSet):
                        'creation_date']
     ordering = ['-creation_date']
 
+    @action(methods=['GET'], detail=False, url_path='by-owner/(?P<owner_id>[0-9]+)')
+    def record_by_owner(self, request, *args, **kwargs):
+        owner_id = kwargs.get('owner_id')
+        ubigeo = request.query_params.get('ubigeo')
+        qs_detail = LandOwnerDetail.objects.filter(owner_id=owner_id)
+        if ubigeo:
+            qs_detail = qs_detail.filter(ubigeo=ubigeo)
+
+        lands_id = qs_detail.values_list('land_id', flat=True)
+        lands = self.get_queryset().filter(id__in=list(lands_id))
+        queryset = self.filter_queryset(lands)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
 
 class LandDetailViewSet(mixins.RetrieveModelMixin, GenericViewSet):
     queryset = Land.objects.all()
