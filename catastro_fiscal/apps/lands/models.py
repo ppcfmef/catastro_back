@@ -80,9 +80,10 @@ class TemploralUploadRecord(models.Model):
 
 class LandOwner(AbstractAudit):
     id = models.AutoField(primary_key=True)
-    code = models.CharField(max_length=50, blank=True, null=True, db_column='cod_contr')
+    ubigeo = models.ForeignKey(District, on_delete=models.CASCADE, db_column='ubigeo')
+    code = models.CharField(max_length=50, db_column='cod_contr')
     document_type = models.CharField(max_length=2, blank=True, null=True, db_column='tip_doc')
-    dni = models.CharField(max_length=20, db_column='doc_iden')  # ToDo: Change for document
+    dni = models.CharField(max_length=20, blank=True, null=True, db_column='doc_iden')  # ToDo: Change for document
     name = models.CharField(max_length=150, blank=True, null=True, db_column='nombre')
     paternal_surname = models.CharField(max_length=150, blank=True, null=True, db_column='ap_pat')
     maternal_surname = models.CharField(max_length=150, blank=True, null=True, db_column='ap_mat')
@@ -94,9 +95,11 @@ class LandOwner(AbstractAudit):
     number_lands = models.IntegerField(default=0, blank=True, null=True, db_column='numero_tierras')
     upload_history = models.ForeignKey(UploadHistory, blank=True, null=True, on_delete=models.SET_NULL,
                                        db_column='historial_carga')
+    lands = models.ManyToManyField('Land', through='LandOwnerDetail', related_name='owners')
 
     class Meta:
         db_table = 'PROPIETARIO'
+        unique_together = ["ubigeo", "code"]
         verbose_name = _('land owner')
         verbose_name_plural = _('land owners')
 
@@ -132,6 +135,8 @@ class LandBase(AbstractAudit):
         (3, 'Inactivo'),
     )
     id = models.AutoField(primary_key=True)
+    ubigeo = models.ForeignKey(District, on_delete=models.CASCADE, db_column='ubigeo')
+    cpm = models.CharField(max_length=15, db_column='cod_pre')
     source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True, null=True, db_column='origen')
     status = models.PositiveSmallIntegerField(choices=STATUS_CHOICE, blank=True, null=True, default=0,
                                               db_column='estado')
@@ -142,9 +147,7 @@ class LandBase(AbstractAudit):
                                            db_column='id_imagen_cartografica')
     id_object_img = models.IntegerField(blank=True, null=True, help_text=_('id object image'),
                                         db_column='id_imagen_objeto')
-    cpm = models.CharField(max_length=100, blank=True, null=True, db_column='cod_pre')
     sec_ejec = models.CharField(max_length=6, blank=True, null=True, db_column='sec_ejec')
-    ubigeo = models.CharField(max_length=6, blank=True, null=True, db_column='ubigeo')
     cup = models.CharField(max_length=20, blank=True, null=True, db_column='cod_cpu')
     cod_sect = models.CharField(max_length=2, blank=True, null=True, db_column='cod_sect')
     cod_uu = models.CharField(max_length=4, blank=True, null=True, db_column='cod_uu')
@@ -192,6 +195,7 @@ class LandBase(AbstractAudit):
     apartment_number = models.CharField(max_length=20, blank=True, null=True, db_column='numero_departamento')
     site = models.IntegerField(blank=True, null=True, db_column='lugar')
     built_area = models.FloatField(blank=True, null=True, db_column='area_construida')
+    # ToDo: Este campo sera eliminado no utilizar
     owner = models.ForeignKey(LandOwner, models.SET_NULL, blank=True, null=True, db_column='id_propietario')
     inactive_reason = models.TextField(blank=True, null=True, db_column='razon_inactivo')
 
@@ -204,8 +208,20 @@ class Land(LandBase):
 
     class Meta:
         db_table = 'PREDIO'
+        unique_together = ["ubigeo", "cpm"]
         verbose_name = _('land')
         verbose_name_plural = _('lands')
+
+
+class LandOwnerDetail(models.Model):
+    land = models.ForeignKey(Land, on_delete=models.CASCADE, db_column='id_predio')
+    owner = models.ForeignKey(LandOwner, on_delete=models.CASCADE, db_column='id_propietario')
+    ubigeo = models.ForeignKey(District, on_delete=models.SET_NULL, blank=True, null=True, db_column='ubigeo')
+
+    class Meta:
+        db_table = 'PREDIO_PROPIETARIO'
+        verbose_name = _('land Owner Detail')
+        verbose_name_plural = _('lands Owner Detail')
 
 
 class LandAudit(LandBase):

@@ -1,6 +1,6 @@
 from django.db import transaction
 from rest_framework import serializers
-from .models import UploadHistory, Land, LandOwner, OwnerAddress, LandAudit
+from .models import UploadHistory, Land, LandOwner, OwnerAddress, LandAudit, LandOwnerDetail
 from .services.upload_temporal import UploadTemporalService
 from .services.upload_land import UploadLandService
 
@@ -43,9 +43,14 @@ class UploadStatusSerializer(serializers.ModelSerializer):
 
 
 class LandSerializer(serializers.ModelSerializer):
+    has_owners = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = Land
         fields = '__all__'  # ToDo: estandarizar listado de predios
+
+    def get_has_owners(self, obj):
+        return LandOwnerDetail.objects.filter(land_id=obj.id).exists()
 
 
 class LandSaveSerializer(serializers.ModelSerializer):
@@ -54,8 +59,11 @@ class LandSaveSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
+        owner = validated_data.get('owner')
+        ubigeo = validated_data.get('ubigeo')
         instance = super(LandSaveSerializer, self).create(validated_data)
-        instance.owner.number_lands = Land.objects.filter(owner=instance.owner).count()
+        LandOwnerDetail.objects.create(owner=owner, land=instance, ubigeo=ubigeo)
+        instance.owner.number_lands = LandOwnerDetail.objects.filter(owner=owner).count()
         instance.owner.save()
         return instance
 

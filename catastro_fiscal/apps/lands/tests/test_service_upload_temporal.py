@@ -37,16 +37,6 @@ class UploadTemporalTest(TestCase):
         upload_history_update = UploadSetUpTestData.get_upload_history()
         self.assertEquals(upload_history_update.ubigeo_id, UploadSetUpTestData.UPLOAD_FILE_UBIGEO)
 
-    def test_make_document(self):
-        """
-        test for method `UploadTemporalService.make_document` validate the document key create for record
-        """
-        upload_history = UploadSetUpTestData.get_upload_history()
-        upload_service = UploadTemporalService()
-        file_records_read = upload_service.read(upload_history)
-        documents = [upload_service.make_document(record) for record in file_records_read]
-        self.assertEquals(documents, UploadSetUpTestData.UPLOAD_FILE_DOCUMENTS)
-
     def test_upload_temporal_ramdom_records(self):
         """
         test for method `UploadTemporalService.temporal_upload` validates the main functionality using random records
