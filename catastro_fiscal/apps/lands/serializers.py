@@ -59,8 +59,11 @@ class LandSaveSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
+        owner = validated_data.get('owner')
+        ubigeo = validated_data.get('ubigeo')
         instance = super(LandSaveSerializer, self).create(validated_data)
-        instance.owner.number_lands = Land.objects.filter(owner=instance.owner).count()
+        LandOwnerDetail.objects.create(owner=owner, land=instance, ubigeo=ubigeo)
+        instance.owner.number_lands = LandOwnerDetail.objects.filter(owner=owner).count()
         instance.owner.save()
         return instance
 
