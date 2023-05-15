@@ -59,6 +59,7 @@ LOCAL_APPS = [
     'apps.integrations.business.apps.BusinessConfig',
     'apps.captchae.apps.CaptchaExampleConfig',
     'apps.historical.apps.HistoricalConfig',
+    'apps.maintenance.apps.MaintenanceConfig',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
