@@ -4,6 +4,7 @@ from .models import  Result,Application,ApplicationObservationDetail,Application
 #,AplicationType,
 
 from apps.lands.models import Land
+from apps.master_data.models import MasterCodeStreet
 import django_filters
 from django import forms
 # class AplicationType(serializers.ModelSerializer):
@@ -31,7 +32,7 @@ class ApplicationListSerializer(serializers.ModelSerializer):
 
     def get_lands(self, obj):
         lands_id=ApplicationLandDetail.objects.filter(application_id=obj.id).values_list('land_id', flat=True)
-        return  list(Land.objects.filter(id__in=list(lands_id)).values('cup'))
+        return  list(Land.objects.filter(id__in=list(lands_id)).values('cpm'))
     
     def get_status(self,obj):
         return obj.get_id_status_display()
@@ -61,15 +62,12 @@ class ApplicationSerializer(serializers.ModelSerializer):
 
 
     
-
-    
-
-    
 class LandListSerializer(serializers.ModelSerializer):
     has_applications = serializers.SerializerMethodField()
     district = serializers.CharField(source='ubigeo.name')
     province = serializers.CharField(source='ubigeo.province.name')
     department = serializers.CharField(source='ubigeo.province.department.name')
+    street_type_name = serializers.SerializerMethodField()
     
     class Meta:
         model = Land
@@ -77,7 +75,13 @@ class LandListSerializer(serializers.ModelSerializer):
         
     def get_has_applications(self, obj):
         return ApplicationLandDetail.objects.filter(land_id=obj.id).exists()
-
+    
+    def get_street_type_name(self,obj):
+        street=MasterCodeStreet.objects.get(id= obj.street_type)
+        
+        return street.name
+    
+    
 class LandByApplicationListSerializer(serializers.ModelSerializer):
     
     
@@ -97,3 +101,13 @@ class ResultSerializer(serializers.ModelSerializer):
         fields = '__all__'  
 
 
+class ResultDetailCustomSerializer(serializers.ModelSerializer):
+    address = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Result
+        fields = ('address','cpm','urban_lot_number')
+        
+    def get_address(self,obj):
+        street_type=MasterCodeStreet.objects.get(id= obj.street_type)
+        return '{} {} {}'.format(street_type.name,obj.street_name,obj.municipal_number)

@@ -15,7 +15,7 @@ from apps.lands.serializers import LandSerializer
 from rest_framework.decorators import authentication_classes ,permission_classes
 from django.forms.models import model_to_dict
 from .serializers import (
-    ApplicationSerializer,ApplicationListSerializer,LandListSerializer,ResultSerializer,LandApplicationSerializer,LandByApplicationListSerializer,ApplicationObservationDetailSerializer
+    ApplicationSerializer,ApplicationListSerializer,LandListSerializer,ResultSerializer,LandApplicationSerializer,LandByApplicationListSerializer,ApplicationObservationDetailSerializer,ResultDetailCustomSerializer
 )
 
 
@@ -34,11 +34,11 @@ class ApplicationViewSet( ModelViewSet):
         
     
     def list(self, request, *args, **kwargs):
-        cup = self.request.query_params.get('cup',None)
+        cpm = self.request.query_params.get('cpm',None)
         #print('cup>>>',cup)
-        if cup is not None:
+        if cpm is not None:
             try:
-                id_apps=ApplicationLandDetail.objects.filter(land__cup=cup).values_list('application_id',flat=True)
+                id_apps=ApplicationLandDetail.objects.filter(land__cpm=cpm).values_list('application_id',flat=True)
                 a=Application.objects.filter(id__in=id_apps)
                 queryset = self.filter_queryset(a)
                 page = self.paginate_queryset(queryset)
@@ -61,7 +61,6 @@ class ApplicationViewSet( ModelViewSet):
             
          
 
-    
     def create(self,request, *args, **kwargs):
         lands = request.data.get('lands')
         results = request.data.get('results')
@@ -79,10 +78,19 @@ class ApplicationViewSet( ModelViewSet):
             rserializer.is_valid(raise_exception=True)
             rserializer.save()
             ApplicationResultDetail.objects.create(application_id= serializer.data['id'], result_id = rserializer.data['id'])
-                
+        
+        
+         
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-        #except:
-            #return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
+    
+    @action(methods=['POST'], detail=False, url_path='upload-file')
+    def upload_file(self,request, *args, **kwargs):
+            
+        id_app=request.data['id_app']
+        a=Application.objects.get(id=id_app)
+        a.support=request.data['file']
+        a.save()
+        return Response({'success':True})
 
 @authentication_classes([])
 @permission_classes([])
@@ -90,8 +98,8 @@ class LandViewSet(ModelViewSet):
     queryset = Land.objects.all()
     serializer_class = LandListSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, CamelCaseOrderFilter]
-    filterset_fields = ['id','cup','ubigeo']
-    search_fields = ['ubigeo__name','cup' ]
+    filterset_fields = ['id','cpm','ubigeo']
+    search_fields = ['ubigeo__name','cpm' ]
     
     def get_serializer_class(self):
         if self.action == 'list':
@@ -106,7 +114,7 @@ class LandViewSet(ModelViewSet):
         queryset = self.filter_queryset(lands)
         page = self.paginate_queryset(queryset)
         if page is not None:
-            serializer = self.get_serializer(page, many=True)
+            serializer = LandListSerializer(page, many=True)
             return self.get_paginated_response(serializer.data)
 
         serializer = self.get_serializer(queryset, many=True)
@@ -129,10 +137,29 @@ class LandViewSet(ModelViewSet):
 
         serializer = LandByApplicationListSerializer(queryset, many=True)
         return Response(serializer.data)
-        
+
+@authentication_classes([])
+@permission_classes([])
 class ResultViewSet(ModelViewSet):
     queryset = Result.objects.all()
     serializer_class = ResultSerializer
+    
+    @action(methods=['GET'], detail=False, url_path='results-by-application/(?P<application_id>[0-9]+)')
+    def get_results_by_application(self, request, *args, **kwargs):
+        application_id = kwargs.get('application_id')
+        
+        lands_id = ApplicationResultDetail.objects.filter(application_id=application_id).values_list('result_id', flat=True)
+        
+        lands = self.get_queryset().filter(id__in=list(lands_id))
+        queryset = self.filter_queryset(lands)
+        page = self.paginate_queryset(queryset)
+        
+        if page is not None:
+            serializer = ResultDetailCustomSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = ResultDetailCustomSerializer(queryset, many=True)
+        return Response(serializer.data)
     
     
 @authentication_classes([])
@@ -151,4 +178,7 @@ class ApplicationObservationDetailViewSet(ModelViewSet):
         a.save()
         serializer=self.get_serializer(data =model_to_dict(a), many=False)
         serializer.is_valid(raise_exception=True)
+        app=Application.objects.get(id=application_id)
+        app.id_status= 3
+        app.save()
         return Response(serializer.data,status=status.HTTP_201_CREATED )

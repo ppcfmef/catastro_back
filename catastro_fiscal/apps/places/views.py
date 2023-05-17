@@ -17,7 +17,7 @@ class ProvinceSelectViewSet(mixins.ListModelMixin, GenericViewSet):
     filterset_fields = ['department']
 
 
-class DistrictSelectViewSet(mixins.ListModelMixin, GenericViewSet):
+class DistrictSelectViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericViewSet):
     queryset = District.objects.all()
     serializer_class = DistrictSerializer
     pagination_class = None

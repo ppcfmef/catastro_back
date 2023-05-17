@@ -26,7 +26,7 @@ class Application(models.Model):
         (1,'Reasignar ubicación'),
         (2,'Acumulación'),
         (3,'División'),
-        (4,'Eliminar'),
+        (4,'Inactivar'),
     )
           
     
@@ -38,7 +38,7 @@ class Application(models.Model):
     date = models.DateTimeField(null=True, db_column='fecha',auto_now=True)
     id_status = models.PositiveSmallIntegerField(blank=True, null=True, db_column='estado',choices=STATUS_CHOICE)
     ubigeo = models.ForeignKey(District, on_delete=models.SET_NULL, blank=True, null=True, db_column='ubigeo')
-
+    support = models.FileField(upload_to='sustento/',db_column='sustento', blank=True, null=True)
     class Meta:
         db_table = 'SOLICITUD'
     
