@@ -77,9 +77,14 @@ class LandListSerializer(serializers.ModelSerializer):
         return ApplicationLandDetail.objects.filter(land_id=obj.id).exists()
     
     def get_street_type_name(self,obj):
-        street=MasterCodeStreet.objects.get(id= obj.street_type)
+        try:
+            street=MasterCodeStreet.objects.get(id= obj.street_type)
+            return street.name
+        except MasterCodeStreet.DoesNotExist:
+            return ''
+            
         
-        return street.name
+        
     
     
 class LandByApplicationListSerializer(serializers.ModelSerializer):
