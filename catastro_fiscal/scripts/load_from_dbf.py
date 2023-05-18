@@ -43,7 +43,7 @@ def land_map():
         'front_length': 'longitud_f',
         # 'location_park': 'ubicacion_parque',
         'group_use_desc': 'grupo_uso_',
-        'number_inhabitants': 'cantidad_habitantes',
+        'number_inhabitants': 'cantidad_h',
         'classification_land_desc': 'clasificac',
         'build_status_desc': 'estado_con',
         'property_type': 'tipo_predi',
@@ -56,8 +56,7 @@ def land_map():
         'resolution_document': 'ndoc_res',
 
         'built_area': 'area_const',
-        'number_inhabitants': 'cantidad_h',
-        'id_land_cartographic': 'id_img',
+        'id_cartographic_img': 'id_img',
         'apartment_number': 'num_dep'
     }
 
@@ -88,7 +87,7 @@ def run():
     owner_mapper = land_owner()
 
     df.columns = df.columns.str.lower()
-    df_land = df[list(map_land.values())]#.head(100)
+    df_land = df[list(map_land.values())]
     ubigeo = str(df_land.iloc[0]['ubigeo']).strip()[:6]
     records = df_land.where(pd.notnull(df_land), None).to_dict('records')
     land_key_unique = []
@@ -101,8 +100,13 @@ def run():
     valid_records = []
     # Insertar masiva table de registros unicos
     for record in records:
+        ubigeo_record = record.get('ubigeo')
         cpm = record.get('cod_pre')
         owner_code = record.get('cod_contr')
+
+        if ubigeo_record is None:
+            print('>>> error ubigeo: ', record)
+            continue
 
         if cpm is None:
             print('>>> error cpm: ', record)
@@ -128,15 +132,16 @@ def run():
             land_record = {key: None if pd.isna(record.get(value)) else record.get(value)
                            for key, value in land_mapper.items()}
 
+            longitude = land_record.get('longitude')
+            latitude = land_record.get('latitude')
+
             land_record.update({
+                'longitude':  longitude if longitude else None,
+                'latitude': latitude if longitude else None,
                 'upload_history_id': upload_history.id,
-                'source': 'carga_masiva'
+                'source': 'carga_masiva',
+                'status': int(1 if longitude and latitude else 0)
             })
-
-            longitude = record.get('coord_x')
-            latitude = record.get('coord_x')
-            land_record.update({'status': int(longitude is not None and latitude is not None)})
-
             land_records_unique.append(Land(**land_record))
 
         # print(ubigeo, cpm, owner_code)
@@ -147,7 +152,6 @@ def run():
     # Insertar tabla intermedia
     land_owner_details = []
     for record in valid_records:
-        ubigeo = str(record.get('ubigeo')).strip()[:6]
         cpm = record.get('cod_pre')
         owner_code = record.get('cod_contr')
 
