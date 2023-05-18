@@ -45,6 +45,7 @@ THIRD_PARTY_APPS = [
     'drf_yasg',
     'import_export',
     'rest_captcha',
+    'django_extensions',
 ]
 
 LOCAL_APPS = [
