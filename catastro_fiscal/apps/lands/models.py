@@ -127,6 +127,7 @@ class LandBase(AbstractAudit):
         ('carga_masiva', 'Carga Masiva'),
         ('asignar_lote', 'Asignar Lote'),
         ('asignar_img', 'Asignar Imagen'),
+         ('mantenimiento_pre', 'Mantenimiento de Predio'),
     )
     STATUS_CHOICE = (
         (0, 'Sin Cartografia'),
