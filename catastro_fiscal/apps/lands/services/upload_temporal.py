@@ -90,14 +90,14 @@ class UploadTemporalService:
             # Validar ubigeo
             if self._valid_ubigeo(ubigeo):
                 temploral_upload_record_bulk.append(
-                    self._make_tmp_upload_record(upload_history, records, error_code='IS_REQUIRED[ubigeo]')
+                    self._make_tmp_upload_record(upload_history, record, error_code='IS_REQUIRED[ubigeo]')
                 )
                 continue
 
             # Validar predio
             if self._validate_empty_field(field=cpm):
                 temploral_upload_record_bulk.append(
-                    self._make_tmp_upload_record(upload_history, records, error_code='IS_REQUIRED[cod_pre]')
+                    self._make_tmp_upload_record(upload_history, record, error_code='IS_REQUIRED[cod_pre]')
                 )
                 continue
 
@@ -120,7 +120,7 @@ class UploadTemporalService:
             # Validar que exista el contribuyente
             if self._validate_empty_field(field=owner_code):
                 tmp_upload_record = self._make_tmp_upload_record(
-                    upload_history, records,
+                    upload_history, record,
                     land_record=land_record,
                     land_record_status=land_record_status,
                     error_code='WARNING[cod_contr_empty]'
@@ -150,7 +150,7 @@ class UploadTemporalService:
 
                     if owner_item_document.exists():
                         tmp_upload_record = self._make_tmp_upload_record(
-                            upload_history, records,
+                            upload_history, record,
                             status='ERROR',
                             error_code='NOT_INSERT[exists_owner_with_document]'
                         )
@@ -163,14 +163,14 @@ class UploadTemporalService:
 
             if land_record_status == 0 and owner_record_status == 0:
                 tmp_upload_record = self._make_tmp_upload_record(
-                    upload_history, records,
+                    upload_history, record,
                     status='ERROR',
                     error_code='DUPLICATE'
                 )
                 temploral_upload_record_bulk.append(tmp_upload_record)
             else:
                 tmp_upload_record = self._make_tmp_upload_record(
-                    upload_history, records,
+                    upload_history, record,
                     land_record=land_record,
                     land_record_status=land_record_status,
                     owner_record=owner_record,

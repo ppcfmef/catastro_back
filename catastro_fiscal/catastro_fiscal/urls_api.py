@@ -13,4 +13,5 @@ urlpatterns = [
     path('gis/', include('apps.gis.urls', namespace='api_gis')),
     path('integrations/', include('apps.integrations.urls', namespace='api_integrations')),
     path('historical-records/', include('apps.historical.urls', namespace='historical_records')),
+    path('maintenance/', include('apps.maintenance.urls', namespace='api_maintenance')),
 ]

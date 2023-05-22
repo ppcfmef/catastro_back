@@ -6,6 +6,8 @@ verify_ssl = true
 [dev-packages]
 flake8 = "*"
 coverage = "*"
+pandas = "*"
+simpledbf = "*"
 
 [packages]
 django = "<4"
@@ -28,6 +30,7 @@ django-rest-captcha = "*"
 django-simple-captcha = "*"
 mssql-django = "*"
 wfastcgi = "*"
+django-extensions = "*"
 
 [requires]
 python_version = "3"

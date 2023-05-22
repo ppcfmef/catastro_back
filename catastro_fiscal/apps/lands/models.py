@@ -22,7 +22,7 @@ class UploadHistory(models.Model):
         ('APPROVED', _('Approved')),
     )
     id = models.AutoField(primary_key=True)
-    file_upload = models.FileField(upload_to='lands/registry')
+    file_upload = models.FileField(upload_to='lands/registry', null=True)
     start_date = models.DateTimeField(auto_now_add=True)
     end_date = models.DateTimeField(null=True, default=None)
     status = models.CharField(max_length=20, choices=STATUS_CHOICE, default='INITIAL')
@@ -127,6 +127,7 @@ class LandBase(AbstractAudit):
         ('carga_masiva', 'Carga Masiva'),
         ('asignar_lote', 'Asignar Lote'),
         ('asignar_img', 'Asignar Imagen'),
+         ('mantenimiento_pre', 'Mantenimiento de Predio'),
     )
     STATUS_CHOICE = (
         (0, 'Sin Cartografia'),
