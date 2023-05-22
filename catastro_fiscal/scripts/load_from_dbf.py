@@ -160,3 +160,8 @@ def run():
         land_owner_details.append(LandOwnerDetail(land=land, owner=owner, ubigeo_id=ubigeo))
 
     LandOwnerDetail.objects.bulk_create(land_owner_details)
+
+    # contador de predios
+    for landowner in upload_history.landowner_set.all():
+        number_lands = LandOwnerDetail.objects.filter(owner_id=landowner.id).count()
+        LandOwner.objects.filter(id=landowner.id).update(number_lands=number_lands)
