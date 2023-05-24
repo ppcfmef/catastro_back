@@ -100,3 +100,8 @@ Este comando ejecutara el comando runserver e iniciara el proyecto en el puerto 
 ```
 sudo docker run -p 8000:8000 catastro_fiscal python manage.py runserver 0.0.0.0:8000
 ```
+
+#### Ejecutar usando docker-compose
+```
+sudo docker-compose -f docker/docker-compose.yml up -d
+```
