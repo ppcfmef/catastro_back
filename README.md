@@ -86,3 +86,29 @@ pipenv run coverage report
 pipenv run coverage html
 ```
 Abrir la carpeta `htmlcov` y ver el archivo `index.html` en el navegador
+
+### Docker
+para facilitar el uso y facilitar cualquier problema de dependencias se implementa el archivo docker/Dockerfile
+
+#### Generar la imagen Docker (build)
+```
+sudo docker build -t catastro_fiscal -f docker/Dockerfile .
+```
+
+#### Ejecutar runserver con Docker
+Este comando ejecutara el comando runserver e iniciara el proyecto en el puerto 8000
+```
+sudo docker run -p 8000:8000 catastro_fiscal python manage.py runserver 0.0.0.0:8000
+```
+
+#### Ejecutar usando docker-compose
+```
+sudo docker-compose -f docker/docker-compose.yml up -d
+```
+
+### Dramatiq
+#### Ejecutar Dramatiq 
+La cantidad de procesos y de hilos dependera de las capacidades del CPU como minimo recomendamos 4
+```
+python manage.py rundramatiq --processes 4 --threads 4 --settings=catastro_fiscal.settings.local
+```
