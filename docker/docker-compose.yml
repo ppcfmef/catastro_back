@@ -14,6 +14,9 @@ services:
     environment:
       - ENVIRONMENT=local
       - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - ../catastro_fiscal/db.sqlite3:/usr/src/app/db.sqlite3
+      - ../catastro_fiscal/media:/usr/src/app/media
     depends_on:
       - redis
 
@@ -28,6 +31,9 @@ services:
     environment:
       - ENVIRONMENT=local
       - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - ../catastro_fiscal/db.sqlite3:/usr/src/app/db.sqlite3
+      - ../catastro_fiscal/media:/usr/src/app/media
     depends_on:
       - redis
 
