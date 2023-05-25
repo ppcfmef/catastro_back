@@ -1,6 +1,7 @@
 from django.db import transaction
 from rest_framework import serializers
 from .models import UploadHistory, Land, LandOwner, OwnerAddress, LandAudit, LandOwnerDetail
+from .tasks import process_upload_tenporal
 from .services.upload_temporal import UploadTemporalService
 from .services.upload_land import UploadLandService
 
@@ -26,7 +27,7 @@ class UploadHistorySerializer(serializers.ModelSerializer):
         return UploadTemporalService().get_temporal_summary(instance)
 
     def load_file_upload(self, instance):
-        UploadTemporalService().execute(instance)
+        process_upload_tenporal.send(instance.id)
 
 
 class UploadStatusSerializer(serializers.ModelSerializer):
