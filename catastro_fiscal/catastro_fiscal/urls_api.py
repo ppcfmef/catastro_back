@@ -14,4 +14,5 @@ urlpatterns = [
     path('integrations/', include('apps.integrations.urls', namespace='api_integrations')),
     path('historical-records/', include('apps.historical.urls', namespace='historical_records')),
     path('maintenance/', include('apps.maintenance.urls', namespace='api_maintenance')),
+    path('mobile/', include('apps.mobile.urls', namespace='api_mobile')),
 ]

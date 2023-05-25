@@ -47,6 +47,7 @@ THIRD_PARTY_APPS = [
     'rest_captcha',
     'django_extensions',
     'django_dramatiq',
+    'rest_framework_api_key',
 ]
 
 LOCAL_APPS = [
@@ -62,6 +63,7 @@ LOCAL_APPS = [
     'apps.captchae.apps.CaptchaExampleConfig',
     'apps.historical.apps.HistoricalConfig',
     'apps.maintenance.apps.MaintenanceConfig',
+    'apps.mobile.apps.MobileConfig',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

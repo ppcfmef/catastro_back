@@ -35,6 +35,7 @@ django-dramatiq = "*"
 dramatiq = {extras = ["watch", "redis"]}
 redis = "*"
 gunicorn = "*"
+djangorestframework-api-key = "==2.*"
 
 [requires]
 python_version = "3"
