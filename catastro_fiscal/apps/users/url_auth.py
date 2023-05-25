@@ -1,4 +1,5 @@
 from django.urls import path
+from rest_framework import serializers
 from rest_framework_jwt.views import verify_jwt_token, refresh_jwt_token
 from rest_framework_jwt.views import ObtainJSONWebToken
 from rest_framework_jwt.serializers import JSONWebTokenSerializer
@@ -12,7 +13,12 @@ class MyJWTSerializer(JSONWebTokenSerializer, RestCaptchaSerializer):
     def validate(self, data):
         response = RestCaptchaSerializer.validate(self, data)
         if response:
-            return JSONWebTokenSerializer.validate(self, data)
+            auth_response = JSONWebTokenSerializer.validate(self, data)
+            user = auth_response.get('user')
+            if user:
+                if not user.is_web_staff:
+                    raise serializers.ValidationError('No tiene permisos para ingresar a la plataforma web')
+                return auth_response
         else:
             return response
 
