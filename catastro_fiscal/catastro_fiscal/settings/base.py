@@ -47,6 +47,7 @@ THIRD_PARTY_APPS = [
     'rest_captcha',
     'django_extensions',
     'django_dramatiq',
+    'rest_framework_api_key',
 ]
 
 LOCAL_APPS = [

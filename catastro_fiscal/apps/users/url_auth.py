@@ -16,9 +16,9 @@ class MyJWTSerializer(JSONWebTokenSerializer, RestCaptchaSerializer):
             auth_response = JSONWebTokenSerializer.validate(self, data)
             user = auth_response.get('user')
             if user:
-                if not user.is_web_staff:
-                    raise serializers.ValidationError('No tiene permisos para ingresar a la plataforma web')
-                return auth_response
+                if user.is_superuser or user.is_web_staff:
+                    return auth_response
+                raise serializers.ValidationError('No tiene permisos para ingresar a la plataforma web')
         else:
             return response
 
