@@ -13,6 +13,21 @@ services:
       - ../catastro_fiscal/.env
     environment:
       - ENVIRONMENT=local
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - redis
+
+  worker:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    command: python manage.py rundramatiq --processes 4 --threads 4
+    restart: always
+    env_file:
+      - ../catastro_fiscal/.env
+    environment:
+      - ENVIRONMENT=local
+      - REDIS_URL=redis://redis:6379/0
     depends_on:
       - redis
 

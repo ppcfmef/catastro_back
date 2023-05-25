@@ -105,3 +105,10 @@ sudo docker run -p 8000:8000 catastro_fiscal python manage.py runserver 0.0.0.0:
 ```
 sudo docker-compose -f docker/docker-compose.yml up -d
 ```
+
+### Dramatiq
+#### Ejecutar Dramatiq 
+La cantidad de procesos y de hilos dependera de las capacidades del CPU como minimo recomendamos 4
+```
+python manage.py rundramatiq --processes 4 --threads 4 --settings=catastro_fiscal.settings.local
+```

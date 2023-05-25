@@ -31,6 +31,10 @@ django-simple-captcha = "*"
 mssql-django = "*"
 wfastcgi = "*"
 django-extensions = "*"
+django-dramatiq = "*"
+dramatiq = {extras = ["watch", "redis"]}
+redis = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3"

@@ -46,6 +46,7 @@ THIRD_PARTY_APPS = [
     'import_export',
     'rest_captcha',
     'django_extensions',
+    'django_dramatiq',
 ]
 
 LOCAL_APPS = [
