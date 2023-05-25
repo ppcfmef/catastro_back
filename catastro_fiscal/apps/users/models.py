@@ -105,6 +105,16 @@ class User(AbstractUser):
         blank=True, null=True
     )
     observation = models.TextField(_('observation'), blank=True, null=True)
+    is_web_staff = models.BooleanField(
+        _('web staff status'),
+        default=True,
+        help_text=_('Designates whether the user can log into this web platform'),
+    )
+    is_mobile_staff = models.BooleanField(
+        _('mobile staff status'),
+        default=False,
+        help_text=_('Designates whether the user can log into this mobile apps.'),
+    )
 
     class Meta:
         db_table = 'USUARIO'
