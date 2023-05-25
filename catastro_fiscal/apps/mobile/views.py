@@ -1,6 +1,8 @@
+from rest_framework.permissions import IsAuthenticated
 from rest_framework_jwt.views import ObtainJSONWebToken, RefreshJSONWebToken, VerifyJSONWebToken
-from rest_framework_api_key.permissions import HasAPIKey
+from apps.users.views import UserProfileShortView
 from .serializers import MobileJWTSerializer
+from .api_key_permissions import CustomHasAPIKey as HasAPIKey
 
 
 class HasAPIKeyPermissionMixin:
@@ -17,3 +19,7 @@ class MobileRefreshJSONWebToken(HasAPIKeyPermissionMixin, RefreshJSONWebToken):
 
 class MobileVerifyJSONWebToken(HasAPIKeyPermissionMixin, VerifyJSONWebToken):
     pass
+
+
+class MobileUserProfileShortView(UserProfileShortView):
+    permission_classes = [HasAPIKey & IsAuthenticated]
