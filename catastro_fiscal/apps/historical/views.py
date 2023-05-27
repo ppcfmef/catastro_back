@@ -25,11 +25,11 @@ class HistoricalRecordViewset(mixins.ListModelMixin, mixins.RetrieveModelMixin, 
                 registered_by__institution=institution
             )
 
-        if department.isnumeric():
+        if str(department).isnumeric():
             self.queryset = self.queryset.filter(registered_by__department=department)
-        if province.isnumeric():
+        if str(province).isnumeric():
             self.queryset = self.queryset.filter(registered_by__province=province)
-        if district.isnumeric():
+        if str(district).isnumeric():
             self.queryset = self.queryset.filter(registered_by__district=district)
 
         return self.queryset
