@@ -3,17 +3,17 @@ from django.utils.translation import gettext_lazy as _
 from core.models import AbstractAudit
 from apps.places.models import District
 
-UPLOAD_STATUS = (
-    ('INITIAL', _('Initiated')),
-    ('IN_PROGRESS', _('In Progress')),
-    ('LOADED', _('Loaded')),
-    ('ERROR', _('Error Loaded')),
-    ('CANCEL', _('Cancel by user')),
-)
-
 
 class UploadHistory(models.Model):
-    STATUS_CHOICE = UPLOAD_STATUS
+    STATUS_CHOICE = (
+        ('INITIAL', _('Initiated')),
+        ('IN_PROGRESS_TMP', _('In Progress Temporal')),
+        ('LOADED_TMP', _('Loaded Temporal')),
+        ('IN_PROGRESS', _('In Progress')),
+        ('LOADED', _('Loaded')),
+        ('ERROR', _('Error Loaded')),
+        ('CANCEL', _('Cancel by user')),
+    )
 
     APPROVED_STATUS_CHOICE = (
         ('NOT_REQUIRED', _('Not required')),
@@ -50,7 +50,13 @@ class UploadHistory(models.Model):
 
 
 class TemploralUploadRecord(models.Model):
-    UPLOAD_STATUS_CHOICE = UPLOAD_STATUS
+    UPLOAD_STATUS_CHOICE = (
+        ('INITIAL', _('Initiated')),
+        ('IN_PROGRESS', _('In Progress')),
+        ('LOADED', _('Loaded')),
+        ('ERROR', _('Error Loaded')),
+        ('CANCEL', _('Cancel by user')),
+    )
 
     STATUS_CHOICE = (
         ('ERROR', _('contains errors')),
