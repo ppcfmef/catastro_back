@@ -1,3 +1,4 @@
+from rest_framework import exceptions
 from ..models import UploadHistory, TemploralUploadRecord, Land, LandOwner, LandOwnerDetail
 from .read_xlsx import ReadXlsxService
 
@@ -16,10 +17,19 @@ class UploadTemporalService:
         return self.read_file_service(file=upload_history.file_upload.file).read()
 
     def update_ubigeo(self, upload_history, records):
-        if len(records) > 0:
-            record = records[0]
-            ubigeo = str(record.get('ubigeo')).strip()
-            UploadHistory.objects.filter(id=upload_history.id).update(ubigeo_id=ubigeo)
+        qs = UploadHistory.objects.filter(id=upload_history.id)
+        if len(records) == 0:
+            qs.update(status='ERROR')
+            raise exceptions.ValidationError("El archivo no tiene registros para cargar")
+
+        record = records[0]
+        ubigeo = str(record.get('ubigeo')).strip()
+
+        if ubigeo is None or str(ubigeo).strip() == '':
+            qs.update(status='ERROR')
+            raise exceptions.ValidationError("El archivo no tiene registros para cargar")
+
+        qs.update(ubigeo_id=ubigeo, status='IN_PROGRESS_TMP')
         return UploadHistory.objects.filter(id=upload_history.id).first()
 
     def _validate_empty_field(self, field):
@@ -264,5 +274,6 @@ class UploadTemporalService:
         }
 
     def cancel_last_upload(self, upload_history):
-        UploadHistory.objects.exclude(id=upload_history.id).filter(status="INITIAL", ubigeo=upload_history.ubigeo)\
+        UploadHistory.objects.exclude(id=upload_history.id)\
+            .filter(status="IN_PROGRESS_TMP", ubigeo=upload_history.ubigeo)\
             .update(status='CANCEL')
