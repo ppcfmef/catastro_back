@@ -6,7 +6,7 @@ from rest_framework.decorators import action
 from djangorestframework_camel_case.parser import CamelCaseMultiPartParser
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
-from core.filters import CamelCaseOrderFilter
+from core.filters import CamelCaseOrderFilter, OrderingFilter
 from core.views import CustomSerializerMixin
 from core.views import CustomListMixin
 from apps.lands.models import Land
@@ -24,8 +24,9 @@ from .serializers import (
 class ApplicationViewSet( ModelViewSet):
     queryset = Application.objects.all()
     serializer_class = ApplicationSerializer
-    filter_backends = [DjangoFilterBackend, SearchFilter, CamelCaseOrderFilter]
-    filterset_fields = ['id' , 'ubigeo']
+    filter_backends = [DjangoFilterBackend, SearchFilter, CamelCaseOrderFilter,OrderingFilter]
+    filterset_fields = ['id' , 'ubigeo','id_status','id_type']
+    ordering_fields = ['date','id_status','id_type','ubigeo']
     
     def get_serializer_class(self):
         if self.action == 'list' :
