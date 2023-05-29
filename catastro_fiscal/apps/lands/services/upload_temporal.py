@@ -1,5 +1,6 @@
+from django.db.models import Q
 from rest_framework import exceptions
-from ..models import UploadHistory, TemploralUploadRecord, Land, LandOwner, LandOwnerDetail
+from ..models import UploadHistory, TemploralUploadRecord, Land, LandOwner
 from .read_xlsx import ReadXlsxService
 
 
@@ -280,7 +281,7 @@ class UploadTemporalService:
 
     def cancel_last_upload(self, upload_history):
         UploadHistory.objects.exclude(id=upload_history.id)\
-            .filter(status='IN_PROGRESS_TMP', ubigeo=upload_history.ubigeo)\
+            .filter(Q(ubigeo=upload_history.ubigeo) & Q(Q(status='IN_PROGRESS_TMP') | Q(status='IN_PROGRESS')))\
             .update(status='CANCEL')
 
         #  ToDo: Cancelar la tarea de dramatiq
