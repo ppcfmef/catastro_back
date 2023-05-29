@@ -1,4 +1,6 @@
-from ..models import UploadHistory, TemploralUploadRecord, Land, LandOwner, LandOwnerDetail
+from django.db.models import Q
+from rest_framework import exceptions
+from ..models import UploadHistory, TemploralUploadRecord, Land, LandOwner
 from .read_xlsx import ReadXlsxService
 
 
@@ -9,17 +11,27 @@ class UploadTemporalService:
     def execute(self, upload_history: UploadHistory):
         records = self.read(upload_history)
         upload_history = self.update_ubigeo(upload_history, records)
-        self.temporal_upload(upload_history, records)
         self.cancel_last_upload(upload_history)
+        self.temporal_upload(upload_history, records)
+        self.loaded_temporal(upload_history)
 
     def read(self, upload_history):
         return self.read_file_service(file=upload_history.file_upload.file).read()
 
     def update_ubigeo(self, upload_history, records):
-        if len(records) > 0:
-            record = records[0]
-            ubigeo = str(record.get('ubigeo')).strip()
-            UploadHistory.objects.filter(id=upload_history.id).update(ubigeo_id=ubigeo)
+        qs = UploadHistory.objects.filter(id=upload_history.id)
+        if len(records) == 0:
+            qs.update(status='ERROR')
+            raise exceptions.ValidationError("El archivo no tiene registros para cargar")
+
+        record = records[0]
+        ubigeo = str(record.get('ubigeo')).strip()
+
+        if ubigeo is None or str(ubigeo).strip() == '':
+            qs.update(status='ERROR')
+            raise exceptions.ValidationError("El archivo no tiene registros para cargar")
+
+        qs.update(ubigeo_id=ubigeo, status='IN_PROGRESS_TMP')
         return UploadHistory.objects.filter(id=upload_history.id).first()
 
     def _validate_empty_field(self, field):
@@ -263,6 +275,14 @@ class UploadTemporalService:
             'corrects_data': corrects_data.values('record', 'status'),
         }
 
+    def loaded_temporal(self, upload_history):
+        UploadHistory.objects.filter(id=upload_history.id, status='IN_PROGRESS_TMP')\
+            .update(status='LOADED_TMP')
+
     def cancel_last_upload(self, upload_history):
-        UploadHistory.objects.exclude(id=upload_history.id).filter(status="INITIAL", ubigeo=upload_history.ubigeo)\
+        UploadHistory.objects.exclude(id=upload_history.id)\
+            .filter(Q(ubigeo=upload_history.ubigeo) &
+                    Q(Q(status='IN_PROGRESS_TMP') | Q(status='LOADED_TMP') | Q(status='IN_PROGRESS')))\
             .update(status='CANCEL')
+
+        #  ToDo: Cancelar la tarea de dramatiq
