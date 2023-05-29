@@ -1,7 +1,7 @@
 from django.db import transaction
 from rest_framework import serializers
 from .models import UploadHistory, Land, LandOwner, OwnerAddress, LandAudit, LandOwnerDetail
-from .tasks import process_upload_tenporal
+from .tasks import process_upload_tenporal, process_upload_land
 from .services.upload_temporal import UploadTemporalService
 from .services.upload_land import UploadLandService
 
@@ -38,7 +38,7 @@ class UploadStatusSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance = super(UploadStatusSerializer, self).update(instance, validated_data)
         if instance.status == 'IN_PROGRESS':
-            UploadLandService().execute(upload_history=instance)
+            process_upload_land.send(instance.id)
 
         return instance
 
