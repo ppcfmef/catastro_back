@@ -13,6 +13,7 @@ class UploadHistory(models.Model):
         ('LOADED', _('Loaded')),
         ('ERROR', _('Error Loaded')),
         ('CANCEL', _('Cancel by user')),
+        ('LOADED_START', _('Carga Inicial')),
     )
 
     APPROVED_STATUS_CHOICE = (

@@ -281,7 +281,8 @@ class UploadTemporalService:
 
     def cancel_last_upload(self, upload_history):
         UploadHistory.objects.exclude(id=upload_history.id)\
-            .filter(Q(ubigeo=upload_history.ubigeo) & Q(Q(status='IN_PROGRESS_TMP') | Q(status='IN_PROGRESS')))\
+            .filter(Q(ubigeo=upload_history.ubigeo) &
+                    Q(Q(status='IN_PROGRESS_TMP') | Q(status='LOADED_TMP') | Q(status='IN_PROGRESS')))\
             .update(status='CANCEL')
 
         #  ToDo: Cancelar la tarea de dramatiq
