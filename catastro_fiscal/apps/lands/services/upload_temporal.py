@@ -10,8 +10,9 @@ class UploadTemporalService:
     def execute(self, upload_history: UploadHistory):
         records = self.read(upload_history)
         upload_history = self.update_ubigeo(upload_history, records)
-        self.temporal_upload(upload_history, records)
         self.cancel_last_upload(upload_history)
+        self.temporal_upload(upload_history, records)
+        self.loaded_temporal(upload_history)
 
     def read(self, upload_history):
         return self.read_file_service(file=upload_history.file_upload.file).read()
@@ -273,7 +274,13 @@ class UploadTemporalService:
             'corrects_data': corrects_data.values('record', 'status'),
         }
 
+    def loaded_temporal(self, upload_history):
+        UploadHistory.objects.filter(id=upload_history.id, status='IN_PROGRESS_TMP')\
+            .update(status='LOADED_TMP')
+
     def cancel_last_upload(self, upload_history):
         UploadHistory.objects.exclude(id=upload_history.id)\
-            .filter(status="IN_PROGRESS_TMP", ubigeo=upload_history.ubigeo)\
+            .filter(status='IN_PROGRESS_TMP', ubigeo=upload_history.ubigeo)\
             .update(status='CANCEL')
+
+        #  ToDo: Cancelar la tarea de dramatiq
