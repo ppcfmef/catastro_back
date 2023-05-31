@@ -18,6 +18,7 @@ from .services.upload_temporal import UploadTemporalService
 from apps.historical.models import HistoricalRecord
 from .filters import LandOwnerFilter
 
+
 class UploadHistoryViewset(CustomSerializerMixin, mixins.ListModelMixin, mixins.CreateModelMixin, GenericViewSet):
     queryset = UploadHistory.objects.all().order_by('-id')
     serializer_class = UploadHistoryListSerializer
