@@ -64,6 +64,7 @@ LOCAL_APPS = [
     'apps.historical.apps.HistoricalConfig',
     'apps.maintenance.apps.MaintenanceConfig',
     'apps.mobile.apps.MobileConfig',
+    'apps.incomes_data.apps.IncomesDataConfig',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
