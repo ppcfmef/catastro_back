@@ -24,8 +24,8 @@ from .serializers import (
 class ApplicationViewSet( ModelViewSet):
     queryset = Application.objects.all()
     serializer_class = ApplicationSerializer
-    filter_backends = [DjangoFilterBackend, SearchFilter, CamelCaseOrderFilter,OrderingFilter]
-    filterset_fields = ['id' , 'ubigeo','id_status','id_type']
+    filter_backends = [DjangoFilterBackend, SearchFilter, CamelCaseOrderFilter]
+    filterset_fields = ['id' , 'ubigeo']
     ordering_fields = ['date','id_status','id_type','ubigeo']
     
     def get_serializer_class(self):
