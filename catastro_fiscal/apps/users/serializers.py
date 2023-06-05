@@ -143,6 +143,7 @@ class PermissionSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         permissions_navigation = validated_data.pop('permissions_navigation')
         instance = super(PermissionSerializer, self).update(instance, validated_data)
+        self.update_role_name(permission=instance)
         self.update_permissions_navigation(
             permission=instance,
             permissions_navigation=permissions_navigation
@@ -160,6 +161,13 @@ class PermissionSerializer(serializers.ModelSerializer):
 
         # create all records
         PermissionNavigation.objects.bulk_create(permissions_navigation_bulk)
+
+    def update_role_name(self, permission):
+        role_permission = permission.rolepermission_set.first()
+        if role_permission is not None:
+            role = role_permission.role
+            role.name = permission.description
+            role.save()
 
     def update_permissions_navigation(self, permission, permissions_navigation):
         permission_navigation_ids = []
