@@ -3,16 +3,16 @@ from django.db import models
 
 class Contribuyente(models.Model):
     """Renta Contribuyente"""
-    ubigeo = models.CharField(max_length=6, blank=True, null=True, help_text='Ubigeo de la municipalidad')
+    ubigeo = models.CharField(max_length=6, help_text='Ubigeo de la municipalidad')
     sec_ejec = models.CharField(max_length=6, blank=True, null=True, help_text='Secuencia de ejecutora')
     cod_contr = models.CharField(max_length=50, blank=True, null=True, help_text='Código de contribuyente')
     fecha_inscripcion = models.CharField(max_length=10, blank=True, null=True, help_text='Fecha de inscripción')
     tipo_doc = models.CharField(max_length=10, blank=True, null=True, help_text='Código del tipo de documento')
     documento_desc = models.CharField(max_length=30, blank=True, null=True, help_text='Descripción tipo de documento')
     num_doc = models.CharField(max_length=20, blank=True, null=True, help_text='Número de documento')
-    apellido_paterno = models.CharField(max_length=90, blank=True, null=True, help_text='Apellido paterno')
+    apellido_paterno = models.CharField(max_length=90, help_text='Apellido paterno')
     apellido_materno = models.CharField(max_length=90, blank=True, null=True, help_text='Apellido materno')
-    nombre = models.CharField(max_length=90, blank=True, null=True, help_text='Nombre')
+    nombre = models.CharField(max_length=90, help_text='Nombre')
     tipo_contribuyente_desc = models.CharField(
         max_length=30, blank=True, null=True,
         help_text='Tipo contribuyente (Persona natural o jurídica, Sucesión indivisa)'
