@@ -1,3 +1,6 @@
-from django.shortcuts import render
+from apps.lands.views import UploadHistoryViewset
+from .serializers import IncomeUploadHistorySerializer
 
-# Create your views here.
+
+class IncomeUploadHistoryViewset(UploadHistoryViewset):
+    create_serializer_class = IncomeUploadHistorySerializer
