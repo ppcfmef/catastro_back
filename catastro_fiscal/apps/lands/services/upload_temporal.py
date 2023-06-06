@@ -27,11 +27,13 @@ class AbstractUploadTemporal:
         return UploadHistory.objects.filter(id=upload_history.id).first()
 
     def get_temporal_summary(self, upload_history):
+        upload_history = UploadHistory.objects.get(id=upload_history.id)
         temporal_records = TemploralUploadRecord.objects.filter(upload_history=upload_history)
         errors_data = temporal_records.filter(status='ERROR')
         corrects_data = temporal_records.filter(status__in=['OK_NEW', 'OK_OLD'])
         return {
             'upload_history_id': upload_history.id,
+            'type_upload': upload_history.type_upload,
             'status': upload_history.status,
             'total': temporal_records.count(),
             'errors': errors_data.count(),
