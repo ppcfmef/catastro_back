@@ -1,19 +1,11 @@
 from django.db.models import Q
 from rest_framework import exceptions
 from ..models import UploadHistory, TemploralUploadRecord, Land, LandOwner
-from .read_xlsx import ReadXlsxService
+from core.utils.read_xlsx import ReadXlsxService
 
 
-class UploadTemporalService:
-
+class AbstractUploadTemporal:
     read_file_service = ReadXlsxService
-
-    def execute(self, upload_history: UploadHistory):
-        records = self.read(upload_history)
-        upload_history = self.update_ubigeo(upload_history, records)
-        self.cancel_last_upload(upload_history)
-        self.temporal_upload(upload_history, records)
-        self.loaded_temporal(upload_history)
 
     def read(self, upload_history):
         return self.read_file_service(file=upload_history.file_upload.file).read()
@@ -33,6 +25,38 @@ class UploadTemporalService:
 
         qs.update(ubigeo_id=ubigeo, status='IN_PROGRESS_TMP')
         return UploadHistory.objects.filter(id=upload_history.id).first()
+
+    def get_temporal_summary(self, upload_history):
+        upload_history = UploadHistory.objects.get(id=upload_history.id)
+        temporal_records = TemploralUploadRecord.objects.filter(upload_history=upload_history)
+        errors_data = temporal_records.filter(status='ERROR')
+        corrects_data = temporal_records.filter(status__in=['OK_NEW', 'OK_OLD'])
+        return {
+            'upload_history_id': upload_history.id,
+            'type_upload': upload_history.type_upload,
+            'status': upload_history.status,
+            'total': temporal_records.count(),
+            'errors': errors_data.count(),
+            'corrects': corrects_data.count(),
+            'new': temporal_records.filter(status='OK_NEW').count(),
+            'updates': temporal_records.filter(status='OK_OLD').count(),
+            'errors_data': errors_data.values('record', 'error_code', 'status'),
+            'corrects_data': corrects_data.values('record', 'status'),
+        }
+
+
+class UploadTemporalService(AbstractUploadTemporal):
+
+    def execute(self, upload_history: UploadHistory):
+        try:
+            records = self.read(upload_history)
+            upload_history = self.update_ubigeo(upload_history, records)
+            self.cancel_last_upload(upload_history)
+            self.temporal_upload(upload_history, records)
+            self.loaded_temporal(upload_history)
+        except Exception as e:
+            upload_history.status = 'ERROR'
+            upload_history.save()
 
     def _validate_empty_field(self, field):
         return field is None or str(field).strip('') == ''
@@ -257,22 +281,6 @@ class UploadTemporalService:
             'description_owner': record.get('contribuyente'),
             'tax_address': record.get('dir_fiscal'),
             'upload_history_id': upload_history.id
-        }
-
-    def get_temporal_summary(self, upload_history):
-        temporal_records = TemploralUploadRecord.objects.filter(upload_history=upload_history)
-        errors_data = temporal_records.filter(status='ERROR')
-        corrects_data = temporal_records.filter(status__in=['OK_NEW', 'OK_OLD'])
-        return {
-            'upload_history_id': upload_history.id,
-            'status': upload_history.status,
-            'total': temporal_records.count(),
-            'errors': errors_data.count(),
-            'corrects': corrects_data.count(),
-            'new': temporal_records.filter(status='OK_NEW').count(),
-            'updates': temporal_records.filter(status='OK_OLD').count(),
-            'errors_data': errors_data.values('record', 'error_code', 'status'),
-            'corrects_data': corrects_data.values('record', 'status'),
         }
 
     def loaded_temporal(self, upload_history):

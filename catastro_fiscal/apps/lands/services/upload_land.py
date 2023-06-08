@@ -49,7 +49,7 @@ class UploadLandService:
 
     def land_owner_detail_upload(self, upload_history):
         Land_owner_detail_bulk = []
-        temploral_records = TemploralUploadRecord.objects.exclude(status='ERROR')
+        temploral_records = TemploralUploadRecord.objects.filter(upload_history=upload_history).exclude(status='ERROR')
         ubigeo = upload_history.ubigeo
         for temporal in temploral_records:
             land_id = temporal.land_record.get('id', None)

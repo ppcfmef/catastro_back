@@ -146,6 +146,7 @@ class SummaryRecordSerializer(serializers.Serializer):
 
 class TemporalUploadSummarySerializer(serializers.Serializer):
     upload_history_id = serializers.IntegerField()
+    type_upload = serializers.CharField(default='TB_PREDIO')
     status = serializers.CharField()
     total = serializers.IntegerField()
     errors = serializers.IntegerField()

@@ -16,18 +16,28 @@ class UploadHistory(models.Model):
         ('LOADED_START', _('Carga Inicial')),
     )
 
-    APPROVED_STATUS_CHOICE = (
-        ('NOT_REQUIRED', _('Not required')),
-        ('PENDING', _('Pending approval')),
-        ('APPRIVING', _('In approval process')),
-        ('APPROVED', _('Approved')),
+    TYPE_UPLOAD_CHOICE = (
+        ('TB_PREDIO', _('TB_PREDIO')),
+        ('RT_CONTRIBUYENTE', _('RT_CONTRIBUYENTE')),
+        ('RT_MARCOPREDIO', _('RT_MARCOPREDIO')),
+        ('RT_ARANCEL', _('RT_ARANCEL')),
+        ('RT_PREDIO_DATO', _('RT_PREDIO_DATO')),
+        ('RT_PREDIO_CARACT', _('RT_PREDIO_CARACT')),
+        ('RT_RECAUDACION', _('RT_RECAUDACION')),
+        ('RT_DEUDA', _('RT_DEUDA')),
+        ('RT_EMISION', _('RT_EMISION')),
+        ('RT_BIMPONIBLE', _('RT_BIMPONIBLE')),
+        ('RT_ALICUOTA', _('RT_ALICUOTA')),
+        ('RT_AMNCONTRIBUYENTE', _('RT_AMNCONTRIBUYENTE')),
+        ('RT_AMNMUNICIPA', _('RT_AMNMUNICIPA')),
+        ('RT_VAREM_MUN', _('RT_VAREM_MUN')),
     )
     id = models.AutoField(primary_key=True)
     file_upload = models.FileField(upload_to='lands/registry', null=True)
     start_date = models.DateTimeField(auto_now_add=True)
     end_date = models.DateTimeField(null=True, default=None)
     status = models.CharField(max_length=20, choices=STATUS_CHOICE, default='INITIAL')
-    approved_status = models.CharField(max_length=20, choices=APPROVED_STATUS_CHOICE, default='NOT_REQUIRED')
+    type_upload = models.CharField(max_length=50, choices=TYPE_UPLOAD_CHOICE, default='TB_PREDIO')
     username = models.CharField(max_length=150)
     total_records = models.PositiveSmallIntegerField(null=True, default=None)
     total_new_records = models.PositiveSmallIntegerField(null=True, default=None)
@@ -68,6 +78,7 @@ class TemploralUploadRecord(models.Model):
     record = models.JSONField(blank=True, null=True)
     error_record = models.JSONField(blank=True, null=True)
     error_code = models.CharField(max_length=20, blank=True, null=True)
+    error_message = models.TextField(blank=True, null=True, default=None)
     land_record = models.JSONField(blank=True, null=True)
     owner_record = models.JSONField(blank=True, null=True)
     owner_record_status = models.PositiveSmallIntegerField(default=1)  # 1 nuevo 2 actualozar
