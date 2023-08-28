@@ -67,8 +67,8 @@ class LandListSerializer(serializers.ModelSerializer):
     district = serializers.CharField(source='ubigeo.name')
     province = serializers.CharField(source='ubigeo.province.name')
     department = serializers.CharField(source='ubigeo.province.department.name')
-    street_type_name = serializers.SerializerMethodField()
-    
+    #street_type_name = serializers.SerializerMethodField()
+    street_type_name= serializers.CharField(source='street_type.name',read_only=True)
     class Meta:
         model = Land
         fields = '__all__'  # ToDo: estandarizar listado de predios
@@ -76,12 +76,12 @@ class LandListSerializer(serializers.ModelSerializer):
     def get_has_applications(self, obj):
         return ApplicationLandDetail.objects.filter(land_id=obj.id).exists()
     
-    def get_street_type_name(self,obj):
-        try:
-            street=MasterCodeStreet.objects.get(id= obj.street_type)
-            return street.name
-        except MasterCodeStreet.DoesNotExist:
-            return ''
+    # def get_street_type_name(self,obj):
+    #     try:
+    #         street=MasterCodeStreet.objects.get(id= obj.street_type)
+    #         return street.name
+    #     except MasterCodeStreet.DoesNotExist:
+    #         return ''
             
         
         
