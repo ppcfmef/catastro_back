@@ -2,7 +2,10 @@ from rest_framework import serializers
 from apps.lands.models import UploadHistory
 from .services.rt_contribuyente_upload_temporal import RTContribuyenteUploadTemporalService
 from .tasks import process_incomes_upload_tenporal, process_incomes_upload
-from .models import Contribuyente, MarcoPredio, Arancel, PredioDato
+from .models import (
+    Contribuyente, MarcoPredio, Arancel, PredioDato, PredioCaracteristica, Recaudacion, Deuda, Emision, BaseImponible,
+    Alicuota, AmnistiaContribuyente, AmnistiaMunicipal, VaremMunicipal
+)
 
 
 class IncomeUploadHistorySerializer(serializers.ModelSerializer):
@@ -64,4 +67,58 @@ class RTArancelSerializer(serializers.ModelSerializer):
 class RTPredioDatoSerializer(serializers.ModelSerializer):
     class Meta:
         model = PredioDato
+        fields = '__all__'
+
+
+class RTPredioCaracteristicaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PredioCaracteristica
+        fields = '__all__'
+
+
+class RTRecaudacionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recaudacion
+        fields = '__all__'
+
+
+class RTDeudaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Deuda
+        fields = '__all__'
+
+
+class RTEmisionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Emision
+        fields = '__all__'
+
+
+class RTBaseImponibleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BaseImponible
+        fields = '__all__'
+
+
+class RTAlicuotaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Alicuota
+        fields = '__all__'
+
+
+class RTAmnistiaContribuyenteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AmnistiaContribuyente
+        fields = '__all__'
+
+
+class RTAmnistiaMunicipalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AmnistiaMunicipal
+        fields = '__all__'
+
+
+class RTVaremMunicipalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VaremMunicipal
         fields = '__all__'
