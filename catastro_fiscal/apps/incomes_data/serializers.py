@@ -9,6 +9,7 @@ from .services.rt_recaudacion_temporal import RTRecaudacionUploadTemporalService
 from .services.rt_deuda_temporal import RTDeudaUploadTemporalService
 from .services.rt_emision_temporal import RTEmisionUploadTemporalService
 from .services.rt_baseimponible_temporal import RTBaseImponibleUploadTemporalService
+from .services.rt_alicuota_temporal import RTAlicuotaUploadTemporalService
 from .tasks import process_incomes_upload_tenporal, process_incomes_upload
 from .models import (
     Contribuyente, MarcoPredio, Arancel, PredioDato, PredioCaracteristica, Recaudacion, Deuda, Emision, BaseImponible,
@@ -54,6 +55,8 @@ class IncomeUploadHistorySerializer(serializers.ModelSerializer):
             return RTEmisionUploadTemporalService
         elif type_upload == 'RT_BIMPONIBLE':
             return RTBaseImponibleUploadTemporalService
+        elif type_upload == 'RT_ALICUOTA':
+            return RTAlicuotaUploadTemporalService
         else:
             raise serializers.ValidationError('No existe tipo de carga para procesar')
 
