@@ -11,10 +11,11 @@ from .services.rt_deuda_temporal import RTDeudaUploadTemporalService
 from .services.rt_emision_temporal import RTEmisionUploadTemporalService
 from .services.rt_baseimponible_temporal import RTBaseImponibleUploadTemporalService
 from .services.rt_alicuota_temporal import RTAlicuotaUploadTemporalService
+from .services.rt_amnistiacontribuyente_temporal import RTAmnistiaContribuyenteUploadTemporalService
 from .services.income_upload import (
     RTContribuyenteUploadService, RTMarcoPredioUploadService, RTArancelUploadService, RTPredioDatoUploadService,
     RTPredioCaracteristicaUploadService, RTRecaudacionUploadService, RTDeudaUploadService, RTEmisionUploadService,
-    RTBaseImponibleUploadService, RTAlicuotaUploadService
+    RTBaseImponibleUploadService, RTAlicuotaUploadService, RTAmnistiaContribuyenteUploadService
 )
 
 
@@ -42,6 +43,8 @@ def process_incomes_upload_tenporal(upload_history_id: int):
         RTBaseImponibleUploadTemporalService().execute(upload_history)
     elif upload_history.type_upload == 'RT_ALICUOTA':
         RTAlicuotaUploadTemporalService().execute(upload_history)
+    elif upload_history.type_upload == 'RT_AMNCONTRIBUYENTE':
+        RTAmnistiaContribuyenteUploadTemporalService().execute(upload_history)
     else:
         raise ValidationError('No existe tipo de carga para procesar')
 
@@ -70,5 +73,7 @@ def process_incomes_upload(upload_history_id: int):
         RTBaseImponibleUploadService().execute(upload_history)
     elif upload_history.type_upload == 'RT_ALICUOTA':
         RTAlicuotaUploadService().execute(upload_history)
+    elif upload_history.type_upload == 'RT_AMNCONTRIBUYENTE':
+        RTAmnistiaContribuyenteUploadService().execute(upload_history)
     else:
         raise ValidationError('No existe tipo de carga para procesar')
