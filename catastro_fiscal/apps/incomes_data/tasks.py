@@ -9,9 +9,11 @@ from .services.rt_prediocaracteristica_upload_temporal import RTPredioCaracteris
 from .services.rt_recaudacion_temporal import RTRecaudacionUploadTemporalService
 from .services.rt_deuda_temporal import RTDeudaUploadTemporalService
 from .services.rt_emision_temporal import RTEmisionUploadTemporalService
+from .services.rt_baseimponible_temporal import RTBaseImponibleUploadTemporalService
 from .services.income_upload import (
     RTContribuyenteUploadService, RTMarcoPredioUploadService, RTArancelUploadService, RTPredioDatoUploadService,
-    RTPredioCaracteristicaUploadService, RTRecaudacionUploadService, RTDeudaUploadService, RTEmisionUploadService
+    RTPredioCaracteristicaUploadService, RTRecaudacionUploadService, RTDeudaUploadService, RTEmisionUploadService,
+    RTBaseImponibleUploadService
 )
 
 
@@ -35,6 +37,8 @@ def process_incomes_upload_tenporal(upload_history_id: int):
         RTDeudaUploadTemporalService().execute(upload_history)
     elif upload_history.type_upload == 'RT_EMISION':
         RTEmisionUploadTemporalService().execute(upload_history)
+    elif upload_history.type_upload == 'RT_BIMPONIBLE':
+        RTBaseImponibleUploadTemporalService().execute(upload_history)
     else:
         raise ValidationError('No existe tipo de carga para procesar')
 
@@ -59,5 +63,7 @@ def process_incomes_upload(upload_history_id: int):
         RTDeudaUploadService().execute(upload_history)
     elif upload_history.type_upload == 'RT_EMISION':
         RTEmisionUploadService().execute(upload_history)
+    elif upload_history.type_upload == 'RT_BIMPONIBLE':
+        RTBaseImponibleUploadService().execute(upload_history)
     else:
         raise ValidationError('No existe tipo de carga para procesar')
