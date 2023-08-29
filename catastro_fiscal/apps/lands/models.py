@@ -30,7 +30,7 @@ class UploadHistory(models.Model):
         ('RT_BIMPONIBLE', _('RT_BIMPONIBLE')),
         ('RT_ALICUOTA', _('RT_ALICUOTA')),
         ('RT_AMNCONTRIBUYENTE', _('RT_AMNCONTRIBUYENTE')),
-        ('RT_AMNMUNICIPA', _('RT_AMNMUNICIPA')),
+        ('RT_AMNMUNICIPAL', _('RT_AMNMUNICIPAL')),
         ('RT_VAREM_MUN', _('RT_VAREM_MUN')),
     )
     id = models.AutoField(primary_key=True)
