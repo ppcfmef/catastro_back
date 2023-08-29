@@ -9,8 +9,6 @@ from .views import (
 app_name = 'api_incomes'
 
 router = DefaultRouter()
-router.register('upload', IncomeUploadHistoryViewset)
-router.register('upload/status', IncomeUploadStatusViewSet)
 router.register('rtcontribuyente', RTContribuyenteViewSet)
 router.register('rtmarcopredio', RTMarcoPredioViewSet)
 router.register('rtarancel', RTArancelViewSet)
@@ -24,5 +22,7 @@ router.register('rtalicuota', RTAlicuotaViewSet)
 router.register('rtamnistiacontribuyente', RTAmnistiaContribuyenteViewSet)
 router.register('rtamnistiamunicipal', RTAmnistiaMunicipalViewSet)
 router.register('rtvaremmunicipal', RTVaremMunicipalViewSet)
+router.register('upload', IncomeUploadHistoryViewset)
+router.register('upload/status', IncomeUploadStatusViewSet)
 
 urlpatterns = router.urls

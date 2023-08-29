@@ -4,6 +4,7 @@ from core.models import AbstractAudit
 from apps.places.models import District
 from apps.master_data.models import MasterCodeStreet
 
+
 class UploadHistory(models.Model):
     STATUS_CHOICE = (
         ('INITIAL', _('Initiated')),
@@ -19,7 +20,7 @@ class UploadHistory(models.Model):
     TYPE_UPLOAD_CHOICE = (
         ('TB_PREDIO', _('TB_PREDIO')),
         ('RT_CONTRIBUYENTE', _('RT_CONTRIBUYENTE')),
-        ('RT_MARCOPREDIO', _('RT_MARCOPREDIO')),
+        ('RT_MARCO_PREDIO', _('RT_MARCOPREDIO')),
         ('RT_ARANCEL', _('RT_ARANCEL')),
         ('RT_PREDIO_DATO', _('RT_PREDIO_DATO')),
         ('RT_PREDIO_CARACT', _('RT_PREDIO_CARACT')),

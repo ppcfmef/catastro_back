@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from apps.lands.models import UploadHistory
 from .services.rt_contribuyente_upload_temporal import RTContribuyenteUploadTemporalService
+from .services.rt_marcopredio_upload_temporal import RTMarcoPredioUploadTemporalService
 from .tasks import process_incomes_upload_tenporal, process_incomes_upload
 from .models import (
     Contribuyente, MarcoPredio, Arancel, PredioDato, PredioCaracteristica, Recaudacion, Deuda, Emision, BaseImponible,
@@ -30,6 +31,8 @@ class IncomeUploadHistorySerializer(serializers.ModelSerializer):
     def fabric_temporal_service(self, type_upload):
         if type_upload == 'RT_CONTRIBUYENTE':
             return RTContribuyenteUploadTemporalService
+        elif type_upload == 'RT_MARCO_PREDIO':
+            return RTMarcoPredioUploadTemporalService
         else:
             raise serializers.ValidationError('No existe tipo de carga para procesar')
 
