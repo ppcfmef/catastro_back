@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from core.models import AbstractAudit
 from apps.places.models import District
-
+from apps.master_data.models import MasterCodeStreet
 
 class UploadHistory(models.Model):
     STATUS_CHOICE = (
@@ -153,12 +153,21 @@ class LandBase(AbstractAudit):
         (2, 'Con cartografia (Imagen)'),
         (3, 'Inactivo'),
     )
+    STATUS_GAP_ANALISYS_CHOICE = (
+        (0, 'Faltante'),
+        (1, 'Ubicado con predio'),
+        (2, 'Ubicado con punto campo'),
+        (3, 'Observado'),
+        
+    )
     id = models.AutoField(primary_key=True)
     ubigeo = models.ForeignKey(District, on_delete=models.CASCADE, db_column='ubigeo')
     cpm = models.CharField(max_length=15, db_column='cod_pre')
     source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True, null=True, db_column='origen')
     status = models.PositiveSmallIntegerField(choices=STATUS_CHOICE, blank=True, null=True, default=0,
                                               db_column='estado')
+    status_gap_analisys = models.PositiveSmallIntegerField(choices=STATUS_GAP_ANALISYS_CHOICE, blank=True, null=True, default=0,
+                                              db_column='estado_analisis_brecha')
     id_land_cartographic = models.CharField(max_length=18, blank=True, null=True, help_text=_('id land cartographic'),
                                             db_column='id_predio_cartografico')
     id_plot = models.CharField(max_length=25, blank=True, null=True, help_text=_('id plot'), db_column='id_lote')
@@ -179,7 +188,8 @@ class LandBase(AbstractAudit):
     urban_mza = models.CharField(max_length=10, blank=True, null=True, db_column='mzn_urb')
     urban_lot_number = models.CharField(max_length=10, blank=True, null=True, db_column='lot_urb')
     cod_street = models.CharField(max_length=20, blank=True, null=True, db_column='cod_via')
-    street_type = models.CharField(max_length=20, blank=True, null=True, db_column='tip_via')
+    #street_type = models.CharField(max_length=20, blank=True, null=True, db_column='tip_via')
+    street_type =models.ForeignKey(MasterCodeStreet,models.SET_NULL,max_length=20,  blank=True, null=True, db_column='tip_via')
     street_name = models.CharField(max_length=255, blank=True, null=True, db_column='nom_via')
     street_name_alt = models.CharField(max_length=255, blank=True, null=True, db_column='nom_alt')
     municipal_number = models.CharField(max_length=6, blank=True, null=True, db_column='num_mun')  # numero de puerta

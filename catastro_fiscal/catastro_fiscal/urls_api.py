@@ -16,4 +16,5 @@ urlpatterns = [
     path('maintenance/', include('apps.maintenance.urls', namespace='api_maintenance')),
     path('incomes/', include('apps.incomes_data.urls', namespace='api_incomes')),
     path('mobile/', include('apps.mobile.urls', namespace='api_mobile')),
+    path('gap-analisys/', include('apps.gap_analisys.urls', namespace='api_gap_analisys')),
 ]
