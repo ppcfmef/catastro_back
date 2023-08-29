@@ -5,6 +5,7 @@ from .services.rt_marcopredio_upload_temporal import RTMarcoPredioUploadTemporal
 from .services.rt_arancel_upload_temporal import RTArancelUploadTemporalService
 from .services.rt_prediodato_upload_temporal import RTPredioDatoUploadTemporalService
 from .services.rt_prediocaracteristica_upload_temporal import RTPredioCaracteristicaUploadTemporalService
+from .services.rt_recaudacion_temporal import RTRecaudacionUploadTemporalService
 from .tasks import process_incomes_upload_tenporal, process_incomes_upload
 from .models import (
     Contribuyente, MarcoPredio, Arancel, PredioDato, PredioCaracteristica, Recaudacion, Deuda, Emision, BaseImponible,
@@ -42,6 +43,8 @@ class IncomeUploadHistorySerializer(serializers.ModelSerializer):
             return RTPredioDatoUploadTemporalService
         elif type_upload == 'RT_PREDIO_CARACT':
             return RTPredioCaracteristicaUploadTemporalService
+        elif type_upload == 'RT_RECAUDACION':
+            return RTRecaudacionUploadTemporalService
         else:
             raise serializers.ValidationError('No existe tipo de carga para procesar')
 
