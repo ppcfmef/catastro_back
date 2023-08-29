@@ -7,9 +7,10 @@ from .services.rt_arancel_upload_temporal import RTArancelUploadTemporalService
 from .services.rt_prediodato_upload_temporal import RTPredioDatoUploadTemporalService
 from .services.rt_prediocaracteristica_upload_temporal import RTPredioCaracteristicaUploadTemporalService
 from .services.rt_recaudacion_temporal import RTRecaudacionUploadTemporalService
+from .services.rt_deuda_temporal import RTDeudaUploadTemporalService
 from .services.income_upload import (
     RTContribuyenteUploadService, RTMarcoPredioUploadService, RTArancelUploadService, RTPredioDatoUploadService,
-    RTPredioCaracteristicaUploadService, RTRecaudacionUploadService
+    RTPredioCaracteristicaUploadService, RTRecaudacionUploadService, RTDeudaUploadService
 )
 
 
@@ -29,6 +30,8 @@ def process_incomes_upload_tenporal(upload_history_id: int):
         RTPredioCaracteristicaUploadTemporalService().execute(upload_history)
     elif upload_history.type_upload == 'RT_RECAUDACION':
         RTRecaudacionUploadTemporalService().execute(upload_history)
+    elif upload_history.type_upload == 'RT_DEUDA':
+        RTDeudaUploadTemporalService().execute(upload_history)
     else:
         raise ValidationError('No existe tipo de carga para procesar')
 
@@ -49,5 +52,7 @@ def process_incomes_upload(upload_history_id: int):
         RTPredioCaracteristicaUploadService().execute(upload_history)
     elif upload_history.type_upload == 'RT_RECAUDACION':
         RTRecaudacionUploadService().execute(upload_history)
+    elif upload_history.type_upload == 'RT_DEUDA':
+        RTDeudaUploadService().execute(upload_history)
     else:
         raise ValidationError('No existe tipo de carga para procesar')

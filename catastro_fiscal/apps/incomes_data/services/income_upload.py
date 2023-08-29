@@ -1,6 +1,6 @@
 from apps.lands.models import UploadHistory, TemploralUploadRecord
 from ..models import (
-    Contribuyente, MarcoPredio, Arancel, PredioDato, PredioCaracteristica, Recaudacion
+    Contribuyente, MarcoPredio, Arancel, PredioDato, PredioCaracteristica, Recaudacion, Deuda
 )
 
 
@@ -47,3 +47,7 @@ class RTPredioCaracteristicaUploadService(IncomeUploadService):
 
 class RTRecaudacionUploadService(IncomeUploadService):
     record_class = Recaudacion
+
+
+class RTDeudaUploadService(IncomeUploadService):
+    record_class = Deuda
