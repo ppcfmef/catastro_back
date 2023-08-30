@@ -31,7 +31,7 @@ class UploadHistory(models.Model):
         ('RT_ALICUOTA', _('RT_ALICUOTA')),
         ('RT_AMNCONTRIBUYENTE', _('RT_AMNCONTRIBUYENTE')),
         ('RT_AMNMUNICIPAL', _('RT_AMNMUNICIPAL')),
-        ('RT_VAREM_MUN', _('RT_VAREM_MUN')),
+        ('RT_VAREM_MUNI', _('RT_VAREM_MUNI')),
     )
     id = models.AutoField(primary_key=True)
     file_upload = models.FileField(upload_to='lands/registry', null=True)

@@ -1,7 +1,7 @@
 from apps.lands.models import UploadHistory, TemploralUploadRecord
 from ..models import (
     Contribuyente, MarcoPredio, Arancel, PredioDato, PredioCaracteristica, Recaudacion, Deuda, Emision, BaseImponible,
-    Alicuota, AmnistiaContribuyente, AmnistiaMunicipal
+    Alicuota, AmnistiaContribuyente, AmnistiaMunicipal, VaremMunicipal
 )
 
 
@@ -72,3 +72,7 @@ class RTAmnistiaContribuyenteUploadService(IncomeUploadService):
 
 class RTAmnistiaMunicipalUploadService(IncomeUploadService):
     record_class = AmnistiaMunicipal
+
+
+class RTVaremMunicipalUploadService(IncomeUploadService):
+    record_class = VaremMunicipal
