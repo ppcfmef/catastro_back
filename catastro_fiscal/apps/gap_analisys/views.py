@@ -18,8 +18,11 @@ from .serializers import (
 )
 from django.db.models import Q,Count
 
-
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
 from apps.places.models import  District
+from apps.users.models import User
+from apps.users.serializers import UserDetailSerializer,UserSerializer
         
 @authentication_classes([])
 @permission_classes([])
@@ -57,3 +60,12 @@ class DistrictViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericV
     filter_backends = [DjangoFilterBackend, SearchFilter, CamelCaseOrderFilter]
     filterset_fields = ['province','code','name']
     search_fields = ['name','province__name','province__department__name','code']
+
+
+class UserViewSet(ModelViewSet):
+    queryset = User.objects.all().order_by('-id')
+    serializer_class = UserSerializer
+    list_serializer_class = UserDetailSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_fields = ['is_active', 'role', 'institution', 'department', 'province', 'district','district__code','is_mobile_staff']
+    search_fields = ['dni', 'district__code', 'district__name']
