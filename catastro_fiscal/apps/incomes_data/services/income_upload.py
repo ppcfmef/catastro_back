@@ -1,5 +1,8 @@
 from apps.lands.models import UploadHistory, TemploralUploadRecord
-from ..models import Contribuyente
+from ..models import (
+    Contribuyente, MarcoPredio, Arancel, PredioDato, PredioCaracteristica, Recaudacion, Deuda, Emision, BaseImponible,
+    Alicuota, AmnistiaContribuyente, AmnistiaMunicipal, VaremMunicipal
+)
 
 
 class IncomeUploadService:
@@ -25,3 +28,51 @@ class IncomeUploadService:
 
 class RTContribuyenteUploadService(IncomeUploadService):
     record_class = Contribuyente
+
+
+class RTMarcoPredioUploadService(IncomeUploadService):
+    record_class = MarcoPredio
+
+
+class RTArancelUploadService(IncomeUploadService):
+    record_class = Arancel
+
+
+class RTPredioDatoUploadService(IncomeUploadService):
+    record_class = PredioDato
+
+
+class RTPredioCaracteristicaUploadService(IncomeUploadService):
+    record_class = PredioCaracteristica
+
+
+class RTRecaudacionUploadService(IncomeUploadService):
+    record_class = Recaudacion
+
+
+class RTDeudaUploadService(IncomeUploadService):
+    record_class = Deuda
+
+
+class RTEmisionUploadService(IncomeUploadService):
+    record_class = Emision
+
+
+class RTBaseImponibleUploadService(IncomeUploadService):
+    record_class = BaseImponible
+
+
+class RTAlicuotaUploadService(IncomeUploadService):
+    record_class = Alicuota
+
+
+class RTAmnistiaContribuyenteUploadService(IncomeUploadService):
+    record_class = AmnistiaContribuyente
+
+
+class RTAmnistiaMunicipalUploadService(IncomeUploadService):
+    record_class = AmnistiaMunicipal
+
+
+class RTVaremMunicipalUploadService(IncomeUploadService):
+    record_class = VaremMunicipal

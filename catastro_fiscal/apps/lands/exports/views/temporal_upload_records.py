@@ -42,9 +42,9 @@ class TemporalUploadRecordExportView(ExportView):
         for record in queryset:
             data = record.record
             content.append([
-                data.get('objectid', ''),
                 record.status,
                 record.error_code,
+                data.get('objectid', ''),
                 data.get('id_pred', ''),
                 data.get('cod_pre', ''),
                 data.get('sec_ejec', ''),
