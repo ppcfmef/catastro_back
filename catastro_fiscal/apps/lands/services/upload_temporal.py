@@ -237,7 +237,7 @@ class UploadTemporalService(AbstractUploadTemporal):
                 'urban_mza': 'mzn_urb',
                 'urban_lot_number': 'lot_urb',
                 'cod_street': 'cod_via',
-                'street_type': 'tip_via',
+                'street_type_id': 'tip_via',
                 'street_name': 'nom_via',
                 'street_name_alt': 'nom_alt',
                 'municipal_number': 'num_mun',

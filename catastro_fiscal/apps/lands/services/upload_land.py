@@ -5,11 +5,15 @@ from ..models import TemploralUploadRecord, LandOwner, Land, UploadHistory, Land
 class UploadLandService:
 
     def execute(self, upload_history: UploadHistory):
-        self.land_owner_upload(upload_history)
-        self.land_upload(upload_history)
-        self.land_owner_detail_upload(upload_history)
-        self.count_lands_by_owner(upload_history)
-        self.sumary_status_history(upload_history)
+        try:
+            self.land_owner_upload(upload_history)
+            self.land_upload(upload_history)
+            self.land_owner_detail_upload(upload_history)
+            self.count_lands_by_owner(upload_history)
+            self.sumary_status_history(upload_history)
+        except Exception as e:
+            upload_history.status = 'ERROR'
+            upload_history.save()
 
     def land_owner_upload(self, upload_history):
         # Insertar nuevos
