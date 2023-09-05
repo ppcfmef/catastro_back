@@ -27,8 +27,10 @@ from apps.users.serializers import UserDetailSerializer,UserSerializer
 @authentication_classes([])
 @permission_classes([])
 class LandGapAnalisysViewSet(ModelViewSet):
-    queryset = Land.objects.all().filter(Q(status=3,status_gap_analisys__isnull =False) |  Q(status=1,status_gap_analisys =1) )
+    queryset = Land.objects.all().filter(Q(status=0,status_gap_analisys__isnull =False) |  Q(status=1,status_gap_analisys =1) )
     filter_backends = [DjangoFilterBackend, SearchFilter, CamelCaseOrderFilter]
+
+    
     #filterset_fields = ['id','cpm','ubigeo','status','status_gap_analisys']
     
     filterset_fields = {
@@ -61,11 +63,12 @@ class DistrictViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericV
     filterset_fields = ['province','code','name']
     search_fields = ['name','province__name','province__department__name','code']
 
-
+@authentication_classes([])
+@permission_classes([])
 class UserViewSet(ModelViewSet):
     queryset = User.objects.all().order_by('-id')
     serializer_class = UserSerializer
     list_serializer_class = UserDetailSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter]
-    filterset_fields = ['is_active', 'role', 'institution', 'department', 'province', 'district','district__code','is_mobile_staff']
+    filterset_fields = ['is_active', 'role', 'institution', 'department', 'province', 'district','district__code','is_mobile_staff','dni']
     search_fields = ['dni', 'district__code', 'district__name']
