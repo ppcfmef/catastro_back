@@ -48,7 +48,7 @@ class LandListAnalisysSerializer(serializers.ModelSerializer):
     def get_owner_name(self, obj):
         landOwner=LandOwnerDetail.objects.filter(land_id=obj.id)
         if len(landOwner)>0:
-            return '{} {} {}'.format(landOwner[0].owner.name,landOwner[0].owner.paternal_surname,landOwner[0].owner.maternal_surname) 
+            return '{} {} {}'.format(landOwner[0].owner.name  if landOwner[0].owner.name else '' ,landOwner[0].owner.paternal_surname  if landOwner[0].owner.paternal_surname else '',landOwner[0].owner.maternal_surname  if landOwner[0].owner.maternal_surname else '') 
         else:
             return None
         #return LandOwnerDetail.objects.filter(land_id=obj.id)

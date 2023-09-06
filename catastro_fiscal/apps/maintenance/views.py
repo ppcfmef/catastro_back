@@ -109,7 +109,7 @@ class ApplicationViewSet( ModelViewSet):
                         'reference_name':result.get('nom_ref', None)   ,
                         'cup':result.get('cod_cpu', None),
                         'cod_street':result.get('cod_via', None),
-                        'street_type':result.get('tip_via', None),
+                        'street_type_id':result.get('tip_via', None),
                         'urban_mza':result.get('mzn_urb', None),
                         'cod_sect':result.get('cod_sect', None),
                         'cod_uu':result.get('cod_uu', None),
