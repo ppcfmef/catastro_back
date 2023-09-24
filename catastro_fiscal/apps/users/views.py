@@ -17,7 +17,8 @@ from .serializers import (
 from .models import User, Role, Permission, PermissionType, PermissionNavigation
 from .filters import UserCustomFilter
 from apps.historical.models import HistoricalRecord
-
+import requests
+from django.conf import settings
 
 class UserProfileShortView(APIView):
     queryset = User.objects.all()
@@ -138,3 +139,33 @@ class PermissionNavigationViewSet(mixins.ListModelMixin, GenericViewSet):
         id_permission = self.kwargs.get('id_permission')
         queryset = super(PermissionNavigationViewSet, self).get_queryset()
         return queryset.filter(permission_id=id_permission)
+
+
+def jwt_response_payload_handler(token, user=None, request=None):
+
+    params = {
+            'username': 'admin.portal',
+                        'password': 'ags.2022',
+                        'f': 'json',  # Formato de respuesta JSON
+                        'client':'referer',
+                        'referer':'http://localhost:4200/',
+                        'expiration':5000,
+                    }
+
+                    # Realiza la solicitud POST para obtener el token
+    response = requests.post(settings.AUTH_URL_ARCGIS, data=params)
+
+                    # Verifica si la solicitud fue exitosa
+    if response.status_code == 200:
+                        # El token se encuentra en la respuesta JSON
+        tokenArcGis = response.json()['token']
+        
+        
+    else:
+                       
+
+        tokenArcGis=''
+    return {
+        'token': token,
+        'tokenArcGis': tokenArcGis
+    }
