@@ -168,7 +168,8 @@ JWT_AUTH = {
     'JWT_ALLOW_REFRESH': True,
     'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=7),
     'JWT_AUTH_HEADER_PREFIX': 'Bearer',
-    'JWT_AUTH_COOKIE': 'Authorization'
+    'JWT_AUTH_COOKIE': 'Authorization',
+    'JWT_RESPONSE_PAYLOAD_HANDLER': 'apps.users.views.jwt_response_payload_handler',
 }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
@@ -176,3 +177,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 LOCALE_PATHS = [BASE_DIR / 'locale']
 
 FIXTURE_DIRS = [BASE_DIR / 'fixtures']
+
+AUTH_URL_ARCGIS = 'https://ws.mineco.gob.pe/portaldf/sharing/generateToken'

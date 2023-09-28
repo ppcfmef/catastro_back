@@ -101,36 +101,44 @@ class ApplicationViewSet( ModelViewSet):
             if(a.id_status==2):
                 return Response({'error': 'la solicitud ya se encuentra atendida'}, status=status.HTTP_400_BAD_REQUEST)    
             else:
+                if a.id_type == 1:
+                    for result in results:
+                        r=Land.objects.get(ubigeo_id= result.get('ubigeo', None),cpm= result.get('cod_pre', None))
+                        r.longitude = result.get('coord_x', None)
+                        r.latitude = result.get('coord_y', None)
+                        r.save()
 
-                for result in results:
-                    data={
-                        'ubigeo_id':result.get('ubigeo', None),
-                        'habilitacion_name':result.get('nom_uu', None),
-                        'reference_name':result.get('nom_ref', None)   ,
-                        'cup':result.get('cod_cpu', None),
-                        'cod_street':result.get('cod_via', None),
-                        'street_type_id':result.get('tip_via', None),
-                        'urban_mza':result.get('mzn_urb', None),
-                        'cod_sect':result.get('cod_sect', None),
-                        'cod_uu':result.get('cod_uu', None),
-                        'uu_type':result.get('tipo_uu', None),
-                        'municipal_address':result.get('dir_mun', None),
-                        'cod_mzn':result.get('cod_mzn', None),
-                        'cod_land':result.get('cod_lote', None),
-                        'cpm':result.get('cod_pre', None),
-                        'urban_address':result.get('dir_urb', None),
-                        'urban_lot_number':result.get('lot_urb', None),
-                        'longitude':result.get('coord_x', None),
-                        'latitude':result.get('coord_y', None),
-                        'cod_uu':result.get('cod_uu', None),
-                        'street_name':result.get('nom_via', None),
-                        'status':1,
-                        'source':'mantenimiento_pre'
-                    }
-                        
-                    l=Land(**data)
-                    serializer=LandSerializer(data =model_to_dict(l), many=False)
-                    serializer.is_valid(raise_exception=True)
+
+                else: 
+                    for result in results:
+                        data={
+                            'ubigeo_id':result.get('ubigeo', None),
+                            'habilitacion_name':result.get('nom_uu', None),
+                            'reference_name':result.get('nom_ref', None)   ,
+                            'cup':result.get('cod_cpu', None),
+                            'cod_street':result.get('cod_via', None),
+                            'street_type_id':result.get('tip_via', None),
+                            'urban_mza':result.get('mzn_urb', None),
+                            'cod_sect':result.get('cod_sect', None),
+                            'cod_uu':result.get('cod_uu', None),
+                            'uu_type':result.get('tipo_uu', None),
+                            'municipal_address':result.get('dir_mun', None),
+                            'cod_mzn':result.get('cod_mzn', None),
+                            'cod_land':result.get('cod_lote', None),
+                            'cpm':result.get('cod_pre', None),
+                            'urban_address':result.get('dir_urb', None),
+                            'urban_lot_number':result.get('lot_urb', None),
+                            'longitude':result.get('coord_x', None),
+                            'latitude':result.get('coord_y', None),
+                            'cod_uu':result.get('cod_uu', None),
+                            'street_name':result.get('nom_via', None),
+                            'status':1,
+                            'source':'mantenimiento_pre'
+                        }
+                            
+                        l=Land(**data)
+                        serializer=LandSerializer(data =model_to_dict(l), many=False)
+                        serializer.is_valid(raise_exception=True)
                     
                     serializer.save()
                 a.id_status=2
