@@ -143,28 +143,28 @@ class PermissionNavigationViewSet(mixins.ListModelMixin, GenericViewSet):
 
 def jwt_response_payload_handler(token, user=None, request=None):
 
-    params = {
-            'username': 'admin.portal',
-                        'password': 'ags.2022',
-                        'f': 'json',  # Formato de respuesta JSON
-                        'client':'referer',
-                        'referer':'http://localhost:4200/',
-                        'expiration':5000,
-                    }
+    # params = {
+    #         'username': 'admin.portal',
+    #                     'password': 'ags.2022',
+    #                     'f': 'json',  # Formato de respuesta JSON
+    #                     'client':'referer',
+    #                     'referer':'http://localhost:4200/',
+    #                     'expiration':5000,
+    #                 }
 
                     # Realiza la solicitud POST para obtener el token
-    response = requests.post(settings.AUTH_URL_ARCGIS, data=params)
+    #response = requests.post(settings.AUTH_URL_ARCGIS, data=params)
 
                     # Verifica si la solicitud fue exitosa
-    if response.status_code == 200:
+    #if response.status_code == 200:
                         # El token se encuentra en la respuesta JSON
-        tokenArcGis = response.json()['token']
+        #tokenArcGis = response.json()['token']
         
         
-    else:
+    #else:
                        
 
-        tokenArcGis=''
+    tokenArcGis=''
     return {
         'token': token,
         'tokenArcGis': tokenArcGis
