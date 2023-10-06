@@ -87,9 +87,9 @@ class UploadTemporalService(AbstractUploadTemporal):
         return field is not None and str(field).strip('') is not ''
 
     def _valid_ubigeo(self, ubigeo):
-        return self._validate_empty_field(field=ubigeo) and ubigeo == self.ubigeo
+        return self._validate_empty_field(field=ubigeo) and (ubigeo == self.ubigeo)
 
-    def _make_tmp_upload_record(self, upload_history, record, **kwargs):
+    def _make_tmp_upload_record(self, upload_history, record, order_record, **kwargs):
         land_record = kwargs.get('land_record', {})
         land_record_status = kwargs.get('land_record_status', 0)
         owner_record = kwargs.get('owner_record', {})
@@ -121,6 +121,7 @@ class UploadTemporalService(AbstractUploadTemporal):
             upload_history=upload_history,
             status=status,
             error_code=error_code,
+            order_record=order_record,
         )
 
     def _map_land_record(self, upload_history, record):
@@ -137,33 +138,76 @@ class UploadTemporalService(AbstractUploadTemporal):
 
     def temporal_upload(self, upload_history, records):
         temploral_upload_record_bulk = []
-        records_unique = []
+        records_unique = {}
         land_records_unique = []
         owner_records_unique = []
+        order_record = 0
 
         for record in records:
             land_record_status = 0
             owner_record_status = 0
-            ubigeo = record.get('ubigeo')
+            order_record += 1
+            ubigeo = str(record.get('ubigeo')).strip()
             cpm = record.get('cod_pre')
             owner_code = record.get('cod_contr')
 
             # Validar ubigeo
             if not self._valid_ubigeo(ubigeo):
                 temploral_upload_record_bulk.append(
-                    self._make_tmp_upload_record(upload_history, record, error_code='IS_REQUIRED[ubigeo]')
+                    self._make_tmp_upload_record(upload_history, record, order_record, error_code='IS_REQUIRED[ubigeo]')
                 )
                 continue
 
             # Validar predio
             if not self._validate_empty_field(field=cpm):
                 temploral_upload_record_bulk.append(
-                    self._make_tmp_upload_record(upload_history, record, error_code='IS_REQUIRED[cod_pre]')
+                    self._make_tmp_upload_record(
+                        upload_history, record, order_record,
+                        error_code='IS_REQUIRED[cod_pre]'
+                    )
                 )
                 continue
 
-            # Generar registro de predio
+            # Validar que exista el contribuyente
+            if not self._validate_empty_field(field=owner_code):
+                temploral_upload_record_bulk.append(
+                    self._make_tmp_upload_record(
+                        upload_history, record, order_record,
+                        error_code='IS_REQUIRED[cod_contr]'
+                    )
+                )
+                continue
+
+            # Llaves unicas
+            cpm = str(cpm).strip()
+            owner_code = str(owner_code).strip()
             land_key = '_'.join([ubigeo, cpm])
+            owner_key = '_'.join([ubigeo, owner_code])
+            record_key = '_'.join([land_key, owner_key])
+
+            # valid unique key
+            if record_key in records_unique:
+                temploral_upload_record_bulk.append(
+                    self._make_tmp_upload_record(
+                        upload_history, record, order_record,
+                        error_code=f'DUPLICATE'
+                    )
+                )
+                record_unique_order = records_unique[record_key]['order_record']
+                temploral_upload_record_bulk[record_unique_order - 1] = self._make_tmp_upload_record(
+                        upload_history, record, record_unique_order,
+                        error_code=f'DUPLICATE'
+                    )
+                continue
+
+            records_unique.update({
+                record_key: {
+                    'record_key': record_key,
+                    'order_record': order_record
+                }
+            })
+
+            # Generar registro de predio
             land_item = Land.objects.filter(ubigeo=ubigeo, cpm=cpm).first()
             land_record = self._map_land_record(upload_history, record)
 
@@ -178,60 +222,47 @@ class UploadTemporalService(AbstractUploadTemporal):
             else:
                 land_record_status = 0
 
-            # Validar que exista el contribuyente
-            if not self._validate_empty_field(field=owner_code):
-                tmp_upload_record = self._make_tmp_upload_record(
-                    upload_history, record,
-                    land_record=land_record,
-                    land_record_status=land_record_status,
-                    error_code='WARNING[cod_contr_empty]'
-                )
-                temploral_upload_record_bulk.append(tmp_upload_record)
-                continue
-
-            owner_key = '_'.join([ubigeo, str(owner_code)])
+            # generar registro de contribuyente
             owner_item = LandOwner.objects.filter(ubigeo=ubigeo, code=owner_code).first()
             document_type = record.get('tip_doc')
             document = record.get('doc_iden')
             owner_record = self.land_owner_map(upload_history, record)
 
             if owner_item:
-                owner_record_status = 2
-                owner_record.update({
-                    'id': owner_item.id,
-                })
+                owner_with_all_document = owner_item.document_type == document_type and owner_item.dni == document
+                owner_with_document = owner_item.document_type is None and owner_item.dni == document
+                owner_without_document = owner_item.dni is None
+
+                if owner_with_all_document or owner_with_document or owner_without_document:
+                    # Si existe contribuyente debe conincidir los documentos
+                    owner_record_status = 2
+                    owner_record.update({
+                        'id': owner_item.id,
+                    })
+                else:
+                    tmp_upload_record = self._make_tmp_upload_record(
+                        upload_history, record, order_record,
+                        status='ERROR',
+                        error_code='NOT_INSERT[exists_owner_with_document]'
+                    )
+                    temploral_upload_record_bulk.append(tmp_upload_record)
+                    continue
             elif owner_key not in owner_records_unique:
                 owner_records_unique.append(owner_key)
-
-                if document_type is not None and document is not None:
-
-                    owner_item_document = LandOwner.objects.filter(
-                        ubigeo=ubigeo, document_type=document_type, dni=document
-                    )
-
-                    if owner_item_document.exists():
-                        tmp_upload_record = self._make_tmp_upload_record(
-                            upload_history, record,
-                            status='ERROR',
-                            error_code='NOT_INSERT[exists_owner_with_document]'
-                        )
-                        temploral_upload_record_bulk.append(tmp_upload_record)
-                        continue
-
                 owner_record_status = 1
             else:
                 owner_record_status = 0
 
             if land_record_status == 0 and owner_record_status == 0:
                 tmp_upload_record = self._make_tmp_upload_record(
-                    upload_history, record,
+                    upload_history, record, order_record,
                     status='ERROR',
                     error_code='DUPLICATE'
                 )
                 temploral_upload_record_bulk.append(tmp_upload_record)
             else:
                 tmp_upload_record = self._make_tmp_upload_record(
-                    upload_history, record,
+                    upload_history, record, order_record,
                     land_record=land_record,
                     land_record_status=land_record_status,
                     owner_record=owner_record,
