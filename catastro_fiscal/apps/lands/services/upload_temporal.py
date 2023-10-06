@@ -65,8 +65,8 @@ class AbstractUploadTemporal:
             'corrects': corrects_data.count(),
             'new': temporal_records.filter(status='OK_NEW').count(),
             'updates': temporal_records.filter(status='OK_OLD').count(),
-            'errors_data': errors_data.values('record', 'error_code', 'status'),
-            'corrects_data': corrects_data.values('record', 'status'),
+            'errors_data': errors_data.values('record', 'error_code', 'order_record', 'status'),
+            'corrects_data': corrects_data.values('record', 'order_record', 'status'),
         }
 
 
