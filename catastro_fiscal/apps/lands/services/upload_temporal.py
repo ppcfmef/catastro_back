@@ -84,10 +84,10 @@ class UploadTemporalService(AbstractUploadTemporal):
             upload_history.save()
 
     def _validate_empty_field(self, field):
-        return field is None or str(field).strip('') == ''
+        return field is not None and str(field).strip('') is not ''
 
     def _valid_ubigeo(self, ubigeo):
-        return self._validate_empty_field(field=ubigeo)
+        return self._validate_empty_field(field=ubigeo) and ubigeo == self.ubigeo
 
     def _make_tmp_upload_record(self, upload_history, record, **kwargs):
         land_record = kwargs.get('land_record', {})
@@ -149,14 +149,14 @@ class UploadTemporalService(AbstractUploadTemporal):
             owner_code = record.get('cod_contr')
 
             # Validar ubigeo
-            if self._valid_ubigeo(ubigeo):
+            if not self._valid_ubigeo(ubigeo):
                 temploral_upload_record_bulk.append(
                     self._make_tmp_upload_record(upload_history, record, error_code='IS_REQUIRED[ubigeo]')
                 )
                 continue
 
             # Validar predio
-            if self._validate_empty_field(field=cpm):
+            if not self._validate_empty_field(field=cpm):
                 temploral_upload_record_bulk.append(
                     self._make_tmp_upload_record(upload_history, record, error_code='IS_REQUIRED[cod_pre]')
                 )
@@ -179,7 +179,7 @@ class UploadTemporalService(AbstractUploadTemporal):
                 land_record_status = 0
 
             # Validar que exista el contribuyente
-            if self._validate_empty_field(field=owner_code):
+            if not self._validate_empty_field(field=owner_code):
                 tmp_upload_record = self._make_tmp_upload_record(
                     upload_history, record,
                     land_record=land_record,
