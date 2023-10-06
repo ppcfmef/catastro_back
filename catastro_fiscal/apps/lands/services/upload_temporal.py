@@ -1,29 +1,54 @@
 from django.db.models import Q
 from rest_framework import exceptions
+from apps.places.models import District
+from apps.users.models import User
 from ..models import UploadHistory, TemploralUploadRecord, Land, LandOwner
 from core.utils.read_xlsx import ReadXlsxService
 
 
 class AbstractUploadTemporal:
     read_file_service = ReadXlsxService
+    ubigeo = None
 
     def read(self, upload_history):
         return self.read_file_service(file=upload_history.file_upload.file).read()
 
     def update_ubigeo(self, upload_history, records):
+        """ Validar ubigeo carga y actualizarlo en UploadHistory
+            - Utilizar el primer registro del archivo cargado
+            - Valida que el ubigeo exista (no sea vacio onulo)
+            - Valida que el ubigeo exista en la tabla Distritos
+            - valida que el ubigeo pertenesca al usuario que tiene permisos
+            - Actualiza el ubigeo de UploadHistory
+
+            Retornar la instalacion de UploadHistory Actualizada
+        """
         qs = UploadHistory.objects.filter(id=upload_history.id)
         if len(records) == 0:
             qs.update(status='ERROR')
             raise exceptions.ValidationError("El archivo no tiene registros para cargar")
 
         record = records[0]
-        ubigeo = str(record.get('ubigeo')).strip()
+        self.ubigeo = str(record.get('ubigeo')).strip()
 
-        if ubigeo is None or str(ubigeo).strip() == '':
+        if self.ubigeo is None or str(self.ubigeo).strip() == '':
             qs.update(status='ERROR')
-            raise exceptions.ValidationError("El archivo no tiene registros para cargar")
+            raise exceptions.ValidationError("El ubigeo no es valido")
 
-        qs.update(ubigeo_id=ubigeo, status='IN_PROGRESS_TMP')
+        if not District.objects.filter(code=self.ubigeo).exists():
+            qs.update(status='ERROR')
+            raise exceptions.ValidationError("El ubigeo no es valido")
+
+        # validar ubigeo del usuario
+
+        user = User.objects.filter(username=upload_history.username).first()
+        if not user:
+            raise exceptions.ValidationError("El usuario no existe")
+
+        if not user.valid_scope_ubigeo(self.ubigeo):
+            raise exceptions.ValidationError("El usuario no tiene pertenece al ubigeo cargado")
+
+        qs.update(ubigeo_id=self.ubigeo, status='IN_PROGRESS_TMP')
         return UploadHistory.objects.filter(id=upload_history.id).first()
 
     def get_temporal_summary(self, upload_history):
