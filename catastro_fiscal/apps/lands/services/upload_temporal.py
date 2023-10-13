@@ -1,3 +1,4 @@
+import re
 from django.db.models import Q
 from rest_framework import exceptions
 from apps.places.models import District
@@ -86,6 +87,14 @@ class UploadTemporalService(AbstractUploadTemporal):
     def _validate_empty_field(self, field):
         return field is not None and str(field).strip('') is not ''
 
+    def _validate_not_black_list(self, black_list, field):
+        if re.search(r"[" + black_list + "]", field):
+            return False
+        return True
+
+    def _validate_code(self, field):
+        return self._validate_not_black_list('&+,%$}{', field)
+
     def _valid_ubigeo(self, ubigeo):
         return self._validate_empty_field(field=ubigeo) and (ubigeo == self.ubigeo)
 
@@ -168,12 +177,30 @@ class UploadTemporalService(AbstractUploadTemporal):
                 )
                 continue
 
+            if not self._validate_code(field=cpm):
+                temploral_upload_record_bulk.append(
+                    self._make_tmp_upload_record(
+                        upload_history, record, order_record,
+                        error_code='CODE_ERROR[cod_pre]'
+                    )
+                )
+                continue
+
             # Validar que exista el contribuyente
             if not self._validate_empty_field(field=owner_code):
                 temploral_upload_record_bulk.append(
                     self._make_tmp_upload_record(
                         upload_history, record, order_record,
                         error_code='IS_REQUIRED[cod_contr]'
+                    )
+                )
+                continue
+
+            if not self._validate_code(field=owner_code):
+                temploral_upload_record_bulk.append(
+                    self._make_tmp_upload_record(
+                        upload_history, record, order_record,
+                        error_code='CODE_ERROR[cod_contr]'
                     )
                 )
                 continue
