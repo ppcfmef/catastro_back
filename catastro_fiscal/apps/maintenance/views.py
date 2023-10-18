@@ -25,7 +25,7 @@ class ApplicationViewSet( ModelViewSet):
     queryset = Application.objects.all()
     serializer_class = ApplicationSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, CamelCaseOrderFilter]
-    filterset_fields = ['id' , 'ubigeo']
+    filterset_fields = ['id' , 'ubigeo','id_status','id_type']
     
     def get_serializer_class(self):
         if self.action == 'list' :
@@ -154,7 +154,7 @@ class LandViewSet(ModelViewSet):
     serializer_class = LandListSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, CamelCaseOrderFilter]
     filterset_fields = ['id','cpm','ubigeo']
-    search_fields = ['ubigeo__name','cpm' ]
+    search_fields = ['ubigeo__name','cpm' ,'cup']
     
     def get_serializer_class(self):
         if self.action == 'list':
