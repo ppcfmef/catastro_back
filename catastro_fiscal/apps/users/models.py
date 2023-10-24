@@ -153,6 +153,26 @@ class User(AbstractUser):
         else:
             self.place_scope_id = 4
 
+    def valid_scope_ubigeo(self, ubigeo):
+        if ubigeo is None or str(ubigeo).strip() == '':
+            return False
+
+        # validar ubigeo por scope
+
+        if self.place_scope_id == 1:
+            return True
+
+        if self.place_scope_id == 2 and self.ubigeo == ubigeo[:2]:
+            return True
+
+        if self.place_scope_id == 3 and self.ubigeo == ubigeo[:4]:
+            return True
+
+        if self.place_scope_id == 4 and self.ubigeo == ubigeo:
+            return True
+
+        return False
+
     @staticmethod
     def get_institution(institution, place_scope, department, province, district):
         institution = Institution.objects.get(pk=institution)

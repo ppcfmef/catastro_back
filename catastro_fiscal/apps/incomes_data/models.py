@@ -391,6 +391,13 @@ class Emision(models.Model):
         blank=True, null=True,
         help_text='Emisión por resoluciones de Ejecución Coactiva arbitrios'
     )
+
+    emision_ord_pago_nc = models.FloatField(
+        blank=True, null=True, help_text='Emisión de órdenes de pago deuda no corriente predial'
+    )
+    emision_ip_corriente = models.FloatField(
+        blank=True, null=True, help_text='Emisión de Impuesto predial del año corriente'
+    )
     fecha_data = models.CharField(
         max_length=10, blank=True, null=True,
         help_text='Fecha de generación de información a exporta AAAAMMDD (AAAA= año, MM=mes, DD=día)'

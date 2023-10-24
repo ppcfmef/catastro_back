@@ -87,6 +87,7 @@ class TemploralUploadRecord(models.Model):
     upload_history = models.ForeignKey(UploadHistory, on_delete=models.CASCADE)
     status = models.CharField(max_length=20, choices=STATUS_CHOICE)
     upload_status = models.CharField(max_length=20, choices=UPLOAD_STATUS_CHOICE, default='INITIAL')
+    order_record = models.IntegerField(blank=True, null=True)
 
     class Meta:
         db_table = 'TMP_CARGA_REGISTROS'
