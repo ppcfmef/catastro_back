@@ -92,7 +92,7 @@ class LandByApplicationListSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Land
-        fields = ('cpm','cup','cod_cuc','street_name_alt','street_name','sec_ejec',) 
+        fields = ('cpm','cup','cod_cuc','street_name_alt','street_name','sec_ejec','urban_lot_number') 
         
     
 class LandApplicationSerializer(serializers.ModelSerializer):
