@@ -68,17 +68,21 @@ class ApplicationViewSet( ModelViewSet):
         #try:
         serializer=self.get_serializer(data=application)
         serializer.is_valid(raise_exception=True)
-        
         serializer.save()
             
         for land in lands:
-            ApplicationLandDetail.objects.create(application_id= serializer.data['id'], land_id = land['id'])
+            try:
+                ApplicationLandDetail.objects.create(application_id= serializer.data['id'], land_id = land['id'])
+            except:
+                Application.objects.filter(id= serializer.data['id']).delete()
         for result in results:
-            rserializer=ResultSerializer(data=result)
-            rserializer.is_valid(raise_exception=True)
-            rserializer.save()
-            ApplicationResultDetail.objects.create(application_id= serializer.data['id'], result_id = rserializer.data['id'])
-        
+            try:
+                rserializer=ResultSerializer(data=result)
+                rserializer.is_valid(raise_exception=True)
+                rserializer.save()
+                ApplicationResultDetail.objects.create(application_id= serializer.data['id'], result_id = rserializer.data['id'])
+            except:
+                Application.objects.filter(id= serializer.data['id']).delete()
         
          
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -107,6 +111,12 @@ class ApplicationViewSet( ModelViewSet):
                         r.longitude = result.get('coord_x', None)
                         r.latitude = result.get('coord_y', None)
                         r.save()
+                
+                elif a.id_type == 4:
+                    lands_id = ApplicationLandDetail.objects.filter(application_id=id_app).values_list('land_id', flat=True)
+                    print('lands_id>>>',lands_id)
+                    lands = Land.objects.filter(id__in=list(lands_id))
+                    lands.update(status=3)
 
 
                 else: 
@@ -139,8 +149,11 @@ class ApplicationViewSet( ModelViewSet):
                         l=Land(**data)
                         serializer=LandSerializer(data =model_to_dict(l), many=False)
                         serializer.is_valid(raise_exception=True)
+                        serializer.save()
                     
-                    serializer.save()
+                    lands_id = ApplicationLandDetail.objects.filter(application_id=id_app).values_list('land_id', flat=True)
+                    lands = Land.objects.filter(id__in=list(lands_id))
+                    lands.update(status=3)
                 a.id_status=2
                 a.save()
                 return Response({'success':True})
@@ -154,7 +167,7 @@ class LandViewSet(ModelViewSet):
     serializer_class = LandListSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, CamelCaseOrderFilter]
     filterset_fields = ['id','cpm','ubigeo']
-    search_fields = ['ubigeo__name','cpm' ,'cup']
+    search_fields = ['ubigeo__code','ubigeo__name','cpm' ,'cup']
     
     def get_serializer_class(self):
         if self.action == 'list':
