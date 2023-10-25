@@ -88,12 +88,18 @@ class LandListSerializer(serializers.ModelSerializer):
     
     
 class LandByApplicationListSerializer(serializers.ModelSerializer):
-    
+    address = serializers.SerializerMethodField()
     
     class Meta:
         model = Land
-        fields = ('cpm','cup','cod_cuc','street_name_alt','street_name','sec_ejec','urban_lot_number') 
-        
+        fields = ('cpm','cup','cod_cuc','street_type','street_name_alt','street_name','sec_ejec','urban_lot_number','urban_mza','municipal_number','address') 
+    
+    def get_address(self,obj):
+        #print('obj.street_type>>',obj.street_type)
+        #street_type=MasterCodeStreet.objects.get(id= obj.street_type)
+        return '{street_type} {street_name} {municipal_number} {urban_mza} {urban_lot_number}'.format(street_type=obj.street_type,street_name = obj.street_name,municipal_number =obj.municipal_number,urban_mza =' Mz.{}'.format(obj.urban_mza) if obj.urban_mza is not None else '' ,urban_lot_number =' Lote {}'.format( obj.urban_lot_number) if  obj.urban_lot_number is not None else '' )
+
+     
     
 class LandApplicationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -114,5 +120,4 @@ class ResultDetailCustomSerializer(serializers.ModelSerializer):
         fields = ('address','cpm','urban_lot_number')
         
     def get_address(self,obj):
-        street_type=MasterCodeStreet.objects.get(id= obj.street_type)
-        return '{} {} {}'.format(street_type.name,obj.street_name,obj.municipal_number)
+        return '{street_type} {street_name} {municipal_number} {urban_mza} {urban_lot_number}'.format(street_type=obj.street_type,street_name = obj.street_name,municipal_number =obj.municipal_number,urban_mza =' Mz.{}'.format(obj.urban_mza) if obj.urban_mza is not None else '' ,urban_lot_number =' Lote {}'.format( obj.urban_lot_number) if  obj.urban_lot_number is not None else '' )

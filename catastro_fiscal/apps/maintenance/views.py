@@ -119,7 +119,10 @@ class ApplicationViewSet( ModelViewSet):
                     lands.update(status=3)
 
 
-                else: 
+                else:
+                    lands_id = ApplicationLandDetail.objects.filter(application_id=id_app).values_list('land_id', flat=True)
+                    lands = Land.objects.filter(id__in=list(lands_id))
+                    lands.update(status=3)
                     for result in results:
                         data={
                             'ubigeo_id':result.get('ubigeo', None),
@@ -151,9 +154,7 @@ class ApplicationViewSet( ModelViewSet):
                         serializer.is_valid(raise_exception=True)
                         serializer.save()
                     
-                    lands_id = ApplicationLandDetail.objects.filter(application_id=id_app).values_list('land_id', flat=True)
-                    lands = Land.objects.filter(id__in=list(lands_id))
-                    lands.update(status=3)
+
                 a.id_status=2
                 a.save()
                 return Response({'success':True})
