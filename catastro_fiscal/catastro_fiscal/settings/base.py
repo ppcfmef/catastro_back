@@ -65,7 +65,8 @@ LOCAL_APPS = [
     'apps.maintenance.apps.MaintenanceConfig',
     'apps.mobile.apps.MobileConfig',
     'apps.incomes_data.apps.IncomesDataConfig',
-    'apps.gap_analisys.apps.GapAnalisysConfig'    
+    'apps.gap_analisys.apps.GapAnalisysConfig',
+    'apps.land_inspections.apps.LandInspectionsConfig',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
