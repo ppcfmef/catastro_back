@@ -152,3 +152,85 @@ class RecordOwnerShip(models.Model):
         db_table = 'TB_REGISTRO_TITULARIDAD'
         verbose_name = _('OwnerShip')
         verbose_name_plural = _('OwnerShip')
+
+
+class LandCharacteristic(models.Model):
+    """Caracteristicas"""
+    cod_caracteristica = models.AutoField(primary_key=True)
+    cod_tit = models.ForeignKey(RecordOwnerShip, on_delete=models.CASCADE, db_column="cod_tit")
+    categoria_electrica = models.CharField(max_length=100, blank=True, null=True)
+    piso = models.CharField(max_length=100, blank=True, null=True)
+    estado_conserva = models.CharField(max_length=100, blank=True, null=True)
+    anio_construccion = models.CharField(max_length=100, blank=True, null=True)
+    catergoria_techo = models.CharField(max_length=100, blank=True, null=True)
+    longitud_frente = models.FloatField(blank=True, null=True)
+    categoria_muro_columna = models.CharField(max_length=100, blank=True, null=True)
+    catergoria_puerta_ventana = models.CharField(max_length=100, blank=True, null=True)
+    arancel = models.FloatField(blank=True, null=True)
+    material_pred = models.CharField(max_length=100, blank=True, null=True)
+    categoria_revestimiento = models.CharField(max_length=100, blank=True, null=True)
+    area_terreno = models.FloatField(blank=True, null=True)
+    clasificacion_pred = models.CharField(max_length=100, blank=True, null=True)
+    catergoria_piso = models.CharField(max_length=100, blank=True, null=True)
+    catergoria_bano = models.CharField(max_length=100, blank=True, null=True)
+    area_construida = models.FloatField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'TB_CARACTERISTICAS'
+        verbose_name = _('Land Characteristic')
+        verbose_name_plural = _('Land Characteristics')
+
+
+class FacilityType(models.Model):
+    """Tipo de instalaciones"""
+    cod_tipo_inst = models.AutoField(primary_key=True)
+    desc_tipo_inst = models.CharField(max_length=100)
+
+    class Meta:
+        db_table = 'TB_TIPO_INSTA'
+        verbose_name = _('Facility type')
+        verbose_name_plural = _('Facility types')
+
+
+class LandFacility(models.Model):
+    """Instalaciones"""
+    cod_inst = models.CharField(max_length=20, primary_key=True)
+    cod_tit = models.ForeignKey(RecordOwnerShip, on_delete=models.CASCADE, db_column="cod_tit")
+    cod_tipo_inst = models.ForeignKey(
+        FacilityType, blank=True, null=True, on_delete=models.SET_NULL, db_column="cod_tipo_inst"
+    )
+    anio_construccion = models.CharField(max_length=20, blank=True, null=True)
+    estado_conserva = models.CharField(max_length=255, blank=True, null=True)
+    dimension = models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        db_table = 'TB_INSTALACIONES'
+        verbose_name = _('Land Facility')
+        verbose_name_plural = _('Land Facilities')
+
+
+class SupplyType(models.Model):
+    """Tipo de suministro"""
+    cod_tipo_sumi = models.AutoField(primary_key=True)
+    desc_tipo_sumi = models.CharField(max_length=100)
+
+    class Meta:
+        db_table = 'TB_TIPO_SUMINISTRO'
+        verbose_name = _('Facility Type')
+        verbose_name_plural = _('Facility Types')
+
+
+class LandSupply(models.Model):
+    """Suministros"""
+    cod_suministro = models.AutoField(primary_key=True)
+    cod_tit = models.ForeignKey(RecordOwnerShip, on_delete=models.CASCADE, db_column="cod_tit")
+    cod_tipo_sumi = models.ForeignKey(
+        SupplyType, blank=True, null=True, on_delete=models.SET_NULL, db_column="cod_tipo_sumi"
+    )
+    num_sumis = models.CharField(max_length=20, blank=True, null=True)
+    obs_sumis = models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        db_table = 'TB_SUMINISTRO'
+        verbose_name = _('Land Supply')
+        verbose_name_plural = _('Land Supplies')
