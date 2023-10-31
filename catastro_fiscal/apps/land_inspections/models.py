@@ -157,7 +157,7 @@ class RecordOwnerShip(models.Model):
 class LandCharacteristic(models.Model):
     """Caracteristicas"""
     cod_caracteristica = models.AutoField(primary_key=True)
-    cod_tit = models.ForeignKey(RecordOwnerShip, on_delete=models.CASCADE, db_column="cod_tit")
+    cod_tit = models.OneToOneField(RecordOwnerShip, on_delete=models.CASCADE, db_column="cod_tit")
     categoria_electrica = models.CharField(max_length=100, blank=True, null=True)
     piso = models.CharField(max_length=100, blank=True, null=True)
     estado_conserva = models.CharField(max_length=100, blank=True, null=True)
@@ -223,7 +223,7 @@ class SupplyType(models.Model):
 class LandSupply(models.Model):
     """Suministros"""
     cod_suministro = models.AutoField(primary_key=True)
-    cod_tit = models.ForeignKey(RecordOwnerShip, on_delete=models.CASCADE, db_column="cod_tit")
+    cod_tit = models.OneToOneField(RecordOwnerShip, on_delete=models.CASCADE, db_column="cod_tit")
     cod_tipo_sumi = models.ForeignKey(
         SupplyType, blank=True, null=True, on_delete=models.SET_NULL, db_column="cod_tipo_sumi"
     )
@@ -234,3 +234,83 @@ class LandSupply(models.Model):
         db_table = 'TB_SUMINISTRO'
         verbose_name = _('Land Supply')
         verbose_name_plural = _('Land Supplies')
+
+
+class LandInspectionType(models.Model):
+    """Tipo de predio"""
+    cod_tipo_predio = models.AutoField(primary_key=True)
+    desc_tipo_predio = models.CharField(max_length=100)
+
+    class Meta:
+        db_table = 'TB_TIP_PREDIO_INSPEC'
+        verbose_name = _('Facility Type')
+        verbose_name_plural = _('Facility Types')
+
+
+class LandInspection(models.Model):
+    """Predios
+    Tabla de almacenamiento de mobile una vez aceptado los datos pasan a la `lands.Land` bd `TB_PREDIO`
+    """
+    id = models.AutoField(primary_key=True)
+    cod_tit = models.OneToOneField(RecordOwnerShip, on_delete=models.CASCADE, db_column="cod_tit")
+    ubigeo = models.CharField(max_length=6)
+    cod_cpu = models.CharField(max_length=50, blank=True, null=True)
+    cod_pre = models.CharField(max_length=50, blank=True, null=True)
+    cod_tipo_predio = models.ForeignKey(
+        LandInspectionType, blank=True, null=True, on_delete=models.SET_NULL, db_column="cod_tipo_predio"
+    )
+    piso = models.CharField(max_length=100, blank=True, null=True)
+    num_sumi_agua = models.CharField(max_length=100, blank=True, null=True)
+    num_sumi_luz = models.CharField(max_length=100, blank=True, null=True)
+    uso_especifico = models.CharField(max_length=100, blank=True, null=True)
+    interior = models.CharField(max_length=100, blank=True, null=True)
+    obs_predio = models.CharField(max_length=100, blank=True, null=True)
+    num_dpto = models.CharField(max_length=100, blank=True, null=True)
+    codigo_uso = models.CharField(max_length=100, blank=True, null=True)
+    estado = models.CharField(max_length=100, blank=True, null=True)
+    block = models.CharField(max_length=100, blank=True, null=True)
+    num_sumi_gas = models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        db_table = 'TB_PREDIO_INSPEC'
+        verbose_name = _('Land Inspection')
+        verbose_name_plural = _('Lands Inspection')
+
+
+class LandOwnerInspection(models.Model):
+    """Contribuyente
+    Tabla de almacenamiento de mobile una vez aceptado los datos pasan a la `lands.LandOwner` bd `PROPIETARIO`
+    """
+    id = models.AutoField(primary_key=True)
+    cod_contr = models.CharField(max_length=50)
+    tip_doc = models.CharField(max_length=2, blank=True, null=True)  # ToDo: validar si debe ser FK
+    doc_iden = models.CharField(max_length=20, blank=True, null=True)
+    dir_fiscal = models.CharField(max_length=255, blank=True, null=True)
+    ap_mat = models.CharField(max_length=100, blank=True, null=True)
+    ap_pat = models.CharField(max_length=150, blank=True, null=True)
+    cond_contr = models.CharField(max_length=150, blank=True, null=True)  # ToDo: Validar su valor
+    contribuyente = models.CharField(max_length=100, blank=True, null=True)
+    nombre = models.CharField(max_length=100, blank=True, null=True)
+    conyuge = models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        db_table = 'TB_CONTRIBUYENTE_INSPEC'
+        verbose_name = _('Land Owner Inspection')
+        verbose_name_plural = _('Land Owner Inspection')
+
+
+class LandOwnerDetailInspection(models.Model):
+    """Predios
+    Tabla de almacenamiento de mobile una vez aceptado los datos pasan a la `lands.LandOwner` bd ``
+    """
+    cod_tit = models.ForeignKey(RecordOwnerShip, on_delete=models.CASCADE, db_column="cod_tit")
+    ubigeo = models.CharField(max_length=6)
+    cod_pred_inspec = models.ForeignKey(LandInspection, on_delete=models.CASCADE, db_column="cod_pred_inspec")
+    cod_contr_inspec = models.ForeignKey(LandOwnerInspection, on_delete=models.CASCADE, db_column="cod_contr_inspec")
+    doc_iden = models.CharField(max_length=20, blank=True, null=True)
+    cod_pre = models.CharField(max_length=50, blank=True, null=True)
+
+    class Meta:
+        db_table = 'TB_PREDIO_CONTRIBUYENTE_INSPEC'
+        verbose_name = _('Land Inspection')
+        verbose_name_plural = _('Lands Inspection')
