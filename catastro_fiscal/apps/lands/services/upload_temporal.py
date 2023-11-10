@@ -85,7 +85,7 @@ class UploadTemporalService(AbstractUploadTemporal):
             upload_history.save()
 
     def _validate_empty_field(self, field):
-        return field is not None and str(field).strip('') is not ''
+        return field is not None and str(field).strip('') != ''
 
     def _validate_not_black_list(self, black_list, field):
         if re.search(r"[" + black_list + "]", field):

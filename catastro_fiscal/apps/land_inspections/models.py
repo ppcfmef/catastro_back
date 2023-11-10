@@ -1,4 +1,5 @@
 from django.db import models
+from apps.users.models import User
 from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
@@ -9,6 +10,7 @@ class LandInspectionUpload(models.Model):
     Utilizado para el nodo del API tbProperties
     """
     cod_carga = models.CharField(max_length=10, primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, db_column='cod_usuario')
     username = models.CharField(max_length=150)
 
     class Meta:
