@@ -1,4 +1,5 @@
 from apps.lands.models import *
+from apps.historical.models import HistoricalRecord
 
 
 def run():
@@ -9,3 +10,6 @@ def run():
     Land.objects.all().delete()
     LandOwnerDetail.objects.all().delete()
     LandAudit.objects.all().delete()
+
+    # clean Historical
+    HistoricalRecord.objects.all().delete()

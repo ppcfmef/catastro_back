@@ -30,24 +30,28 @@ class TicketType(models.Model):
         verbose_name_plural = _('Ticket Types')
 
 
+# ToDo: Cambiar de station a state
 class TicketWorkStation(models.Model):
+    """Estado de la estacion de trabajo"""
     cod_est_trabajo_ticket = models.CharField(max_length=5, primary_key=True)
     desc_est_trabajo_ticket = models.CharField(max_length=100)
 
     class Meta:
         db_table = 'TB_EST_TRABAJO_TICKET'
-        verbose_name = _('Ticket WorkStation')
-        verbose_name_plural = _('Ticket WorkStation')
+        verbose_name = _('Ticket Work state')
+        verbose_name_plural = _('Ticket Work state')
 
 
+# ToDo: Cambiar de station a state
 class TicketSendStation(models.Model):
+    """Estado de envio"""
     cod_est_envio_ticket = models.CharField(max_length=5, primary_key=True)
     desc_est_envio_ticket = models.CharField(max_length=100)
 
     class Meta:
         db_table = 'TB_EST_ENVIO_TICKET'
-        verbose_name = _('Ticket SendStation')
-        verbose_name_plural = _('Ticket SendStation')
+        verbose_name = _('Ticket Send state')
+        verbose_name_plural = _('Ticket Send state')
 
 
 class Ticket(models.Model):

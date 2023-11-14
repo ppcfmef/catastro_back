@@ -1,4 +1,7 @@
+from datetime import datetime
 from rest_framework import serializers
+from apps.users.models import User
+from .models import LandInspectionUpload, Ticket
 
 
 class LandOwnerInspectionSerializer(serializers.Serializer):
@@ -155,5 +158,58 @@ class MobileLandInspectionSerializer(serializers.Serializer):
 
     def save(self, **kwargs):
         validated_data = dict(self.validated_data)
-        tb_properties = dict(validated_data.get('tb_properties'))
+        tb_properties = dict(validated_data.get('tb_properties', {}))
+        tb_ticket = dict(tb_properties.get('tb_ticket', {}))
+        tb_ubicacion = dict(tb_properties.get('tb_ubicacion', {}))
+
+        # Validar si el registro existe en la tb_properties
+        cod_upload = tb_properties.get('cod_carga', None)
+        self.instance = LandInspectionUpload.objects.filter(cod_carga=cod_upload).first()
+        if self.instance is None:
+            inspection_upload = self.create_inspection_upload(tb_properties, cod_upload)
+            self.create_ticket(tb_ticket, inspection_upload)
+
+            self.instance = inspection_upload
+        else:
+            print('registro ya existe')
+
         return self.instance
+
+    def create_inspection_upload(self, tb_properties, cod_upload):
+        cod_uer = int(tb_properties.get('cod_usuario', None))
+        user = User.objects.filter(id=cod_uer).first()
+        instance = LandInspectionUpload.objects.create(
+            cod_carga=cod_upload,
+            user=user,
+            username=user.username
+        )
+        return instance
+
+    def create_ticket(self, tb_ticket, inspection_upload):
+        date_format = '%d%m%y%H%M'
+        fec_inicio_trabajo = tb_ticket.get('fec_inicio_trabajo', None)
+        fec_ultima_actualizacion = tb_ticket.get('fec_ultima_actualizacion', None)
+        fec_asignacion = tb_ticket.get('fec_asignacion', None)
+
+        if fec_inicio_trabajo:
+            fec_inicio_trabajo = datetime.strptime(fec_inicio_trabajo, date_format)
+
+        if fec_ultima_actualizacion:
+            fec_ultima_actualizacion = datetime.strptime(fec_ultima_actualizacion, date_format)
+
+        if fec_asignacion:
+            fec_asignacion = datetime.strptime(fec_asignacion, date_format)
+
+        Ticket.objects.create(
+            cod_carga=inspection_upload,
+            cod_ticket=tb_ticket.get('cod_ticket', None),
+            cod_tipo_ticket_id=tb_ticket.get('cod_tipo_ticket', None),
+            cod_est_trabajo_ticket_id=tb_ticket.get('cod_est_trabajo_ticket', None),
+            cod_est_envio_ticket_id=tb_ticket.get('cod_est_envio_ticket', None),
+            cod_usuario=tb_ticket.get('cod_usuario', None),
+            obs_ticket_usuario=tb_ticket.get('obs_ticket_usuario', None),
+            fec_inicio_trabajo=fec_inicio_trabajo,
+            fec_ultima_actualizacion=fec_ultima_actualizacion,
+            fec_asignacion=fec_asignacion,
+            obs_ticket_gabinete=tb_ticket.get('obs_ticket_gabinete', None)
+        )
