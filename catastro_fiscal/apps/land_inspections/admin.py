@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (
     TicketType, TicketWorkStation, TicketSendStation, PhotoType, OwnerShipType, FacilityType, SupplyType,
-    LandInspectionType
+    LandInspectionType, Ticket
 )
 
 
@@ -43,3 +43,13 @@ class SupplyTypeAdmin(admin.ModelAdmin):
 @admin.register(LandInspectionType)
 class LandInspectionTypeAdmin(admin.ModelAdmin):
     list_display = ('cod_tipo_predio', 'desc_tipo_predio', )
+
+
+@admin.register(Ticket)
+class TicketAdmin(admin.ModelAdmin):
+    list_display = ('cod_ticket', 'get_cod_carga', 'cod_usuario')
+
+    def get_cod_carga(self, obj):
+        return obj.inspection_upload.cod_carga
+
+    get_cod_carga.short_description = 'cod_carga'
