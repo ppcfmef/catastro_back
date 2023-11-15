@@ -9,7 +9,8 @@ class LandInspectionUpload(models.Model):
     """LandInspectionUpload
     Utilizado para el nodo del API tbProperties
     """
-    cod_carga = models.CharField(max_length=10, primary_key=True)
+    id = models.AutoField(primary_key=True)
+    cod_carga = models.CharField(max_length=10)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, db_column='cod_usuario')
     username = models.CharField(max_length=150)
 
@@ -57,8 +58,8 @@ class TicketSendStation(models.Model):
 class Ticket(models.Model):
     """Ticket"""
     cod_ticket = models.CharField(max_length=20, primary_key=True)
-    cod_carga = models.ForeignKey(
-        LandInspectionUpload, blank=True, null=True, on_delete=models.SET_NULL, db_column="cod_carga"
+    inspection_upload = models.ForeignKey(
+        LandInspectionUpload, blank=True, null=True, on_delete=models.SET_NULL
     )
     cod_tipo_ticket = models.ForeignKey(
         TicketType, blank=True, null=True, on_delete=models.SET_NULL, db_column="cod_tipo_ticket"

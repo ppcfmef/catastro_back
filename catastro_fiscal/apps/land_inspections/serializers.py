@@ -1,5 +1,5 @@
 from datetime import datetime
-from rest_framework import serializers
+from rest_framework import serializers, exceptions
 from apps.users.models import User
 from .models import LandInspectionUpload, Ticket
 
@@ -164,14 +164,12 @@ class MobileLandInspectionSerializer(serializers.Serializer):
 
         # Validar si el registro existe en la tb_properties
         cod_upload = tb_properties.get('cod_carga', None)
-        self.instance = LandInspectionUpload.objects.filter(cod_carga=cod_upload).first()
+        cod_usuario = tb_properties.get('cod_usuario', None)
+        self.instance = LandInspectionUpload.objects.filter(cod_carga=cod_upload, user_id=cod_usuario).first()
         if self.instance is None:
-            inspection_upload = self.create_inspection_upload(tb_properties, cod_upload)
-            self.create_ticket(tb_ticket, inspection_upload)
+            self.instance = self.create_inspection_upload(tb_properties, cod_upload)
 
-            self.instance = inspection_upload
-        else:
-            print('registro ya existe')
+        self.create_ticket(tb_ticket, inspection_upload=self.instance)
 
         return self.instance
 
@@ -186,6 +184,10 @@ class MobileLandInspectionSerializer(serializers.Serializer):
         return instance
 
     def create_ticket(self, tb_ticket, inspection_upload):
+        cod_ticket = tb_ticket.get('cod_ticket', None)
+        ticket = Ticket.objects.filter(cod_ticket=cod_ticket).first()
+        if cod_ticket is not None and ticket is not None:
+            raise exceptions.ValidationError('El ticket ya existe')
         date_format = '%d%m%y%H%M'
         fec_inicio_trabajo = tb_ticket.get('fec_inicio_trabajo', None)
         fec_ultima_actualizacion = tb_ticket.get('fec_ultima_actualizacion', None)
@@ -201,7 +203,7 @@ class MobileLandInspectionSerializer(serializers.Serializer):
             fec_asignacion = datetime.strptime(fec_asignacion, date_format)
 
         Ticket.objects.create(
-            cod_carga=inspection_upload,
+            inspection_upload=inspection_upload,
             cod_ticket=tb_ticket.get('cod_ticket', None),
             cod_tipo_ticket_id=tb_ticket.get('cod_tipo_ticket', None),
             cod_est_trabajo_ticket_id=tb_ticket.get('cod_est_trabajo_ticket', None),
