@@ -4,6 +4,57 @@ from .models import (
     LandInspectionType, Ticket
 )
 
+from .models import TicketType, TicketWorkStation,TicketSendStation,Ticket,PhotoType,LocationPhoto,RecordOwnerShip,OwnerShipType,Location,LandCharacteristic,FacilityType,LandFacility,LandSupply,SupplyType,LandInspectionType,LandInspection,LandOwnerInspection,LandOwnerDetailInspection,LandInspectionUpload
+
+
+@admin.register(LandInspectionUpload)
+class LandInspectionUploadAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(LocationPhoto)
+class LocationPhotoAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(RecordOwnerShip)
+class RecordOwnerShipAdmin(admin.ModelAdmin):
+    list_display = ('cod_tit', 'status')
+
+
+
+@admin.register(Location)
+class LocationAdmin(admin.ModelAdmin):
+    list_display = ('cod_ubicacion', 'status')
+    
+
+
+@admin.register(LandCharacteristic)
+class LandCharacteristicAdmin(admin.ModelAdmin):
+    pass
+
+
+
+@admin.register(LandFacility)
+class LandFacilityAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(LandSupply)
+class LandSupplyAdmin(admin.ModelAdmin):
+    pass
+
+
+
+@admin.register(LandInspection)
+class LandInspectionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'cod_tit','ubigeo','cod_cpu','cod_pre')
+
+@admin.register(LandOwnerInspection)
+class LandOwnerInspectionAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(LandOwnerDetailInspection)
+class LandOwnerDetailInspectionAdmin(admin.ModelAdmin):
+    pass
 
 @admin.register(TicketType)
 class TicketTypeAdmin(admin.ModelAdmin):

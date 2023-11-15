@@ -1,7 +1,7 @@
 from django.db import models
 from apps.users.models import User
 from django.utils.translation import gettext_lazy as _
-
+from apps.lands.models import LandOwner
 # Create your models here.
 
 
@@ -18,7 +18,7 @@ class LandInspectionUpload(models.Model):
         # TB_PROPERTIES
         db_table = 'TB_INSPECCION_PREDIAL'
         verbose_name = _('Land Inspection')
-        verbose_name_plural = _('LandS Inspection')
+        verbose_name_plural = _('Lands Inspection Upload')
 
     def __str__(self):
         return self.cod_carga
@@ -100,9 +100,15 @@ class Ticket(models.Model):
 
 
 class Location(models.Model):
+    STATUS_CHOICE = (
+        (0, 'pendiente'),
+        (6, 'resuelto'),
+        (98, 'observado'),
+        
+    )
     """Ubicacion"""
     cod_ubicacion = models.CharField(max_length=20, primary_key=True)
-    cod_ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, db_column="cod_ticket")
+    cod_ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, db_column="cod_ticket", related_name='ubicaciones')
     cod_tip_via = models.CharField(max_length=10, blank=True, null=True)  # ToDo: ver FK
     cod_via = models.CharField(max_length=255, blank=True, null=True)  # ToDo: ver FK
     nom_via = models.CharField(max_length=255, blank=True, null=True)
@@ -121,7 +127,10 @@ class Location(models.Model):
     username = models.CharField(max_length=150, blank=True, null=True)
     cod_usuario = models.CharField(max_length=255, blank=True, null=True)  # Codigo de usuario mobile
     obs_ubicacion = models.CharField(max_length=255, blank=True, null=True)
-
+    status = models.PositiveSmallIntegerField(choices=STATUS_CHOICE, blank=True, null=True, default=0,
+                                              db_column='estado')
+    file_obs =models.FileField(blank=True, null=True)  # ToDo: genera url
+    
     class Meta:
         db_table = 'TB_UBICACION'
         verbose_name = _('Location')
@@ -148,7 +157,7 @@ class LocationPhoto(models.Model):
     """Fotos"""
 
     cod_foto = models.CharField(max_length=20, primary_key=True)
-    cod_ubicacion = models.ForeignKey(Location, on_delete=models.CASCADE, db_column="cod_ubicacion")
+    cod_ubicacion = models.ForeignKey(Location, on_delete=models.CASCADE, db_column="cod_ubicacion", related_name='fotos')
     cod_tipo_foto = models.ForeignKey(PhotoType, on_delete=models.CASCADE, db_column="cod_tipo_foto")
     foto = models.ImageField(upload_to='land_inspections', blank=True, null=True)  # ToDo: genera url
 
@@ -175,13 +184,19 @@ class OwnerShipType(models.Model):
 
 
 class RecordOwnerShip(models.Model):
+    STATUS_CHOICE = (
+        (0, 'pendiente'),
+        (6, 'resuelto'),
+        (98, 'observado'),
+    )
     """Registro Titularidad"""
     cod_tit = models.CharField(max_length=20, primary_key=True)
     cod_tipo_tit = models.ForeignKey(
         OwnerShipType, blank=True, null=True, on_delete=models.SET_NULL, db_column="cod_tipo_tit"
     )
-    cod_ubicacion = models.ForeignKey(Location, on_delete=models.CASCADE, db_column="cod_ubicacion")
-
+    cod_ubicacion = models.ForeignKey(Location, on_delete=models.CASCADE, db_column="cod_ubicacion", related_name='registros_titularidad')
+    status = models.PositiveSmallIntegerField(choices=STATUS_CHOICE, blank=True, null=True, default=0,
+                                              db_column='estado')
     class Meta:
         db_table = 'TB_REGISTRO_TITULARIDAD'
         verbose_name = _('OwnerShip')
@@ -194,7 +209,7 @@ class RecordOwnerShip(models.Model):
 class LandCharacteristic(models.Model):
     """Caracteristicas"""
     cod_caracteristica = models.AutoField(primary_key=True)
-    cod_tit = models.OneToOneField(RecordOwnerShip, on_delete=models.CASCADE, db_column="cod_tit")
+    cod_tit = models.OneToOneField(RecordOwnerShip, on_delete=models.CASCADE, db_column="cod_tit", related_name='caracteristicas')
     categoria_electrica = models.CharField(max_length=100, blank=True, null=True)
     piso = models.CharField(max_length=100, blank=True, null=True)
     estado_conserva = models.CharField(max_length=100, blank=True, null=True)
@@ -238,7 +253,7 @@ class FacilityType(models.Model):
 class LandFacility(models.Model):
     """Instalaciones"""
     cod_inst = models.CharField(max_length=20, primary_key=True)
-    cod_tit = models.ForeignKey(RecordOwnerShip, on_delete=models.CASCADE, db_column="cod_tit")
+    cod_tit = models.ForeignKey(RecordOwnerShip, on_delete=models.CASCADE, db_column="cod_tit",related_name='instalaciones')
     cod_tipo_inst = models.ForeignKey(
         FacilityType, blank=True, null=True, on_delete=models.SET_NULL, db_column="cod_tipo_inst"
     )
@@ -263,7 +278,7 @@ class SupplyType(models.Model):
     class Meta:
         db_table = 'TB_TIPO_SUMINISTRO'
         verbose_name = _('Facility Type')
-        verbose_name_plural = _('Facility Types')
+        verbose_name_plural = _('Supply Types')
 
     def __str__(self):
         return self.desc_tipo_sumi
@@ -272,13 +287,16 @@ class SupplyType(models.Model):
 class LandSupply(models.Model):
     """Suministros"""
     cod_suministro = models.AutoField(primary_key=True)
-    cod_tit = models.OneToOneField(RecordOwnerShip, on_delete=models.CASCADE, db_column="cod_tit")
+    cod_tit = models.OneToOneField(RecordOwnerShip, on_delete=models.CASCADE, db_column="cod_tit", related_name='suministro')
     cod_tipo_sumi = models.ForeignKey(
         SupplyType, blank=True, null=True, on_delete=models.SET_NULL, db_column="cod_tipo_sumi"
     )
     num_sumis = models.CharField(max_length=20, blank=True, null=True)
     obs_sumis = models.CharField(max_length=100, blank=True, null=True)
-
+    #cod_contr_inspec = models.ForeignKey(LandOwnerInspection, on_delete=models.CASCADE, db_column="cod_contr_inspec",related_name='contribuyentes')
+    cod_contr = models.ForeignKey(
+        LandOwner, blank=True, null=True, on_delete=models.SET_NULL, db_column="cod_contr",related_name='suministro'
+    )
     class Meta:
         db_table = 'TB_SUMINISTRO'
         verbose_name = _('Land Supply')
@@ -296,7 +314,7 @@ class LandInspectionType(models.Model):
     class Meta:
         db_table = 'TB_TIP_PREDIO_INSPEC'
         verbose_name = _('Facility Type')
-        verbose_name_plural = _('Facility Types')
+        verbose_name_plural = _('Land Inspection Types')
 
     def __str__(self):
         return self.desc_tipo_predio
@@ -307,7 +325,7 @@ class LandInspection(models.Model):
     Tabla de almacenamiento de mobile una vez aceptado los datos pasan a la `lands.Land` bd `TB_PREDIO`
     """
     id = models.AutoField(primary_key=True)
-    cod_tit = models.OneToOneField(RecordOwnerShip, on_delete=models.CASCADE, db_column="cod_tit")
+    cod_tit = models.OneToOneField(RecordOwnerShip, on_delete=models.CASCADE, db_column="cod_tit", related_name='predio_inspeccion')
     ubigeo = models.CharField(max_length=6)
     cod_cpu = models.CharField(max_length=50, blank=True, null=True)
     cod_pre = models.CharField(max_length=50, blank=True, null=True)
@@ -366,15 +384,15 @@ class LandOwnerDetailInspection(models.Model):
     """
     cod_tit = models.ForeignKey(RecordOwnerShip, on_delete=models.CASCADE, db_column="cod_tit")
     ubigeo = models.CharField(max_length=6)
-    cod_pred_inspec = models.ForeignKey(LandInspection, on_delete=models.CASCADE, db_column="cod_pred_inspec")
-    cod_contr_inspec = models.ForeignKey(LandOwnerInspection, on_delete=models.CASCADE, db_column="cod_contr_inspec")
+    cod_pred_inspec = models.ForeignKey(LandInspection, on_delete=models.CASCADE, db_column="cod_pred_inspec",related_name='predio_contribuyente')
+    cod_contr_inspec = models.ForeignKey(LandOwnerInspection, on_delete=models.CASCADE, db_column="cod_contr_inspec",related_name='contribuyentes')
     doc_iden = models.CharField(max_length=20, blank=True, null=True)
     cod_pre = models.CharField(max_length=50, blank=True, null=True)
 
     class Meta:
         db_table = 'TB_PREDIO_CONTRIBUYENTE_INSPEC'
         verbose_name = _('Land Inspection')
-        verbose_name_plural = _('Lands Inspection')
+        verbose_name_plural = _('Lands Owner Detail Inspection')
 
     def __str__(self):
         return str(self.id)
