@@ -45,10 +45,10 @@ class LandInspectionViewset(mixins.CreateModelMixin, viewsets.GenericViewSet):
                 "status": "success",
                 "message": "El registro se guardo correctamente"
             })
-        except:
+        except Exception as e:
             response_serializer = self.response_serializer_class({
                 "status": "error",
-                "message": "Error al guardar registros"
+                "message": str(e)
             })
             raise exceptions.ValidationError(response_serializer.data)
         return Response(response_serializer.data, status=status.HTTP_201_CREATED)
