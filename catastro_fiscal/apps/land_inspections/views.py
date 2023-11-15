@@ -4,7 +4,7 @@ from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from core.filters import CamelCaseOrderFilter
 from .models import Ticket , Location,LandInspection, RecordOwnerShip,LandSupply
-from .serializers import TicketSerializer, TicketListSerializer,TicketRetriveSerializer,LocationSerializer,RecordOwnerShipRetriveSerializer ,LandInspectionSerializer,LocationRetriveSerializer,RecordOwnerShipSerializer,  LandSupplyRetriveSerializer, LandSupplySerializer
+from .serializers_results import TicketSerializer, TicketListSerializer,TicketRetriveSerializer,LocationSerializer,RecordOwnerShipRetriveSerializer ,LandInspectionSerializer,LocationRetriveSerializer,RecordOwnerShipSerializer,  LandSupplyRetriveSerializer, LandSupplySerializer
 from rest_framework.viewsets import GenericViewSet ,ModelViewSet
 import django_filters
 

@@ -1,4 +1,8 @@
 from django.contrib import admin
+from .models import (
+    TicketType, TicketWorkStation, TicketSendStation, PhotoType, OwnerShipType, FacilityType, SupplyType,
+    LandInspectionType, Ticket
+)
 
 from .models import TicketType, TicketWorkStation,TicketSendStation,Ticket,PhotoType,LocationPhoto,RecordOwnerShip,OwnerShipType,Location,LandCharacteristic,FacilityType,LandFacility,LandSupply,SupplyType,LandInspectionType,LandInspection,LandOwnerInspection,LandOwnerDetailInspection,LandInspectionUpload
 
@@ -7,27 +11,6 @@ from .models import TicketType, TicketWorkStation,TicketSendStation,Ticket,Photo
 class LandInspectionUploadAdmin(admin.ModelAdmin):
     pass
 
-@admin.register(TicketWorkStation)
-class TicketWorkStationAdmin(admin.ModelAdmin):
-    pass
-
-@admin.register(TicketType)
-class TicketTypeAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(Ticket)
-class TicketAdmin(admin.ModelAdmin):
-    list_display = ('cod_ticket', 'cod_est_trabajo_ticket')
-   
-
-@admin.register(TicketSendStation)
-class TicketSendStationAdmin(admin.ModelAdmin):
-    pass
-
-@admin.register(PhotoType)
-class PhotoTypeAdmin(admin.ModelAdmin):
-    pass
 
 @admin.register(LocationPhoto)
 class LocationPhotoAdmin(admin.ModelAdmin):
@@ -37,9 +20,6 @@ class LocationPhotoAdmin(admin.ModelAdmin):
 class RecordOwnerShipAdmin(admin.ModelAdmin):
     list_display = ('cod_tit', 'status')
 
-@admin.register(OwnerShipType)
-class OwnerShipTypeAdmin(admin.ModelAdmin):
-    pass
 
 
 @admin.register(Location)
@@ -52,9 +32,7 @@ class LocationAdmin(admin.ModelAdmin):
 class LandCharacteristicAdmin(admin.ModelAdmin):
     pass
 
-@admin.register(FacilityType)
-class FacilityTypeAdmin(admin.ModelAdmin):
-    pass
+
 
 @admin.register(LandFacility)
 class LandFacilityAdmin(admin.ModelAdmin):
@@ -64,13 +42,7 @@ class LandFacilityAdmin(admin.ModelAdmin):
 class LandSupplyAdmin(admin.ModelAdmin):
     pass
 
-@admin.register(SupplyType)
-class SupplyTypeAdmin(admin.ModelAdmin):
-    pass
 
-@admin.register(LandInspectionType)
-class LandInspectionTypeAdmin(admin.ModelAdmin):
-    pass
 
 @admin.register(LandInspection)
 class LandInspectionAdmin(admin.ModelAdmin):
@@ -83,3 +55,52 @@ class LandOwnerInspectionAdmin(admin.ModelAdmin):
 @admin.register(LandOwnerDetailInspection)
 class LandOwnerDetailInspectionAdmin(admin.ModelAdmin):
     pass
+
+@admin.register(TicketType)
+class TicketTypeAdmin(admin.ModelAdmin):
+    list_display = ('cod_tipo_ticket', 'desc_tipo_ticket', )
+
+
+@admin.register(TicketWorkStation)
+class TicketWorkStationAdmin(admin.ModelAdmin):
+    list_display = ('cod_est_trabajo_ticket', 'desc_est_trabajo_ticket', )
+
+
+@admin.register(TicketSendStation)
+class TicketSendStationAdmin(admin.ModelAdmin):
+    list_display = ('cod_est_envio_ticket', 'desc_est_envio_ticket', )
+
+
+@admin.register(PhotoType)
+class PhotoTypeAdmin(admin.ModelAdmin):
+    list_display = ('cod_tipo_foto', 'desc_tipo_foto', )
+
+
+@admin.register(OwnerShipType)
+class OwnerShipTypeAdmin(admin.ModelAdmin):
+    list_display = ('cod_tipo_tit', 'desc_tipo_tit', )
+
+
+@admin.register(FacilityType)
+class FacilityTypeAdmin(admin.ModelAdmin):
+    list_display = ('cod_tipo_inst', 'desc_tipo_inst', )
+
+
+@admin.register(SupplyType)
+class SupplyTypeAdmin(admin.ModelAdmin):
+    list_display = ('cod_tipo_sumi', 'desc_tipo_sumi', )
+
+
+@admin.register(LandInspectionType)
+class LandInspectionTypeAdmin(admin.ModelAdmin):
+    list_display = ('cod_tipo_predio', 'desc_tipo_predio', )
+
+
+@admin.register(Ticket)
+class TicketAdmin(admin.ModelAdmin):
+    list_display = ('cod_ticket', 'get_cod_carga', 'cod_usuario')
+
+    def get_cod_carga(self, obj):
+        return obj.inspection_upload.cod_carga
+
+    get_cod_carga.short_description = 'cod_carga'

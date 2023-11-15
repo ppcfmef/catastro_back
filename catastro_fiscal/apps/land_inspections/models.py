@@ -1,4 +1,5 @@
 from django.db import models
+from apps.users.models import User
 from django.utils.translation import gettext_lazy as _
 from apps.lands.models import LandOwner
 # Create your models here.
@@ -8,7 +9,9 @@ class LandInspectionUpload(models.Model):
     """LandInspectionUpload
     Utilizado para el nodo del API tbProperties
     """
-    cod_carga = models.CharField(max_length=10, primary_key=True)
+    id = models.AutoField(primary_key=True)
+    cod_carga = models.CharField(max_length=10)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, db_column='cod_usuario')
     username = models.CharField(max_length=150)
 
     class Meta:
@@ -16,6 +19,9 @@ class LandInspectionUpload(models.Model):
         db_table = 'TB_INSPECCION_PREDIAL'
         verbose_name = _('Land Inspection')
         verbose_name_plural = _('Lands Inspection Upload')
+
+    def __str__(self):
+        return self.cod_carga
 
 
 class TicketType(models.Model):
@@ -27,32 +33,45 @@ class TicketType(models.Model):
         verbose_name = _('Ticket Type')
         verbose_name_plural = _('Ticket Types')
 
+    def __str__(self):
+        return self.desc_tipo_ticket
 
+
+# ToDo: Cambiar de station a state
 class TicketWorkStation(models.Model):
+    """Estado de la estacion de trabajo"""
     cod_est_trabajo_ticket = models.CharField(max_length=5, primary_key=True)
     desc_est_trabajo_ticket = models.CharField(max_length=100)
 
     class Meta:
         db_table = 'TB_EST_TRABAJO_TICKET'
-        verbose_name = _('Ticket WorkStation')
-        verbose_name_plural = _('Ticket WorkStation')
+        verbose_name = _('Ticket Work state')
+        verbose_name_plural = _('Ticket Work state')
+
+    def __str__(self):
+        return self.desc_est_trabajo_ticket
 
 
+# ToDo: Cambiar de station a state
 class TicketSendStation(models.Model):
+    """Estado de envio"""
     cod_est_envio_ticket = models.CharField(max_length=5, primary_key=True)
     desc_est_envio_ticket = models.CharField(max_length=100)
 
     class Meta:
         db_table = 'TB_EST_ENVIO_TICKET'
-        verbose_name = _('Ticket SendStation')
-        verbose_name_plural = _('Ticket SendStation')
+        verbose_name = _('Ticket Send state')
+        verbose_name_plural = _('Ticket Send state')
+
+    def __str__(self):
+        return self.desc_est_envio_ticket
 
 
 class Ticket(models.Model):
     """Ticket"""
     cod_ticket = models.CharField(max_length=20, primary_key=True)
-    cod_carga = models.ForeignKey(
-        LandInspectionUpload, blank=True, null=True, on_delete=models.SET_NULL, db_column="cod_carga"
+    inspection_upload = models.ForeignKey(
+        LandInspectionUpload, blank=True, null=True, on_delete=models.SET_NULL
     )
     cod_tipo_ticket = models.ForeignKey(
         TicketType, blank=True, null=True, on_delete=models.SET_NULL, db_column="cod_tipo_ticket"
@@ -75,6 +94,9 @@ class Ticket(models.Model):
         db_table = 'TB_TICKET'
         verbose_name = _('Ticket')
         verbose_name_plural = _('Ticket')
+
+    def __str__(self):
+        return self.cod_ticket
 
 
 class Location(models.Model):
@@ -114,6 +136,9 @@ class Location(models.Model):
         verbose_name = _('Location')
         verbose_name_plural = _('Location')
 
+    def __str__(self):
+        return self.cod_ubicacion
+
 
 class PhotoType(models.Model):
     cod_tipo_foto = models.AutoField(primary_key=True)
@@ -123,6 +148,9 @@ class PhotoType(models.Model):
         db_table = 'TB_TIPO_FOTO'
         verbose_name = _('Photo Type')
         verbose_name_plural = _('Photo Type')
+
+    def __str__(self):
+        return self.desc_tipo_foto
 
 
 class LocationPhoto(models.Model):
@@ -138,6 +166,9 @@ class LocationPhoto(models.Model):
         verbose_name = _('Photo')
         verbose_name_plural = _('Photo')
 
+    def __str__(self):
+        return self.cod_foto
+
 
 class OwnerShipType(models.Model):
     cod_tipo_tit = models.AutoField(primary_key=True)
@@ -147,6 +178,9 @@ class OwnerShipType(models.Model):
         db_table = 'TB_TIPO_TITULARIDAD'
         verbose_name = _('OwnerShip Type')
         verbose_name_plural = _('OwnerShip Type')
+
+    def __str__(self):
+        return self.desc_tipo_tit
 
 
 class RecordOwnerShip(models.Model):
@@ -167,6 +201,9 @@ class RecordOwnerShip(models.Model):
         db_table = 'TB_REGISTRO_TITULARIDAD'
         verbose_name = _('OwnerShip')
         verbose_name_plural = _('OwnerShip')
+
+    def __str__(self):
+        return self.cod_tit
 
 
 class LandCharacteristic(models.Model):
@@ -195,6 +232,9 @@ class LandCharacteristic(models.Model):
         verbose_name = _('Land Characteristic')
         verbose_name_plural = _('Land Characteristics')
 
+    def __str__(self):
+        return str(self.cod_caracteristica)
+
 
 class FacilityType(models.Model):
     """Tipo de instalaciones"""
@@ -205,6 +245,9 @@ class FacilityType(models.Model):
         db_table = 'TB_TIPO_INSTA'
         verbose_name = _('Facility type')
         verbose_name_plural = _('Facility types')
+
+    def __str__(self):
+        return self.desc_tipo_inst
 
 
 class LandFacility(models.Model):
@@ -223,6 +266,9 @@ class LandFacility(models.Model):
         verbose_name = _('Land Facility')
         verbose_name_plural = _('Land Facilities')
 
+    def __str__(self):
+        return self.cod_inst
+
 
 class SupplyType(models.Model):
     """Tipo de suministro"""
@@ -233,6 +279,9 @@ class SupplyType(models.Model):
         db_table = 'TB_TIPO_SUMINISTRO'
         verbose_name = _('Facility Type')
         verbose_name_plural = _('Supply Types')
+
+    def __str__(self):
+        return self.desc_tipo_sumi
 
 
 class LandSupply(models.Model):
@@ -253,6 +302,9 @@ class LandSupply(models.Model):
         verbose_name = _('Land Supply')
         verbose_name_plural = _('Land Supplies')
 
+    def __str__(self):
+        return str(self.cod_suministro)
+
 
 class LandInspectionType(models.Model):
     """Tipo de predio"""
@@ -263,6 +315,9 @@ class LandInspectionType(models.Model):
         db_table = 'TB_TIP_PREDIO_INSPEC'
         verbose_name = _('Facility Type')
         verbose_name_plural = _('Land Inspection Types')
+
+    def __str__(self):
+        return self.desc_tipo_predio
 
 
 class LandInspection(models.Model):
@@ -294,6 +349,9 @@ class LandInspection(models.Model):
         verbose_name = _('Land Inspection')
         verbose_name_plural = _('Lands Inspection')
 
+    def __str__(self):
+        return str(self.id)
+
 
 class LandOwnerInspection(models.Model):
     """Contribuyente
@@ -316,6 +374,9 @@ class LandOwnerInspection(models.Model):
         verbose_name = _('Land Owner Inspection')
         verbose_name_plural = _('Land Owner Inspection')
 
+    def __str__(self):
+        return str(self.id)
+
 
 class LandOwnerDetailInspection(models.Model):
     """Predios
@@ -332,3 +393,6 @@ class LandOwnerDetailInspection(models.Model):
         db_table = 'TB_PREDIO_CONTRIBUYENTE_INSPEC'
         verbose_name = _('Land Inspection')
         verbose_name_plural = _('Lands Owner Detail Inspection')
+
+    def __str__(self):
+        return str(self.id)
