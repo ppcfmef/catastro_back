@@ -22,14 +22,14 @@ class LandOwnerDetailInspectionSerializer(serializers.Serializer):
     """tb_predio_contribuyente"""
     doc_iden = serializers.CharField()
     cod_tit = serializers.CharField()
-    cod_pre = serializers.CharField()
+    cod_pre = serializers.CharField(allow_blank=True, allow_null=True)
     tb_contribuyente = LandOwnerInspectionSerializer()
 
 
 class LandInspectionSerializer(serializers.Serializer):
     """tb_predio"""
     cod_tit = serializers.CharField()
-    cod_pre = serializers.CharField()
+    cod_pre = serializers.CharField(allow_blank=True, allow_null=True)
     cod_cpu = serializers.CharField(allow_blank=True, allow_null=True)
     piso = serializers.CharField(allow_blank=True, allow_null=True)
     num_sumi_agua = serializers.CharField(allow_blank=True, allow_null=True)
