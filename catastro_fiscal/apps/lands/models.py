@@ -245,8 +245,8 @@ class Land(LandBase):
 
 
 class LandOwnerDetail(models.Model):
-    land = models.ForeignKey(Land, on_delete=models.CASCADE, db_column='id_predio')
-    owner = models.ForeignKey(LandOwner, on_delete=models.CASCADE, db_column='id_propietario')
+    land = models.ForeignKey(Land, on_delete=models.CASCADE, db_column='id_predio',related_name='predio_contribuyente')
+    owner = models.ForeignKey(LandOwner, on_delete=models.CASCADE, db_column='id_propietario',related_name='contribuyentes')
     ubigeo = models.ForeignKey(District, on_delete=models.SET_NULL, blank=True, null=True, db_column='ubigeo')
 
     class Meta:

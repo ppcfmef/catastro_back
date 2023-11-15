@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import UploadHistory, LandAudit
+from .models import UploadHistory, LandAudit,Land
 
 
 @admin.register(UploadHistory)
@@ -10,3 +10,9 @@ class UploadHistoryAdmin(admin.ModelAdmin):
 @admin.register(LandAudit)
 class LandAuditAdmin(admin.ModelAdmin):
     list_display = ('id', 'id_reference', 'source_change', 'type', 'update_date', 'update_by')
+
+@admin.register(Land)
+class LandAdmin(admin.ModelAdmin):
+    list_display = ('ubigeo', 'cpm', 'cup')
+    list_filter = ["ubigeo"]
+    search_fields  = ['ubigeo']

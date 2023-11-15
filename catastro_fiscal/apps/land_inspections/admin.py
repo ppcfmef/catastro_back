@@ -1,6 +1,11 @@
 from django.contrib import admin
 
-from .models import TicketType, TicketWorkStation,TicketSendStation,Ticket,PhotoType,LocationPhoto,RecordOwnerShip,OwnerShipType,Location,LandCharacteristic,FacilityType,LandFacility,LandSupply,SupplyType,LandInspectionType,LandInspection,LandOwnerInspection,LandOwnerDetailInspection
+from .models import TicketType, TicketWorkStation,TicketSendStation,Ticket,PhotoType,LocationPhoto,RecordOwnerShip,OwnerShipType,Location,LandCharacteristic,FacilityType,LandFacility,LandSupply,SupplyType,LandInspectionType,LandInspection,LandOwnerInspection,LandOwnerDetailInspection,LandInspectionUpload
+
+
+@admin.register(LandInspectionUpload)
+class LandInspectionUploadAdmin(admin.ModelAdmin):
+    pass
 
 @admin.register(TicketWorkStation)
 class TicketWorkStationAdmin(admin.ModelAdmin):
@@ -13,7 +18,8 @@ class TicketTypeAdmin(admin.ModelAdmin):
 
 @admin.register(Ticket)
 class TicketAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('cod_ticket', 'cod_est_trabajo_ticket')
+   
 
 @admin.register(TicketSendStation)
 class TicketSendStationAdmin(admin.ModelAdmin):
@@ -29,7 +35,7 @@ class LocationPhotoAdmin(admin.ModelAdmin):
 
 @admin.register(RecordOwnerShip)
 class RecordOwnerShipAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('cod_tit', 'status')
 
 @admin.register(OwnerShipType)
 class OwnerShipTypeAdmin(admin.ModelAdmin):
@@ -38,7 +44,8 @@ class OwnerShipTypeAdmin(admin.ModelAdmin):
 
 @admin.register(Location)
 class LocationAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('cod_ubicacion', 'status')
+    
 
 
 @admin.register(LandCharacteristic)
@@ -67,7 +74,7 @@ class LandInspectionTypeAdmin(admin.ModelAdmin):
 
 @admin.register(LandInspection)
 class LandInspectionAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('id', 'cod_tit','ubigeo','cod_cpu','cod_pre')
 
 @admin.register(LandOwnerInspection)
 class LandOwnerInspectionAdmin(admin.ModelAdmin):
