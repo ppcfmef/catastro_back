@@ -109,7 +109,7 @@ class LandPadronRetrieveSerializer(serializers.ModelSerializer):
     def get_address(self,obj):
         return '{street_type} {street_name} {municipal_number} {urban_mza} {urban_lot_number}'.format(street_type=obj.street_type,street_name = obj.street_name,municipal_number = obj.municipal_number if obj.municipal_number is not None else '' ,urban_mza =' Mz.{}'.format(obj.urban_mza) if obj.urban_mza is not None else '' ,urban_lot_number =' Lote {}'.format( obj.urban_lot_number) if  obj.urban_lot_number is not None else '' )
 
-
+    
 class RecordOwnerShipRetriveSerializer(serializers.ModelSerializer):
     caracteristicas= LandCharacteristicSerializer(many=False,read_only=True)
     instalaciones  = LandFacilitySerializer(many=True,read_only=True)
@@ -159,6 +159,7 @@ class LocationSerializer(serializers.ModelSerializer):
 
 
 class TicketSerializer(serializers.ModelSerializer):
+    estTrabajoTicket = serializers.CharField(source='cod_est_trabajo_ticket.desc_est_trabajo_ticket')
     tipoTicket = serializers.CharField(source='cod_tipo_ticket.desc_tipo_ticket')
     class Meta:
         model = Ticket
@@ -186,13 +187,3 @@ class TicketRetriveSerializer(serializers.ModelSerializer):
     def get_total_ubicaciones(self, obj):
         return len(Location.objects.filter(cod_ticket=obj.cod_ticket))
 
-    # def get_ubicaciones(self, obj):
-    #     ubicaciones = Location.objects.filter(cod_ticket=obj.cod_ticket)
-    #     resumen_ubicaciones = []
-
-    #     for ubicacion in ubicaciones:
-    #         records = RecordOwnerShip.objects.filter(cod_ubicacion=ubicacion.cod_ubicacion)
-    #         totalCasos = len(records)
-    #         resumen_ubicaciones.append({'codUbicacion': ubicacion.cod_ubicacion,'totalCasos': totalCasos,'state': 0})
-
-    #     return resumen_ubicaciones
