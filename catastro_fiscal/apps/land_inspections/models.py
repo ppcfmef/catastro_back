@@ -127,6 +127,7 @@ class Location(models.Model):
     username = models.CharField(max_length=150, blank=True, null=True)
     cod_usuario = models.CharField(max_length=255, blank=True, null=True)  # Codigo de usuario mobile
     obs_ubicacion = models.CharField(max_length=255, blank=True, null=True)
+    referencia = models.CharField(max_length=255, blank=True, null=True)
     status = models.PositiveSmallIntegerField(choices=STATUS_CHOICE, blank=True, null=True, default=0,
                                               db_column='estado')
     file_obs =models.FileField(blank=True, null=True)  # ToDo: genera url
