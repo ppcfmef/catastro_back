@@ -2,7 +2,7 @@
 from datetime import datetime
 from rest_framework import serializers, exceptions
 from apps.users.models import User
-from .models import LandInspectionUpload, Ticket
+from .models import LandInspectionUpload, Ticket, Location, RecordOwnerShip, LandCharacteristic
 
 
 class LandOwnerInspectionSerializer(serializers.Serializer):
@@ -191,7 +191,7 @@ class MobileLandInspectionSerializer(serializers.Serializer):
         validated_data = dict(self.validated_data)
         tb_properties = dict(validated_data.get('tb_properties', {}))
         tb_ticket = dict(tb_properties.get('tb_ticket', {}))
-        tb_ubicacion = dict(tb_properties.get('tb_ubicacion', {}))
+        locations = list(tb_ticket.get('tb_ubicacion', []))
 
         # Validar si el registro existe en la tb_properties
         cod_upload = tb_properties.get('cod_carga', None)
@@ -200,7 +200,11 @@ class MobileLandInspectionSerializer(serializers.Serializer):
         if self.instance is None:
             self.instance = self.create_inspection_upload(tb_properties, cod_upload)
 
-        self.create_ticket(tb_ticket, inspection_upload=self.instance)
+        ticket = self.create_ticket(tb_ticket, inspection_upload=self.instance)
+
+        for location in locations:
+            tb_location = dict(location)
+            self.create_location(tb_location, ticket)
 
         return self.instance
 
@@ -233,7 +237,7 @@ class MobileLandInspectionSerializer(serializers.Serializer):
         if fec_asignacion:
             fec_asignacion = datetime.strptime(fec_asignacion, date_format)
 
-        Ticket.objects.create(
+        return Ticket.objects.create(
             inspection_upload=inspection_upload,
             cod_ticket=tb_ticket.get('cod_ticket', None),
             cod_tipo_ticket_id=tb_ticket.get('cod_tipo_ticket', None),
@@ -245,4 +249,66 @@ class MobileLandInspectionSerializer(serializers.Serializer):
             fec_ultima_actualizacion=fec_ultima_actualizacion,
             fec_asignacion=fec_asignacion,
             obs_ticket_gabinete=tb_ticket.get('obs_ticket_gabinete', None)
+        )
+
+    def create_location(self, tb_location, ticket):
+        location = Location.objects.create(
+            cod_ticket=ticket,
+            cod_ubicacion=tb_location.get('cod_ubicacion', None),
+            cod_tip_via=tb_location.get('cod_tip_via', None),
+            cod_via=tb_location.get('cod_via', None),
+            nom_via=tb_location.get('nom_via', None),
+            num_alt=tb_location.get('num_alt', None),
+            nom_alt=tb_location.get('nom_alt', None),
+            cod_tipo_uu=tb_location.get('cod_tipo_uu', None),
+            cod_uu=tb_location.get('cod_uu', None),
+            nom_uu=tb_location.get('nom_uu', None),
+            nom_ref=tb_location.get('nom_ref', None),
+            km=tb_location.get('km', None),
+            x=tb_location.get('x', None),
+            y=tb_location.get('y', None),
+            lot_urb=tb_location.get('lot_urb', None),
+            num_mun=tb_location.get('num_mun', None),
+            mzn_urb=tb_location.get('mzn_urb', None),
+            cod_usuario=tb_location.get('cod_usuario', None),
+            obs_ubicacion=tb_location.get('obs_ubicacion', None),
+            referencia=tb_location.get('referencia', None),
+        )
+
+        records = list(tb_location.get('tb_registro_titularidad', []))
+        for record in records:
+            tb_registro = dict(record)
+            self.create_record_owner(tb_registro, location)
+
+
+    def create_record_owner(self, tb_registro, location):
+        record = RecordOwnerShip.objects.create(
+            cod_ubicacion=location,
+            cod_tit=tb_registro.get('cod_tit', None),
+            cod_tipo_tit_id=tb_registro.get('cod_tipo_tit', None),
+        )
+
+        tb_characteristic = dict(tb_registro.get('tb_caracteristicas', {}))
+        self.create_characteristic(tb_characteristic, record)
+
+
+    def create_characteristic(self, tb_characteristic, record):
+        LandCharacteristic.objects.create(
+            cod_tit=record,
+            categoria_electrica=tb_characteristic.get('cod_tipo_tit', None),
+            piso=tb_characteristic.get('cod_tipo_tit', None),
+            estado_conserva=tb_characteristic.get('cod_tipo_tit', None),
+            anio_construccion=tb_characteristic.get('cod_tipo_tit', None),
+            catergoria_techo=tb_characteristic.get('cod_tipo_tit', None),
+            longitud_frente=tb_characteristic.get('cod_tipo_tit', None),
+            categoria_muro_columna=tb_characteristic.get('cod_tipo_tit', None),
+            catergoria_puerta_ventana=tb_characteristic.get('cod_tipo_tit', None),
+            arancel=tb_characteristic.get('cod_tipo_tit', None),
+            material_pred=tb_characteristic.get('cod_tipo_tit', None),
+            categoria_revestimiento=tb_characteristic.get('categoria_revestimiento', None),
+            area_terreno=tb_characteristic.get('area_terreno', None),
+            clasificacion_pred=tb_characteristic.get('clasificacion_pred', None),
+            catergoria_piso=tb_characteristic.get('catergoria_piso', None),
+            catergoria_bano=tb_characteristic.get('catergoria_bano', None),
+            area_construida=tb_characteristic.get('area_construida', None),
         )
