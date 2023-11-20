@@ -140,7 +140,7 @@ class LocationSerializer(serializers.Serializer):
     cod_tipo_uu = serializers.CharField(allow_blank=True, allow_null=True)
     cod_uu = serializers.CharField(allow_blank=True, allow_null=True)
     nom_uu = serializers.CharField(allow_blank=True, allow_null=True)
-    num_alt = serializers.CharField(allow_blank=True, allow_null=True)
+    num_alt = serializers.CharField(allow_blank=True, allow_null=True, required=False)
     nom_alt = serializers.CharField(allow_blank=True, allow_null=True)
     obs_ubicacion = serializers.CharField(allow_blank=True, allow_null=True)
     nom_ref = serializers.CharField(allow_blank=True, allow_null=True)
