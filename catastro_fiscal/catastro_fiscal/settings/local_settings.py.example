@@ -87,3 +87,5 @@ DRAMATIQ_BROKER = {
 }
 
 API_KEY_QUERY_PARAM = 'mobileApiKey'
+
+URL_API_NSRTM = env("URL_API_NSRTM", default='')  # noqa: F405
