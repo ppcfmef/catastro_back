@@ -18,6 +18,9 @@ class LandOwnerInspectionSerializer(serializers.Serializer):
     contribuyente = serializers.CharField(allow_blank=True, allow_null=True)
     conyuge = serializers.CharField(allow_blank=True, allow_null=True)
 
+    class Meta:
+        ref_name = 'mobile_owner_serializer'
+
 
 class LandOwnerDetailInspectionSerializer(serializers.Serializer):
     """tb_predio_contribuyente"""
@@ -25,6 +28,9 @@ class LandOwnerDetailInspectionSerializer(serializers.Serializer):
     cod_tit = serializers.CharField()
     cod_pre = serializers.CharField(allow_blank=True, allow_null=True)
     tb_contribuyente = LandOwnerInspectionSerializer()
+
+    class Meta:
+        ref_name = 'mobile_owner_datail_serializer'
 
 
 class LandInspectionSerializer(serializers.Serializer):
@@ -46,6 +52,9 @@ class LandInspectionSerializer(serializers.Serializer):
     num_sumi_gas = serializers.CharField(allow_blank=True, allow_null=True)
     tb_predio_contribuyente = LandOwnerDetailInspectionSerializer(many=True)
 
+    class Meta:
+        ref_name = 'mobile_land_serializer'
+
 
 class LandSupplySerializer(serializers.Serializer):
     """tb_suministro"""
@@ -53,6 +62,9 @@ class LandSupplySerializer(serializers.Serializer):
     cod_tipo_sumi = serializers.CharField()
     num_sumis = serializers.CharField()
     obs_sumis = serializers.CharField(allow_blank=True, allow_null=True)
+
+    class Meta:
+        ref_name = 'mobile_supply_serializer'
 
 
 class LandFacilitySerializer(serializers.Serializer):
@@ -63,6 +75,9 @@ class LandFacilitySerializer(serializers.Serializer):
     anio_construccion = serializers.CharField(allow_blank=True, allow_null=True)
     estado_conserva = serializers.CharField(allow_blank=True, allow_null=True)
     dimension = serializers.CharField(allow_blank=True, allow_null=True)
+
+    class Meta:
+        ref_name = 'mobile_facility_serializer'
 
 
 class LandCharacteristicSerializer(serializers.Serializer):
@@ -85,6 +100,9 @@ class LandCharacteristicSerializer(serializers.Serializer):
     catergoria_bano = serializers.CharField(allow_blank=True, allow_null=True)
     area_construida = serializers.FloatField(allow_null=True)
 
+    class Meta:
+        ref_name = 'mobile_characteristic_serializer'
+
 
 class RecordOwnerShipSerializer(serializers.Serializer):
     """tb_registro_titularidad"""
@@ -96,6 +114,9 @@ class RecordOwnerShipSerializer(serializers.Serializer):
     tb_caracteristicas = LandCharacteristicSerializer()
     tb_instalaciones = LandFacilitySerializer(many=True)
 
+    class Meta:
+        ref_name = 'mobile_record_owner_serializer'
+
 
 class LocationPhotoSerializer(serializers.Serializer):
     """tb_foto"""
@@ -103,6 +124,9 @@ class LocationPhotoSerializer(serializers.Serializer):
     cod_ubicacion = serializers.CharField()
     cod_tipo_foto = serializers.CharField()
     url_foto = serializers.CharField()
+
+    class Meta:
+        ref_name = 'mobile_location_photo_serializer'
 
 
 class LocationSerializer(serializers.Serializer):
@@ -130,6 +154,9 @@ class LocationSerializer(serializers.Serializer):
     tb_foto = LocationPhotoSerializer(many=True)
     tb_registro_titularidad = RecordOwnerShipSerializer(many=True)
 
+    class Meta:
+        ref_name = 'mobile_location_serializer'
+
 
 class TicketSerializer(serializers.Serializer):
     """tb_ticket"""
@@ -144,6 +171,9 @@ class TicketSerializer(serializers.Serializer):
     cod_tipo_ticket = serializers.CharField()
     obs_ticket_gabinete = serializers.CharField(allow_blank=True, allow_null=True)
     tb_ubicacion = LocationSerializer(many=True)
+
+    class Meta:
+        ref_name = 'mobile_tiket_serializer'
 
 
 class LandInspectionUploadSerializer(serializers.Serializer):
