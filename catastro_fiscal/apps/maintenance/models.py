@@ -27,6 +27,7 @@ class Application(models.Model):
         (2,'Acumulación'),
         (3,'División'),
         (4,'Inactivar'),
+        (5,'Independización')
     )
           
     
