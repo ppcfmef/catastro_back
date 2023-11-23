@@ -2,6 +2,7 @@ import requests
 from django.conf import settings
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.exceptions import APIException
 from .serializers import NsrtmLandOwnerSerializer
 
 
@@ -24,7 +25,7 @@ class GetNsrtmLandOwnerView(APIView):
         url_api = self.get_url_api()
         r = requests.get(f'{url_api}?ubigeo={ubigeo}&codigo_contribuyente={land_owner}')
         if r.status_code != 200:
-            pass
+            raise APIException({"error": "No se encontraron resultados para esta busqueda"})
         return self.map_data(r.json())
 
     def map_data(self, data):
