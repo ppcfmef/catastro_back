@@ -154,14 +154,18 @@ class LandOwnerDetailViewSet(mixins.RetrieveModelMixin, GenericViewSet):
     serializer_class = LandOwnerDetailSerializer
 
 
-class OwnerSearchByDocumentViewset(mixins.RetrieveModelMixin, GenericViewSet):
+class OwnerSearchByDocumentViewset(mixins.ListModelMixin, GenericViewSet):
     """
     Get Owner filter by document (dni, ruc)
     """
     queryset = LandOwner.objects.all()
     serializer_class = LandOwnerDetailSerializer
-    lookup_field = 'dni'
-
+    #lookup_field = 'dni'
+    filter_backends = [DjangoFilterBackend,SearchFilter]
+    filterset_fields = ['dni', 'ubigeo','code' ]
+    search_fields = ['code','=dni']
+    pagination_class = None
+    
 
 class CreateAndEditOwnerViewset(mixins.CreateModelMixin, mixins.UpdateModelMixin, GenericViewSet):
     queryset = LandOwner.objects.all()
