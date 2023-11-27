@@ -2,7 +2,9 @@
 from datetime import datetime
 from rest_framework import serializers, exceptions
 from apps.users.models import User
-from .models import LandInspectionUpload, Ticket, Location, RecordOwnerShip, LandCharacteristic
+from .models import (
+    LandInspectionUpload, Ticket, Location, RecordOwnerShip, LandCharacteristic, LandFacility, LandSupply
+)
 
 
 class LandOwnerInspectionSerializer(serializers.Serializer):
@@ -289,26 +291,54 @@ class MobileLandInspectionSerializer(serializers.Serializer):
         )
 
         tb_characteristic = dict(tb_registro.get('tb_caracteristicas', {}))
+        tb_supply = dict(tb_registro.get('tb_supply', {}))
+        facilities = list(tb_registro.get('tb_instalaciones', []))
+
         self.create_characteristic(tb_characteristic, record)
+        self.create_supply(tb_supply, record)
+
+        for tb_facility in facilities:
+            self.create_facility(tb_facility, record)
 
 
     def create_characteristic(self, tb_characteristic, record):
-        LandCharacteristic.objects.create(
-            cod_tit=record,
-            categoria_electrica=tb_characteristic.get('cod_tipo_tit', None),
-            piso=tb_characteristic.get('cod_tipo_tit', None),
-            estado_conserva=tb_characteristic.get('cod_tipo_tit', None),
-            anio_construccion=tb_characteristic.get('cod_tipo_tit', None),
-            catergoria_techo=tb_characteristic.get('cod_tipo_tit', None),
-            longitud_frente=tb_characteristic.get('cod_tipo_tit', None),
-            categoria_muro_columna=tb_characteristic.get('cod_tipo_tit', None),
-            catergoria_puerta_ventana=tb_characteristic.get('cod_tipo_tit', None),
-            arancel=tb_characteristic.get('cod_tipo_tit', None),
-            material_pred=tb_characteristic.get('cod_tipo_tit', None),
-            categoria_revestimiento=tb_characteristic.get('categoria_revestimiento', None),
-            area_terreno=tb_characteristic.get('area_terreno', None),
-            clasificacion_pred=tb_characteristic.get('clasificacion_pred', None),
-            catergoria_piso=tb_characteristic.get('catergoria_piso', None),
-            catergoria_bano=tb_characteristic.get('catergoria_bano', None),
-            area_construida=tb_characteristic.get('area_construida', None),
-        )
+        if len(tb_characteristic) > 0:
+            LandCharacteristic.objects.create(
+                cod_tit=record,
+                categoria_electrica=tb_characteristic.get('categoria_electrica', None),
+                piso=tb_characteristic.get('piso', None),
+                estado_conserva=tb_characteristic.get('estado_conserva', None),
+                anio_construccion=tb_characteristic.get('anio_construccion', None),
+                catergoria_techo=tb_characteristic.get('catergoria_techo', None),
+                longitud_frente=tb_characteristic.get('longitud_frente', None),
+                categoria_muro_columna=tb_characteristic.get('categoria_muro_columna', None),
+                catergoria_puerta_ventana=tb_characteristic.get('catergoria_puerta_ventana', None),
+                arancel=tb_characteristic.get('arancel', None),
+                material_pred=tb_characteristic.get('material_pred', None),
+                categoria_revestimiento=tb_characteristic.get('categoria_revestimiento', None),
+                area_terreno=tb_characteristic.get('area_terreno', None),
+                clasificacion_pred=tb_characteristic.get('clasificacion_pred', None),
+                catergoria_piso=tb_characteristic.get('catergoria_piso', None),
+                catergoria_bano=tb_characteristic.get('catergoria_bano', None),
+                area_construida=tb_characteristic.get('area_construida', None),
+            )
+
+    def create_facility(self, tb_facility, record):
+        if len(tb_facility) > 0:
+            LandFacility.objects.create(
+                cod_tit=record,
+                cod_inst=tb_facility.get('cod_inst', None),
+                cod_tipo_inst_id=tb_facility.get('cod_tipo_inst', None),
+                anio_construccion=tb_facility.get('anio_construccion', None),
+                estado_conserva=tb_facility.get('estado_conserva', None),
+                dimension=tb_facility.get('dimension', None),
+            )
+
+    def create_supply(self, tb_supply, record):
+        if len(tb_supply) > 0:
+            LandSupply.objects.create(
+                cod_tit=record,
+                cod_tipo_sumi_id=tb_supply.get('cod_tipo_sumi', None),
+                num_sumis=tb_supply.get('num_sumis', None),
+                obs_sumis=tb_supply.get('obs_sumis', None),
+            )
