@@ -1,10 +1,10 @@
 from django.contrib import admin
-from .models import (
-    TicketType, TicketWorkStation, TicketSendStation, PhotoType, OwnerShipType, FacilityType, SupplyType,
-    LandInspectionType, Ticket
-)
 
-from .models import TicketType, TicketWorkStation,TicketSendStation,Ticket,PhotoType,LocationPhoto,RecordOwnerShip,OwnerShipType,Location,LandCharacteristic,FacilityType,LandFacility,LandSupply,SupplyType,LandInspectionType,LandInspection,LandOwnerInspection,LandOwnerDetailInspection,LandInspectionUpload
+from .models import (
+    TicketType, TicketWorkStation, TicketSendStation, Ticket, PhotoType, LocationPhoto, RecordOwnerShip, OwnerShipType,
+    Location, LandCharacteristic, FacilityType, LandFacility, LandSupply, SupplyType ,LandInspectionType,
+    LandInspection, LandOwnerInspection, LandOwnerDetailInspection, LandInspectionUpload
+)
 
 
 @admin.register(LandInspectionUpload)
