@@ -5,7 +5,7 @@ from rest_framework import serializers, exceptions
 from apps.users.models import User
 from .models import (
     LandInspectionUpload, Ticket, Location, RecordOwnerShip, LandCharacteristic, LandFacility, LandSupply,
-    LandInspection, LandOwnerInspection, LandOwnerDetailInspection
+    LandInspection, LandOwnerInspection, LandOwnerDetailInspection, LocationPhoto
 )
 
 
@@ -285,6 +285,24 @@ class MobileLandInspectionSerializer(serializers.Serializer):
             tb_registro = dict(record)
             self.create_record_owner(tb_registro, location)
 
+        photos = list(tb_location.get('tb_foto', []))
+        for photo in photos:
+            tb_photo = dict(photo)
+            self.create_photo(tb_photo, location)
+
+    def create_photo(self, tb_photo, location):
+        photo = LocationPhoto.objects.create(
+            cod_ubicacion=location,
+            cod_foto=tb_photo.get('cod_foto'),
+            cod_tipo_foto_id=int(tb_photo.get('cod_tipo_foto')),
+            foto=None
+        )
+
+        self.photo_base64_to_jpg(tb_photo, photo)
+
+    def photo_base64_to_jpg(self, tb_photo, photo):
+        pass
+
     def create_record_owner(self, tb_registro, location):
 
         if len(tb_registro) == 0:
@@ -308,7 +326,8 @@ class MobileLandInspectionSerializer(serializers.Serializer):
         self.create_supply(tb_supply, record)
         self.create_land_inspection(tb_land_inspection, record)
 
-        for tb_facility in facilities:
+        for facility in facilities:
+            tb_facility = dict(facility)
             self.create_facility(tb_facility, record)
 
     def create_characteristic(self, tb_characteristic, record):
