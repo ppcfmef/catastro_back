@@ -192,12 +192,14 @@ class RecordOwnerShip(models.Model):
     )
     """Registro Titularidad"""
     cod_tit = models.CharField(max_length=20, primary_key=True)
+    ubigeo = models.CharField(max_length=6, blank=True, null=True, default=None)
     cod_tipo_tit = models.ForeignKey(
         OwnerShipType, blank=True, null=True, on_delete=models.SET_NULL, db_column="cod_tipo_tit"
     )
     cod_ubicacion = models.ForeignKey(Location, on_delete=models.CASCADE, db_column="cod_ubicacion", related_name='registros_titularidad')
-    status = models.PositiveSmallIntegerField(choices=STATUS_CHOICE, blank=True, null=True, default=0,
-                                              db_column='estado')
+    status = models.PositiveSmallIntegerField(
+        choices=STATUS_CHOICE, blank=True, null=True, default=0, db_column='estado'
+    )
     class Meta:
         db_table = 'TB_REGISTRO_TITULARIDAD'
         verbose_name = _('OwnerShip')
@@ -310,7 +312,7 @@ class LandSupply(models.Model):
 
 class LandInspectionType(models.Model):
     """Tipo de predio"""
-    cod_tipo_predio = models.AutoField(primary_key=True)
+    cod_tipo_predio = models.CharField(max_length=2, primary_key=True)
     desc_tipo_predio = models.CharField(max_length=100)
 
     class Meta:
