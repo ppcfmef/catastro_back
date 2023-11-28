@@ -1,5 +1,6 @@
 
 from datetime import datetime
+from  django.db import transaction
 from rest_framework import serializers, exceptions
 from apps.users.models import User
 from .models import (
@@ -190,6 +191,7 @@ class MobileLandInspectionSerializer(serializers.Serializer):
     """nodo principal"""
     tb_properties = LandInspectionUploadSerializer()
 
+    @transaction.atomic
     def save(self, **kwargs):
         validated_data = dict(self.validated_data)
         tb_properties = dict(validated_data.get('tb_properties', {}))
