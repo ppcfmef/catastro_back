@@ -1,6 +1,9 @@
-
+import base64
 from datetime import datetime
-from  django.db import transaction
+
+from django.core.files import File
+from django.conf import settings
+from django.db import transaction
 from rest_framework import serializers, exceptions
 from apps.users.models import User
 from .models import (
@@ -245,9 +248,9 @@ class MobileLandInspectionSerializer(serializers.Serializer):
         return Ticket.objects.create(
             inspection_upload=inspection_upload,
             cod_ticket=tb_ticket.get('cod_ticket', None),
-            cod_tipo_ticket_id=tb_ticket.get('cod_tipo_ticket', None),
-            cod_est_trabajo_ticket_id=tb_ticket.get('cod_est_trabajo_ticket', None),
-            cod_est_envio_ticket_id=tb_ticket.get('cod_est_envio_ticket', None),
+            cod_tipo_ticket_id=self.blank_to_null(tb_ticket.get('cod_tipo_ticket', None)),
+            cod_est_trabajo_ticket_id=self.blank_to_null(tb_ticket.get('cod_est_trabajo_ticket', None)),
+            cod_est_envio_ticket_id=self.blank_to_null(tb_ticket.get('cod_est_envio_ticket', None)),
             cod_usuario=tb_ticket.get('cod_usuario', None),
             obs_ticket_usuario=tb_ticket.get('obs_ticket_usuario', None),
             fec_inicio_trabajo=fec_inicio_trabajo,
@@ -294,14 +297,31 @@ class MobileLandInspectionSerializer(serializers.Serializer):
         photo = LocationPhoto.objects.create(
             cod_ubicacion=location,
             cod_foto=tb_photo.get('cod_foto'),
-            cod_tipo_foto_id=int(tb_photo.get('cod_tipo_foto')),
+            cod_tipo_foto_id=self.blank_to_null(tb_photo.get('cod_tipo_foto', None)),
             foto=None
         )
 
         self.photo_base64_to_jpg(tb_photo, photo)
 
     def photo_base64_to_jpg(self, tb_photo, photo):
-        pass
+        tmp_upload = settings.MEDIA_ROOT / 'tmp_uploads'
+        tmp_upload.mkdir(parents=True, exist_ok=True)
+
+        cod_location = tb_photo.get('cod_ubicacion')
+        cod_photo = tb_photo.get('cod_foto')
+        photo_base64 = tb_photo.get('url_foto')
+        file_name = f'{cod_location}_{cod_photo}.jpg'
+        file_path = tmp_upload / file_name
+
+        try:
+            image = base64.b64decode(photo_base64)
+            with open(file_path, "wb") as f:
+                f.write(image)
+
+            photo.foto.save(file_name, File(open(file_path, 'rb')))
+
+        except Exception as e:
+            print(f'error al cargar imagen imagen {cod_photo}')
 
     def create_record_owner(self, tb_registro, location):
 
@@ -314,7 +334,7 @@ class MobileLandInspectionSerializer(serializers.Serializer):
             cod_ubicacion=location,
             cod_tit=cod_tit,
             ubigeo=ubigeo,
-            cod_tipo_tit_id=tb_registro.get('cod_tipo_tit', None),
+            cod_tipo_tit_id=self.blank_to_null(tb_registro.get('cod_tipo_tit', None)),
         )
 
         tb_characteristic = dict(tb_registro.get('tb_caracteristicas', {}))
@@ -362,7 +382,7 @@ class MobileLandInspectionSerializer(serializers.Serializer):
         LandFacility.objects.create(
             cod_tit=record,
             cod_inst=tb_facility.get('cod_inst', None),
-            cod_tipo_inst_id=tb_facility.get('cod_tipo_inst', None),
+            cod_tipo_inst_id=self.blank_to_null(tb_facility.get('cod_tipo_inst', None)),
             anio_construccion=tb_facility.get('anio_construccion', None),
             estado_conserva=tb_facility.get('estado_conserva', None),
             dimension=tb_facility.get('dimension', None),
@@ -374,7 +394,7 @@ class MobileLandInspectionSerializer(serializers.Serializer):
 
         LandSupply.objects.create(
             cod_tit=record,
-            cod_tipo_sumi_id=tb_supply.get('cod_tipo_sumi', None),
+            cod_tipo_sumi_id=self.blank_to_null(tb_supply.get('cod_tipo_sumi', None)),
             num_sumis=tb_supply.get('num_sumis', None),
             obs_sumis=tb_supply.get('obs_sumis', None),
         )
@@ -388,7 +408,7 @@ class MobileLandInspectionSerializer(serializers.Serializer):
             ubigeo=record.ubigeo,
             cod_cpu=tb_land_inspection.get('cod_cpu', None),
             cod_pre=tb_land_inspection.get('cod_pre', None),
-            cod_tipo_predio_id=tb_land_inspection.get('cod_tipo_predio', None),
+            cod_tipo_predio_id=self.blank_to_null(tb_land_inspection.get('cod_tipo_predio', None)),
             piso=tb_land_inspection.get('piso', None),
             num_sumi_agua=tb_land_inspection.get('num_sumi_agua', None),
             num_sumi_luz=tb_land_inspection.get('num_sumi_luz', None),
@@ -436,3 +456,8 @@ class MobileLandInspectionSerializer(serializers.Serializer):
             nombre=tb_land_owner_inspection.get('nombre', None),
             conyuge=tb_land_owner_inspection.get('conyuge', None),
         )
+
+    def blank_to_null(self, value):
+        if value == "":
+            return None
+        return value
