@@ -200,6 +200,7 @@ class RecordOwnerShip(models.Model):
     status = models.PositiveSmallIntegerField(
         choices=STATUS_CHOICE, blank=True, null=True, default=0, db_column='estado'
     )
+    #file_notificacion =models.FileField(blank=True, null=True)  # ToDo: genera url
     class Meta:
         db_table = 'TB_REGISTRO_TITULARIDAD'
         verbose_name = _('OwnerShip')
@@ -366,7 +367,7 @@ class LandOwnerInspection(models.Model):
         RecordOwnerShip,
         on_delete=models.CASCADE, db_column="cod_tit"
     )
-    cod_contr = models.CharField(max_length=50)
+    cod_contr = models.CharField(max_length=50,blank=True, null=True)
     tip_doc = models.CharField(max_length=2, blank=True, null=True)  # ToDo: validar si debe ser FK
     doc_iden = models.CharField(max_length=20, blank=True, null=True)
     dir_fiscal = models.CharField(max_length=255, blank=True, null=True)

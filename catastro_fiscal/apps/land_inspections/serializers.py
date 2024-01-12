@@ -16,9 +16,9 @@ class LandOwnerInspectionSerializer(serializers.Serializer):
     """tb_contribuyente"""
     tip_doc = serializers.CharField()
     doc_iden = serializers.CharField()
-    cod_contr = serializers.CharField()
+    cod_contr = serializers.CharField(allow_blank=True, allow_null=True)
     cond_contr = serializers.CharField(allow_blank=True, allow_null=True)
-    dir_fiscal = serializers.CharField()
+    dir_fiscal = serializers.CharField(allow_blank=True, allow_null=True)
     nombre = serializers.CharField()
     ap_pat = serializers.CharField()
     ap_mat = serializers.CharField()

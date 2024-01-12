@@ -38,19 +38,26 @@ class LandInspectionViewset(mixins.CreateModelMixin, viewsets.GenericViewSet):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-
-        try:
-            self.perform_create(serializer)
-            response_serializer = self.response_serializer_class({
+        
+        
+        self.perform_create(serializer)
+        response_serializer = self.response_serializer_class({
                 "status": "success",
                 "message": "El registro se guardo correctamente"
             })
-        except Exception as e:
-            response_serializer = self.response_serializer_class({
-                "status": "error",
-                "message": str(e)
-            })
-            raise exceptions.ValidationError(response_serializer.data)
+        # try:
+        #     self.perform_create(serializer)
+        #     response_serializer = self.response_serializer_class({
+        #         "status": "success",
+        #         "message": "El registro se guardo correctamente"
+        #     })
+        # except Exception as e:
+        #     response_serializer = self.response_serializer_class({
+        #         "status": "error",
+        #         "message": str(e)
+        #     })
+        #     raise exceptions.ValidationError(response_serializer.data)
+        
         return Response(response_serializer.data, status=status.HTTP_201_CREATED)
 
     def perform_create(self, serializer):
