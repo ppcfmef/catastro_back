@@ -198,6 +198,7 @@ class RecordOwnerShip(models.Model):
     cod_ubicacion = models.ForeignKey(Location, on_delete=models.CASCADE, db_column="cod_ubicacion", related_name='registros_titularidad')
     status = models.PositiveSmallIntegerField(choices=STATUS_CHOICE, blank=True, null=True, default=0,
                                               db_column='estado')
+    file_notificacion =models.FileField(blank=True, null=True)  # ToDo: genera url
     class Meta:
         db_table = 'TB_REGISTRO_TITULARIDAD'
         verbose_name = _('OwnerShip')

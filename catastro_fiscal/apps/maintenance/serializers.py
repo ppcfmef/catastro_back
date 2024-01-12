@@ -117,7 +117,8 @@ class ResultDetailCustomSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Result
-        fields = ('address','cpm','urban_lot_number')
+        fields = ('address','cpm','urban_lot_number','block','municipal_number','indoor','floor','km','municipal_address')
         
     def get_address(self,obj):
-        return '{street_type} {street_name} {municipal_number} {urban_mza} {urban_lot_number}'.format(street_type=obj.street_type,street_name = obj.street_name,municipal_number =obj.municipal_number,urban_mza =' Mz.{}'.format(obj.urban_mza) if obj.urban_mza is not None else '' ,urban_lot_number =' Lote {}'.format( obj.urban_lot_number) if  obj.urban_lot_number is not None else '' )
+        street_type=MasterCodeStreet.objects.get(id= obj.street_type)
+        return '{street_type} {street_name} {municipal_number} {urban_mza} {urban_lot_number}'.format(street_type=street_type,street_name = obj.street_name,municipal_number =obj.municipal_number if obj.municipal_number is not None else '' ,urban_mza =' Mz.{}'.format(obj.urban_mza) if obj.urban_mza is not None else '' ,urban_lot_number =' Lote {}'.format( obj.urban_lot_number) if  obj.urban_lot_number is not None else '' )
