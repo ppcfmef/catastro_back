@@ -1,17 +1,24 @@
-
+import base64
 from datetime import datetime
+
+from django.core.files import File
+from django.conf import settings
+from django.db import transaction
 from rest_framework import serializers, exceptions
 from apps.users.models import User
-from .models import LandInspectionUpload, Ticket, Location, RecordOwnerShip, LandCharacteristic
+from .models import (
+    LandInspectionUpload, Ticket, Location, RecordOwnerShip, LandCharacteristic, LandFacility, LandSupply,
+    LandInspection, LandOwnerInspection, LandOwnerDetailInspection, LocationPhoto
+)
 
 
 class LandOwnerInspectionSerializer(serializers.Serializer):
     """tb_contribuyente"""
     tip_doc = serializers.CharField()
     doc_iden = serializers.CharField()
-    cod_contr = serializers.CharField()
+    cod_contr = serializers.CharField(allow_blank=True, allow_null=True)
     cond_contr = serializers.CharField(allow_blank=True, allow_null=True)
-    dir_fiscal = serializers.CharField()
+    dir_fiscal = serializers.CharField(allow_blank=True, allow_null=True)
     nombre = serializers.CharField()
     ap_pat = serializers.CharField()
     ap_mat = serializers.CharField()
@@ -187,6 +194,7 @@ class MobileLandInspectionSerializer(serializers.Serializer):
     """nodo principal"""
     tb_properties = LandInspectionUploadSerializer()
 
+    @transaction.atomic
     def save(self, **kwargs):
         validated_data = dict(self.validated_data)
         tb_properties = dict(validated_data.get('tb_properties', {}))
@@ -240,9 +248,9 @@ class MobileLandInspectionSerializer(serializers.Serializer):
         return Ticket.objects.create(
             inspection_upload=inspection_upload,
             cod_ticket=tb_ticket.get('cod_ticket', None),
-            cod_tipo_ticket_id=tb_ticket.get('cod_tipo_ticket', None),
-            cod_est_trabajo_ticket_id=tb_ticket.get('cod_est_trabajo_ticket', None),
-            cod_est_envio_ticket_id=tb_ticket.get('cod_est_envio_ticket', None),
+            cod_tipo_ticket_id=self.blank_to_null(tb_ticket.get('cod_tipo_ticket', None)),
+            cod_est_trabajo_ticket_id=self.blank_to_null(tb_ticket.get('cod_est_trabajo_ticket', None)),
+            cod_est_envio_ticket_id=self.blank_to_null(tb_ticket.get('cod_est_envio_ticket', None)),
             cod_usuario=tb_ticket.get('cod_usuario', None),
             obs_ticket_usuario=tb_ticket.get('obs_ticket_usuario', None),
             fec_inicio_trabajo=fec_inicio_trabajo,
@@ -280,31 +288,85 @@ class MobileLandInspectionSerializer(serializers.Serializer):
             tb_registro = dict(record)
             self.create_record_owner(tb_registro, location)
 
+        photos = list(tb_location.get('tb_foto', []))
+        for photo in photos:
+            tb_photo = dict(photo)
+            self.create_photo(tb_photo, location)
+
+    def create_photo(self, tb_photo, location):
+        photo = LocationPhoto.objects.create(
+            cod_ubicacion=location,
+            cod_foto=tb_photo.get('cod_foto'),
+            cod_tipo_foto_id=self.blank_to_null(tb_photo.get('cod_tipo_foto', None)),
+            foto=None
+        )
+
+        self.photo_base64_to_jpg(tb_photo, photo)
+
+    def photo_base64_to_jpg(self, tb_photo, photo):
+        tmp_upload = settings.MEDIA_ROOT / 'tmp_uploads'
+        tmp_upload.mkdir(parents=True, exist_ok=True)
+
+        cod_location = tb_photo.get('cod_ubicacion')
+        cod_photo = tb_photo.get('cod_foto')
+        photo_base64 = tb_photo.get('url_foto')
+        file_name = f'{cod_location}_{cod_photo}.jpg'
+        file_path = tmp_upload / file_name
+
+        try:
+            image = base64.b64decode(photo_base64)
+            with open(file_path, "wb") as f:
+                f.write(image)
+
+            photo.foto.save(file_name, File(open(file_path, 'rb')))
+
+        except Exception as e:
+            print(f'error al cargar imagen imagen {cod_photo}')
 
     def create_record_owner(self, tb_registro, location):
+
+        if len(tb_registro) == 0:
+            return None
+
+        cod_tit = tb_registro.get('cod_tit', '')
+        ubigeo = cod_tit[:6]
         record = RecordOwnerShip.objects.create(
             cod_ubicacion=location,
-            cod_tit=tb_registro.get('cod_tit', None),
-            cod_tipo_tit_id=tb_registro.get('cod_tipo_tit', None),
+            cod_tit=cod_tit,
+            ubigeo=ubigeo,
+            cod_tipo_tit_id=self.blank_to_null(tb_registro.get('cod_tipo_tit', None)),
         )
 
         tb_characteristic = dict(tb_registro.get('tb_caracteristicas', {}))
-        self.create_characteristic(tb_characteristic, record)
+        tb_supply = dict(tb_registro.get('tb_supply', {}))
+        tb_land_inspection = dict(tb_registro.get('tb_predio', {}))
+        facilities = list(tb_registro.get('tb_instalaciones', []))
 
+        self.create_characteristic(tb_characteristic, record)
+        self.create_supply(tb_supply, record)
+        self.create_land_inspection(tb_land_inspection, record)
+
+        for facility in facilities:
+            tb_facility = dict(facility)
+            self.create_facility(tb_facility, record)
 
     def create_characteristic(self, tb_characteristic, record):
+
+        if len(tb_characteristic) == 0:
+            return None
+
         LandCharacteristic.objects.create(
             cod_tit=record,
-            categoria_electrica=tb_characteristic.get('cod_tipo_tit', None),
-            piso=tb_characteristic.get('cod_tipo_tit', None),
-            estado_conserva=tb_characteristic.get('cod_tipo_tit', None),
-            anio_construccion=tb_characteristic.get('cod_tipo_tit', None),
-            catergoria_techo=tb_characteristic.get('cod_tipo_tit', None),
-            longitud_frente=tb_characteristic.get('cod_tipo_tit', None),
-            categoria_muro_columna=tb_characteristic.get('cod_tipo_tit', None),
-            catergoria_puerta_ventana=tb_characteristic.get('cod_tipo_tit', None),
-            arancel=tb_characteristic.get('cod_tipo_tit', None),
-            material_pred=tb_characteristic.get('cod_tipo_tit', None),
+            categoria_electrica=tb_characteristic.get('categoria_electrica', None),
+            piso=tb_characteristic.get('piso', None),
+            estado_conserva=tb_characteristic.get('estado_conserva', None),
+            anio_construccion=tb_characteristic.get('anio_construccion', None),
+            catergoria_techo=tb_characteristic.get('catergoria_techo', None),
+            longitud_frente=tb_characteristic.get('longitud_frente', None),
+            categoria_muro_columna=tb_characteristic.get('categoria_muro_columna', None),
+            catergoria_puerta_ventana=tb_characteristic.get('catergoria_puerta_ventana', None),
+            arancel=tb_characteristic.get('arancel', None),
+            material_pred=tb_characteristic.get('material_pred', None),
             categoria_revestimiento=tb_characteristic.get('categoria_revestimiento', None),
             area_terreno=tb_characteristic.get('area_terreno', None),
             clasificacion_pred=tb_characteristic.get('clasificacion_pred', None),
@@ -312,3 +374,90 @@ class MobileLandInspectionSerializer(serializers.Serializer):
             catergoria_bano=tb_characteristic.get('catergoria_bano', None),
             area_construida=tb_characteristic.get('area_construida', None),
         )
+
+    def create_facility(self, tb_facility, record):
+        if len(tb_facility) == 0:
+            return None
+
+        LandFacility.objects.create(
+            cod_tit=record,
+            cod_inst=tb_facility.get('cod_inst', None),
+            cod_tipo_inst_id=self.blank_to_null(tb_facility.get('cod_tipo_inst', None)),
+            anio_construccion=tb_facility.get('anio_construccion', None),
+            estado_conserva=tb_facility.get('estado_conserva', None),
+            dimension=tb_facility.get('dimension', None),
+        )
+
+    def create_supply(self, tb_supply, record):
+        if len(tb_supply) == 0:
+            return None
+
+        LandSupply.objects.create(
+            cod_tit=record,
+            cod_tipo_sumi_id=self.blank_to_null(tb_supply.get('cod_tipo_sumi', None)),
+            num_sumis=tb_supply.get('num_sumis', None),
+            obs_sumis=tb_supply.get('obs_sumis', None),
+        )
+
+    def create_land_inspection(self, tb_land_inspection, record):
+        if len(tb_land_inspection) == 0:
+            return None
+
+        land_inspection = LandInspection.objects.create(
+            cod_tit=record,
+            ubigeo=record.ubigeo,
+            cod_cpu=tb_land_inspection.get('cod_cpu', None),
+            cod_pre=tb_land_inspection.get('cod_pre', None),
+            cod_tipo_predio_id=self.blank_to_null(tb_land_inspection.get('cod_tipo_predio', None)),
+            piso=tb_land_inspection.get('piso', None),
+            num_sumi_agua=tb_land_inspection.get('num_sumi_agua', None),
+            num_sumi_luz=tb_land_inspection.get('num_sumi_luz', None),
+            uso_especifico=tb_land_inspection.get('uso_especifico', None),
+            interior=tb_land_inspection.get('interior', None),
+            obs_predio=tb_land_inspection.get('obs_predio', None),
+            num_dpto=tb_land_inspection.get('num_dpto', None),
+            codigo_uso=tb_land_inspection.get('codigo_uso', None),
+            estado=tb_land_inspection.get('estado', None),
+            block=tb_land_inspection.get('block', None),
+            num_sumi_gas=tb_land_inspection.get('num_sumi_gas', None),
+        )
+
+        land_owner_detail_inspections = list(tb_land_inspection.get('tb_predio_contribuyente', []))
+        for tb_land_owner_detail_inspection in land_owner_detail_inspections:
+            self.create_land_owner_detail_inspection(tb_land_owner_detail_inspection, land_inspection, record)
+
+    def create_land_owner_detail_inspection(self, tb_land_owner_detail_inspection, land_inspection, record):
+        tb_land_owner_inspection = dict(tb_land_owner_detail_inspection.get('tb_contribuyente', {}))
+
+        if not (len(tb_land_owner_detail_inspection) > 0 and len(tb_land_owner_inspection) > 0):
+            return None
+
+        land_owner_inspection = self.create_land_owner_inspection(tb_land_owner_inspection, record)
+        LandOwnerDetailInspection.objects.create(
+            cod_tit=record,
+            ubigeo=record.ubigeo,
+            cod_pred_inspec=land_inspection,
+            cod_contr_inspec=land_owner_inspection,
+            doc_iden=tb_land_owner_detail_inspection.get('doc_iden', None),
+            cod_pre=tb_land_owner_detail_inspection.get('cod_pre', None),
+        )
+
+    def create_land_owner_inspection(self, tb_land_owner_inspection, record):
+        return LandOwnerInspection.objects.create(
+            cod_tit=record,
+            cod_contr=tb_land_owner_inspection.get('cod_contr', None),
+            tip_doc=tb_land_owner_inspection.get('tip_doc', None),
+            doc_iden=tb_land_owner_inspection.get('doc_iden', None),
+            dir_fiscal=tb_land_owner_inspection.get('dir_fiscal', None),
+            ap_mat=tb_land_owner_inspection.get('ap_mat', None),
+            ap_pat=tb_land_owner_inspection.get('ap_pat', None),
+            cond_contr=tb_land_owner_inspection.get('cond_contr', None),
+            contribuyente=tb_land_owner_inspection.get('contribuyente', None),
+            nombre=tb_land_owner_inspection.get('nombre', None),
+            conyuge=tb_land_owner_inspection.get('conyuge', None),
+        )
+
+    def blank_to_null(self, value):
+        if value == "":
+            return None
+        return value

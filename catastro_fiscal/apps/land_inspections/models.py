@@ -192,13 +192,15 @@ class RecordOwnerShip(models.Model):
     )
     """Registro Titularidad"""
     cod_tit = models.CharField(max_length=20, primary_key=True)
+    ubigeo = models.CharField(max_length=6, blank=True, null=True, default=None)
     cod_tipo_tit = models.ForeignKey(
         OwnerShipType, blank=True, null=True, on_delete=models.SET_NULL, db_column="cod_tipo_tit"
     )
     cod_ubicacion = models.ForeignKey(Location, on_delete=models.CASCADE, db_column="cod_ubicacion", related_name='registros_titularidad')
-    status = models.PositiveSmallIntegerField(choices=STATUS_CHOICE, blank=True, null=True, default=0,
-                                              db_column='estado')
-    file_notificacion =models.FileField(blank=True, null=True)  # ToDo: genera url
+    status = models.PositiveSmallIntegerField(
+        choices=STATUS_CHOICE, blank=True, null=True, default=0, db_column='estado'
+    )
+    #file_notificacion =models.FileField(blank=True, null=True)  # ToDo: genera url
     class Meta:
         db_table = 'TB_REGISTRO_TITULARIDAD'
         verbose_name = _('OwnerShip')
@@ -297,7 +299,8 @@ class LandSupply(models.Model):
     obs_sumis = models.CharField(max_length=100, blank=True, null=True)
     #cod_contr_inspec = models.ForeignKey(LandOwnerInspection, on_delete=models.CASCADE, db_column="cod_contr_inspec",related_name='contribuyentes')
     cod_contr = models.ForeignKey(
-        LandOwner, blank=True, null=True, on_delete=models.SET_NULL, db_column="cod_contr",related_name='suministro'
+        LandOwner, blank=True, null=True, default=None,
+        on_delete=models.SET_NULL, db_column="cod_contr", related_name='suministro'
     )
     class Meta:
         db_table = 'TB_SUMINISTRO'
@@ -310,7 +313,7 @@ class LandSupply(models.Model):
 
 class LandInspectionType(models.Model):
     """Tipo de predio"""
-    cod_tipo_predio = models.AutoField(primary_key=True)
+    cod_tipo_predio = models.CharField(max_length=2, primary_key=True)
     desc_tipo_predio = models.CharField(max_length=100)
 
     class Meta:
@@ -360,7 +363,11 @@ class LandOwnerInspection(models.Model):
     Tabla de almacenamiento de mobile una vez aceptado los datos pasan a la `lands.LandOwner` bd `PROPIETARIO`
     """
     id = models.AutoField(primary_key=True)
-    cod_contr = models.CharField(max_length=50)
+    cod_tit = models.ForeignKey(
+        RecordOwnerShip,
+        on_delete=models.CASCADE, db_column="cod_tit"
+    )
+    cod_contr = models.CharField(max_length=50,blank=True, null=True)
     tip_doc = models.CharField(max_length=2, blank=True, null=True)  # ToDo: validar si debe ser FK
     doc_iden = models.CharField(max_length=20, blank=True, null=True)
     dir_fiscal = models.CharField(max_length=255, blank=True, null=True)
