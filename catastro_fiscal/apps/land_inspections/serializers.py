@@ -212,7 +212,7 @@ class MobileLandInspectionSerializer(serializers.Serializer):
 
         for location in locations:
             tb_location = dict(location)
-            self.create_location(tb_location, ticket)
+            self.create_location(tb_location, ticket,tb_ticket)
 
         return self.instance
 
@@ -259,7 +259,7 @@ class MobileLandInspectionSerializer(serializers.Serializer):
             obs_ticket_gabinete=tb_ticket.get('obs_ticket_gabinete', None)
         )
 
-    def create_location(self, tb_location, ticket):
+    def create_location(self, tb_location, ticket,tb_ticket):
         location = Location.objects.create(
             cod_ticket=ticket,
             cod_ubicacion=tb_location.get('cod_ubicacion', None),
@@ -286,7 +286,7 @@ class MobileLandInspectionSerializer(serializers.Serializer):
         records = list(tb_location.get('tb_registro_titularidad', []))
         for record in records:
             tb_registro = dict(record)
-            self.create_record_owner(tb_registro, location)
+            self.create_record_owner(tb_registro, location,tb_ticket)
 
         photos = list(tb_location.get('tb_foto', []))
         for photo in photos:
@@ -323,13 +323,15 @@ class MobileLandInspectionSerializer(serializers.Serializer):
         except Exception as e:
             print(f'error al cargar imagen imagen {cod_photo}')
 
-    def create_record_owner(self, tb_registro, location):
+    def create_record_owner(self, tb_registro, location,tb_ticket):
 
         if len(tb_registro) == 0:
             return None
 
         cod_tit = tb_registro.get('cod_tit', '')
-        ubigeo = cod_tit[:6]
+        
+        cod_ticket=tb_ticket.get('cod_ticket', None)
+        ubigeo = cod_ticket[1:7]
         record = RecordOwnerShip.objects.create(
             cod_ubicacion=location,
             cod_tit=cod_tit,
