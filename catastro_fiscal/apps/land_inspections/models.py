@@ -89,7 +89,7 @@ class Ticket(models.Model):
     fec_asignacion = models.DateTimeField(blank=True, null=True)
     fec_ultima_actualizacion = models.DateTimeField(blank=True, null=True)
     obs_ticket_gabinete = models.CharField(max_length=255, blank=True, null=True)
-
+    nro_notificacion = models.IntegerField( blank=True, null=True,default =0 )
     class Meta:
         db_table = 'TB_TICKET'
         verbose_name = _('Ticket')
@@ -200,7 +200,7 @@ class RecordOwnerShip(models.Model):
     status = models.PositiveSmallIntegerField(
         choices=STATUS_CHOICE, blank=True, null=True, default=0, db_column='estado'
     )
-    #file_notificacion =models.FileField(blank=True, null=True)  # ToDo: genera url
+    file_notificacion =models.FileField(blank=True, null=True)  # ToDo: genera url
     class Meta:
         db_table = 'TB_REGISTRO_TITULARIDAD'
         verbose_name = _('OwnerShip')

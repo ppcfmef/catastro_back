@@ -1,11 +1,15 @@
 import math
-
+from xhtml2pdf import pisa
+from io import StringIO, BytesIO
 from django.http import HttpResponse
 from django.views.generic import View
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
 from openpyxl.utils import get_column_letter
-
+from django.template.loader import get_template
+from django.template import Context
+from django.http import HttpResponse
+from html import escape
 
 class ExportView(View):
     filename = 'sample.xlsx'
@@ -82,3 +86,15 @@ class ExportView(View):
         response = self.create_response()
         wb.save(response)
         return response
+
+
+def render_to_pdf(template_src, context_dict):
+    template = get_template(template_src)
+    #context = Context(context_dict)
+    html = template.render(context_dict)
+    result = BytesIO()
+    kw = {'leftMargin': 0, 'rightMargin': 0, 'topMargin': 0, 'bottomMargin': 0}
+    pdf = pisa.pisaDocument(StringIO(html), result, encoding='utf-8', **kw)
+    if not pdf.err:
+        return HttpResponse(result.getvalue(), content_type='application/pdf')
+    return HttpResponse("Error: <pre>%s</pre>" % escape(html))
