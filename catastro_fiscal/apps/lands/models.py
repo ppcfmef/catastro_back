@@ -155,6 +155,7 @@ class LandBase(AbstractAudit):
         (2, 'Con cartografia (Imagen)'),
         (3, 'Inactivo'),
         (4, 'Subvaluado'),
+        (5, 'Generado en gestion de resultados'),
     )
     STATUS_GAP_ANALISYS_CHOICE = (
         (0, 'Faltante'),

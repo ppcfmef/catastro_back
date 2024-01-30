@@ -1,12 +1,16 @@
 from django.shortcuts import render
-from rest_framework.decorators import authentication_classes ,permission_classes
+
+from rest_framework.decorators import authentication_classes ,permission_classes,action
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from core.filters import CamelCaseOrderFilter
-from .models import Ticket , Location,LandInspection, RecordOwnerShip,LandSupply
+from .models import Ticket , Location,LandInspection, RecordOwnerShip,LandSupply,LandCharacteristic ,LocationPhoto,LandFacility
+from apps.places.models import District
 from .serializers_results import TicketSerializer, TicketListSerializer,TicketRetriveSerializer,LocationSerializer,RecordOwnerShipRetriveSerializer ,LandInspectionSerializer,LocationRetriveSerializer,RecordOwnerShipSerializer,  LandSupplyRetriveSerializer, LandSupplySerializer
 from rest_framework.viewsets import GenericViewSet ,ModelViewSet
 import django_filters
+from core.utils.exports import render_to_pdf
+
 
 class TicketFilter(django_filters.FilterSet):
     codTicket = django_filters.CharFilter(field_name="cod_ticket",lookup_expr='icontains')
@@ -80,3 +84,43 @@ class LandSupplyViewSet(ModelViewSet):
             return LandSupplyRetriveSerializer
         else:
             return LandSupplySerializer
+
+
+@authentication_classes([])
+@permission_classes([])
+class ExportPdfViewSet(GenericViewSet):
+    @action(methods=['post'], detail=False, url_path='generar_notificacion_subvaluado')
+    def generar_notificacion_subvaluado(self, request, *args, **kwargs):
+        #print('request.data>>>',request.data)
+
+
+        username=request.data.get('username',None)
+        cod_ticket=request.data.get('cod_ticket',None)
+        cod_tit=request.data.get('cod_tit',None)
+        texto=request.data.get('texto',None)
+        contribuyente =request.data.get('contribuyente',None)
+        print('cod_ticket>>',cod_ticket)
+        context_dict = { }
+        if cod_ticket is not None:
+            t=Ticket.objects.get(cod_ticket=cod_ticket )
+            if t is not None and cod_tit is not None:
+                t.nro_notificacion=t.nro_notificacion+1
+                t.save()
+                r=RecordOwnerShip.objects.get(cod_tit = cod_tit)
+                if r is not None:
+                    l=Location.objects.get(cod_ubicacion=r.cod_ubicacion)
+                    d=District.objects.get(code = r.ubigeo)
+                    fotos =LocationPhoto.objects.filter(cod_ubicacion=r.cod_ubicacion)[:3]
+                    
+                    i=LandFacility.objects.filter(cod_tit=r.cod_tit ) 
+                    if r is not None:
+                        c=LandCharacteristic.objects.get(cod_tit=r.cod_tit )
+                    else:
+                        c={}
+                else:
+                    r={}    
+                context_dict = { 'username' : username, 'cod_ticket':cod_ticket ,'ticket':t,'caracteristicas':c,'ubicacion':l,'fotos':fotos,'instalaciones':i,'texto':texto,'nro_notificacion': (t.nro_notificacion),'distrito': d,'contribuyente':contribuyente}
+        return render_to_pdf('pdf/ejemplo.html', context_dict)
+        
+        
+        

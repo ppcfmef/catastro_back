@@ -37,6 +37,7 @@ redis = "*"
 gunicorn = "*"
 djangorestframework-api-key = "==2.*"
 psycopg2 = "*"
+xhtml2pdf = "*"
 
 [requires]
 python_version = "3"
