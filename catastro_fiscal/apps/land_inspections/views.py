@@ -104,13 +104,13 @@ class ExportPdfViewSet(GenericViewSet):
         if cod_ticket is not None:
             t=Ticket.objects.get(cod_ticket=cod_ticket )
             if t is not None and cod_tit is not None:
-                t.nro_notificacion=t.nro_notificacion+1
-                t.save()
+               
                 r=RecordOwnerShip.objects.get(cod_tit = cod_tit)
                 if r is not None:
                     l=Location.objects.get(cod_ubicacion=r.cod_ubicacion)
                     d=District.objects.get(code = r.ubigeo)
-                    fotos =LocationPhoto.objects.filter(cod_ubicacion=r.cod_ubicacion)[:3]
+                    fotos = []
+                    fotos = LocationPhoto.objects.filter(cod_ubicacion=r.cod_ubicacion)
                     
                     i=LandFacility.objects.filter(cod_tit=r.cod_tit ) 
                     if r is not None:
@@ -118,9 +118,12 @@ class ExportPdfViewSet(GenericViewSet):
                     else:
                         c={}
                 else:
-                    r={}    
+                    r={}
+                t.nro_notificacion=t.nro_notificacion+1
+                t.save()    
                 context_dict = { 'username' : username, 'cod_ticket':cod_ticket ,'ticket':t,'caracteristicas':c,'ubicacion':l,'fotos':fotos,'instalaciones':i,'texto':texto,'nro_notificacion': (t.nro_notificacion),'distrito': d,'contribuyente':contribuyente}
-        return render_to_pdf('pdf/ejemplo.html', context_dict)
+                print('context_dict>>',context_dict)
+        return render_to_pdf('pdf/notificacion_subvaluado.html', context_dict)
         
         
         

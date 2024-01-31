@@ -35,7 +35,7 @@ class ApplicationViewSet( ModelViewSet):
     
     def list(self, request, *args, **kwargs):
         cpm = self.request.query_params.get('cpm',None)
-        #print('cup>>>',cup)
+        
         if cpm is not None:
             try:
                 id_apps=ApplicationLandDetail.objects.filter(land__cpm=cpm).values_list('application_id',flat=True)
@@ -114,7 +114,7 @@ class ApplicationViewSet( ModelViewSet):
                 
                 elif a.id_type == 4:
                     lands_id = ApplicationLandDetail.objects.filter(application_id=id_app).values_list('land_id', flat=True)
-                    print('lands_id>>>',lands_id)
+                    
                     lands = Land.objects.filter(id__in=list(lands_id))
                     lands.update(status=3)
 
@@ -193,9 +193,9 @@ class LandViewSet(ModelViewSet):
     @action(methods=['GET'], detail=False, url_path='lands-by-application/(?P<application_id>[0-9]+)')
     def get_lands_by_application(self, request, *args, **kwargs):
         application_id = kwargs.get('application_id')
-        print('application_id>>>',application_id)
+        
         lands_id = ApplicationLandDetail.objects.filter(application_id=application_id).values_list('land_id', flat=True)
-        print('lands_id>>>',lands_id)
+        
         lands = self.get_queryset().filter(id__in=list(lands_id))
         queryset = self.filter_queryset(lands)
         page = self.paginate_queryset(queryset)
