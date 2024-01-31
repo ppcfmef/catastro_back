@@ -79,7 +79,7 @@
 {% block cabecera %}
 
 <h1 style="padding-top: 0px; margin-top: 0px;  font-weight: bold;text-align: center;">GERENCIA DE ADMINISTRACION TRIBUTARIA</h1>
-<h1 style="padding-top: 0px; margin-top: 0px; font-weight: bold;text-align: center;">CARTA DE INVITACION {{cod_ticket}}-{{nro_notificacion}}-{% now YYYY %}</h1>
+<h1 style="padding-top: 0px; margin-top: 0px; font-weight: bold;text-align: center;">CARTA DE INVITACION {{cod_ticket}}-{{nro_notificacion}}-{% now "Y" %}</h1>
 
 
 {% endblock %}
@@ -95,25 +95,13 @@
 <p>SR(A). {{contribuyente|upper}}</p>
 <p>Presente.-</p>
 
-<p>De mi mayor consideración:</p>
-<p>La Municipalidad Distrital de {{distrito.name}}, a través de la Gerencia de Administración Tributaria le hace llegar saludos
-cordiales y a la vez comunicarle que se ha realizado un proceso de inspección de los predios del distrito, a fin de
-verificar la fehaciencia de la información brindada por los contribuyentes en su Declaración Jurada de Autoavaluo,
-es por ello que hacemos llegar a usted la Ficha de levantamiento de campo de(l/los) predio(s) a su nombre y
-detallamos a continuación:
-</p>
 
 <p>La Municipalidad Distrital de {{distrito.name}}, a través de la Gerencia de Administración Tributaria le hace llegar saludos cordiales 
-y a la vez comunicarle que se ha detectado que usted ha omitido en inscribir oportunamente su propiedad ubicada en {{distrito.name}}, 
+y a la vez comunicarle que se ha detectado que usted ha omitido en inscribir oportunamente su propiedad ubicada en {{direccion}}, 
 por lo que lo invitamos a cumplir con la inscripción y la presentación de la Declaración Jurada de su predio seguido del pago de sus obligaciones tributarias, 
 como es el Impuesto Predial y los Arbitrios Municipales.
 </p>
 
-
-<p>Si encontrara divergencias en lo que obra en su Declaración Jurada de Autoavaluo con lo señalado en la Ficha
-adjunta sírvase cumplir con modificar su Declaración acercándose a la Municipalidad y llenar los formularios HR y
-PU que serán proporcionados en {{texto}}
-</p>
     
 <p>Tenga en cuenta que omitir información en la declaración jurada del Impuesto Predial constituye una infracción
 tipificada en el Código Tributario Art 176 Numeral 4 “Presentar otras declaraciones o comunicaciones en forma

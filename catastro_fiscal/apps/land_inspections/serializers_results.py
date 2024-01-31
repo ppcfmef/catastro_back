@@ -1,7 +1,7 @@
 from django.db import transaction
 from rest_framework import serializers
 from .models import Ticket, TicketSendStation, LandOwnerInspection, Location, LocationPhoto, LandFacility, SupplyType, LandSupply, LandFacility, LandInspectionType, RecordOwnerShip, LandCharacteristic, LandInspection,LocationPhoto,LandOwnerDetailInspection
-from apps.lands.models import Land, LandOwner,LandOwnerDetail
+from apps.lands.models import Land, LandOwner,LandOwnerDetail,MasterCodeStreet
 
 
 class LandSupplyOwnerSerializer(serializers.ModelSerializer):
@@ -147,10 +147,16 @@ class RecordOwnerShipSerializer(serializers.ModelSerializer):
 class LocationRetriveSerializer(serializers.ModelSerializer):
     fotos = LocationPhotoSerializer(many=True, read_only=True)
     registros_titularidad = RecordOwnerShipRetriveSerializer(many=True, read_only=True)
+    address = serializers.SerializerMethodField()
     class Meta:
         model = Location
         fields = '__all__'
-
+    
+    
+        
+    def get_address(self,obj):
+        street_type=MasterCodeStreet.objects.get(id= obj.cod_tip_via)
+        return '{street_type} {street_name} {municipal_number} {urban_mza} {urban_lot_number}'.format(street_type=street_type,street_name = obj.nom_via,municipal_number =obj.num_mun if obj.num_mun is not None else '' ,urban_mza =' Mz.{}'.format(obj.mzn_urb) if obj.mzn_urb is not None else '' ,urban_lot_number =' Lote {}'.format( obj.lot_urb) if  obj.lot_urb is not None else '' )
 
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:

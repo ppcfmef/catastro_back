@@ -79,7 +79,7 @@
 {% block cabecera %}
 
 <h1 style="padding-top: 0px; margin-top: 0px;  font-weight: bold;text-align: center;">GERENCIA DE ADMINISTRACION TRIBUTARIA</h1>
-<h1 style="padding-top: 0px; margin-top: 0px; font-weight: bold;text-align: center;">CARTA DE ACTUALIZACION DE VALOR {{cod_ticket}}-{{nro_notificacion}}-2024</h1>
+<h1 style="padding-top: 0px; margin-top: 0px; font-weight: bold;text-align: center;">CARTA DE ACTUALIZACION DE VALOR {{cod_ticket}}-{{nro_notificacion}}-{% now "Y" %}</h1>
 
 
 {% endblock %}
@@ -297,6 +297,24 @@ detallamos a continuación:
         </td>
     </tr>
 </table>
+
+{% if fotos2.count > 0 %}
+<br>
+<table  >
+
+    <tr>
+       
+        {% for f in fotos2 %}
+        <td  class ='celda-blue-small2'>
+            <img class="img" src="{{ f.foto.path }}" >
+        </td>
+        {% endfor %}  
+        
+      
+    </tr>
+    
+  </table>
+  {% endif %}
 
   
 <br>
