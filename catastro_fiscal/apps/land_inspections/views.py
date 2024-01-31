@@ -91,15 +91,13 @@ class LandSupplyViewSet(ModelViewSet):
 class ExportPdfViewSet(GenericViewSet):
     @action(methods=['post'], detail=False, url_path='generar_notificacion_subvaluado')
     def generar_notificacion_subvaluado(self, request, *args, **kwargs):
-        #print('request.data>>>',request.data)
-
-
+        
         username=request.data.get('username',None)
         cod_ticket=request.data.get('cod_ticket',None)
         cod_tit=request.data.get('cod_tit',None)
         texto=request.data.get('texto',None)
         contribuyente =request.data.get('contribuyente',None)
-        print('cod_ticket>>',cod_ticket)
+        direccion =request.data.get('direccion',None)
         context_dict = { }
         if cod_ticket is not None:
             t=Ticket.objects.get(cod_ticket=cod_ticket )
@@ -110,7 +108,15 @@ class ExportPdfViewSet(GenericViewSet):
                     l=Location.objects.get(cod_ubicacion=r.cod_ubicacion)
                     d=District.objects.get(code = r.ubigeo)
                     fotos = []
+                    fotos2 = []
+                    
                     fotos = LocationPhoto.objects.filter(cod_ubicacion=r.cod_ubicacion)
+                    
+                    if len(fotos)>0:
+                        fotos = fotos[:3]
+                        if len(fotos)>3:
+                            fotos2 = fotos[3:]
+                            
                     
                     i=LandFacility.objects.filter(cod_tit=r.cod_tit ) 
                     if r is not None:
@@ -121,9 +127,34 @@ class ExportPdfViewSet(GenericViewSet):
                     r={}
                 t.nro_notificacion=t.nro_notificacion+1
                 t.save()    
-                context_dict = { 'username' : username, 'cod_ticket':cod_ticket ,'ticket':t,'caracteristicas':c,'ubicacion':l,'fotos':fotos,'instalaciones':i,'texto':texto,'nro_notificacion': (t.nro_notificacion),'distrito': d,'contribuyente':contribuyente}
-                print('context_dict>>',context_dict)
+                context_dict = { 'username' : username, 'cod_ticket':cod_ticket ,
+                                'ticket':t,'caracteristicas':c,'ubicacion':l,
+                                'fotos':fotos,'instalaciones':i,'texto':texto,
+                                'nro_notificacion': (t.nro_notificacion),'distrito': d,'contribuyente':contribuyente,'direccion': direccion,'fotos2':fotos2}
         return render_to_pdf('pdf/notificacion_subvaluado.html', context_dict)
         
         
-        
+    @action(methods=['post'], detail=False, url_path='generar_notificacion')
+    def generar_notificacion(self, request, *args, **kwargs):
+        username=request.data.get('username',None)
+        cod_ticket=request.data.get('cod_ticket',None)
+        cod_tit=request.data.get('cod_tit',None)
+        texto=request.data.get('texto',None)
+        contribuyente =request.data.get('contribuyente',None)
+        context_dict = { }
+        if cod_ticket is not None:
+            t=Ticket.objects.get(cod_ticket=cod_ticket )
+            if t is not None and cod_tit is not None:
+               
+                r=RecordOwnerShip.objects.get(cod_tit = cod_tit)
+                if r is not None:
+                    l=Location.objects.get(cod_ubicacion=r.cod_ubicacion)
+                    d=District.objects.get(code = r.ubigeo)
+                
+                else:
+                    r={}
+                t.nro_notificacion=t.nro_notificacion+1
+                t.save()    
+                context_dict = { 'username' : username, 'cod_ticket':cod_ticket ,'ticket':t,'ubicacion':l,'texto':texto,'nro_notificacion': (t.nro_notificacion),'distrito': d,'contribuyente':contribuyente}
+                
+        return render_to_pdf('pdf/notificacion.html', context_dict)       
