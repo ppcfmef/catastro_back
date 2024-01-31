@@ -165,23 +165,14 @@ detallamos a continuación:
 
             <table  >
                 <tr >
-                <td class ='blue-small'  >Cod. inst</td>
-                <td class ='blue-small'>Cod. tipo inst </td>
-                <td class ='blue-small'>Año const</td>
-                <td class ='blue-small' >Estado conserva</td>
-                <td class ='blue-small'>Dimensión</td>
+                    <td class ='blue-small'  >Cod. inst</td>
+                    <td class ='blue-small'>Cod. tipo inst </td>
+                    <td class ='blue-small'>Año const</td>
+                    <td class ='blue-small' >Estado conserva</td>
+                    <td class ='blue-small'>Dimensión</td>
                 
-              </tr>
-              {% for i in instalaciones %}
-              <tr>
-                <td  class ='celda-blue-small'></td>
-                <td class ='celda-blue-small'></td>
-                <td class ='celda-blue-small'></td>
-                <td class ='celda-blue-small'></td>
-                <td class ='celda-blue-small'></td>
-                
-              </tr>
-              {% endfor %}
+                </tr>
+           
             </table>
 
         </td>
@@ -287,19 +278,22 @@ detallamos a continuación:
         </td>
 
         <td>
-
+            {% if fotos.count > 0 %}
             <table  >
       
                 <tr>
-                  {% for f in fotos %}
-                  <td  class ='celda-blue-small2'>
-                      <img class="img" src="{{ f.foto.path }}" >
-                  </td>
-                  {% endfor %}  
+                   
+                    {% for f in fotos %}
+                    <td  class ='celda-blue-small2'>
+                        <img class="img" src="{{ f.foto.path }}" >
+                    </td>
+                    {% endfor %}  
+                    
+                  
                 </tr>
                 
               </table>
-          
+              {% endif %}
         </td>
     </tr>
 </table>
