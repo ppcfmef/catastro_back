@@ -1,0 +1,23 @@
+[
+{
+    "model": "land_inspections.supplytype",
+    "pk": 1,
+    "fields": {
+        "desc_tipo_sumi": "Luz"
+    }
+},
+{
+    "model": "land_inspections.supplytype",
+    "pk": 2,
+    "fields": {
+        "desc_tipo_sumi": "Agua"
+    }
+},
+{
+    "model": "land_inspections.supplytype",
+    "pk": 3,
+    "fields": {
+        "desc_tipo_sumi": "Gas"
+    }
+}
+]
