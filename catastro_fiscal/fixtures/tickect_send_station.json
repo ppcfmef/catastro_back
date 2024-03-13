@@ -1,0 +1,16 @@
+[
+{
+    "model": "land_inspections.ticketsendstation",
+    "pk": "0",
+    "fields": {
+        "desc_est_envio_ticket": "No Enviado"
+    }
+},
+{
+    "model": "land_inspections.ticketsendstation",
+    "pk": "1",
+    "fields": {
+        "desc_est_envio_ticket": "Enviado"
+    }
+}
+]

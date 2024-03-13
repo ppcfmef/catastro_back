@@ -1,0 +1,16 @@
+[
+{
+    "model": "land_inspections.ownershiptype",
+    "pk": 1,
+    "fields": {
+        "desc_tipo_tit": "Predio"
+    }
+},
+{
+    "model": "land_inspections.ownershiptype",
+    "pk": 2,
+    "fields": {
+        "desc_tipo_tit": "Suministro"
+    }
+}
+]

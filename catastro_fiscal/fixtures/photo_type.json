@@ -1,0 +1,37 @@
+[
+{
+    "model": "land_inspections.phototype",
+    "pk": 1,
+    "fields": {
+        "desc_tipo_foto": "Frente"
+    }
+},
+{
+    "model": "land_inspections.phototype",
+    "pk": 2,
+    "fields": {
+        "desc_tipo_foto": "Calle"
+    }
+},
+{
+    "model": "land_inspections.phototype",
+    "pk": 3,
+    "fields": {
+        "desc_tipo_foto": "Numeraci├│n de Puerta"
+    }
+},
+{
+    "model": "land_inspections.phototype",
+    "pk": 4,
+    "fields": {
+        "desc_tipo_foto": "Foto 4"
+    }
+},
+{
+    "model": "land_inspections.phototype",
+    "pk": 5,
+    "fields": {
+        "desc_tipo_foto": "Foto 5"
+    }
+}
+]

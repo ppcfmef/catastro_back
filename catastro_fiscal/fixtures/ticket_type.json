@@ -1,0 +1,44 @@
+[
+{
+    "model": "land_inspections.tickettype",
+    "pk": "1",
+    "fields": {
+        "desc_tipo_ticket": "Predio sin Georreferenciaci├│n"
+    }
+},
+{
+    "model": "land_inspections.tickettype",
+    "pk": "2",
+    "fields": {
+        "desc_tipo_ticket": "Puntos Lotes sin Predio"
+    }
+},
+{
+    "model": "land_inspections.tickettype",
+    "pk": "3",
+    "fields": {
+        "desc_tipo_ticket": "Punto Imagen"
+    }
+},
+{
+    "model": "land_inspections.tickettype",
+    "pk": "4",
+    "fields": {
+        "desc_tipo_ticket": "Manzana sin Lotes"
+    }
+},
+{
+    "model": "land_inspections.tickettype",
+    "pk": "5",
+    "fields": {
+        "desc_tipo_ticket": "Predio Subvaluado"
+    }
+},
+{
+    "model": "land_inspections.tickettype",
+    "pk": "6",
+    "fields": {
+        "desc_tipo_ticket": "Actualizaci├│n Cartogr├ífica"
+    }
+}
+]
