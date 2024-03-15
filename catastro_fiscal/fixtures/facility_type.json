@@ -1,0 +1,16 @@
+[
+{
+    "model": "land_inspections.facilitytype",
+    "pk": 1,
+    "fields": {
+        "desc_tipo_inst": "Otros"
+    }
+},
+{
+    "model": "land_inspections.facilitytype",
+    "pk": 2,
+    "fields": {
+        "desc_tipo_inst": "tipo de instalacion 2"
+    }
+}
+]

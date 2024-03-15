@@ -1,0 +1,1 @@
+[{"model": "land_inspections.landinspectiontype", "pk": "R", "fields": {"desc_tipo_predio": "RURAL"}}, {"model": "land_inspections.landinspectiontype", "pk": "U", "fields": {"desc_tipo_predio": "URBANO"}}]

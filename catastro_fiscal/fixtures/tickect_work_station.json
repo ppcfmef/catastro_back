@@ -1,0 +1,65 @@
+[
+{
+    "model": "land_inspections.ticketworkstation",
+    "pk": "0",
+    "fields": {
+        "desc_est_trabajo_ticket": "No asignable"
+    }
+},
+{
+    "model": "land_inspections.ticketworkstation",
+    "pk": "1",
+    "fields": {
+        "desc_est_trabajo_ticket": "en carga de trabajo"
+    }
+},
+{
+    "model": "land_inspections.ticketworkstation",
+    "pk": "2",
+    "fields": {
+        "desc_est_trabajo_ticket": "en carga de trabajo"
+    }
+},
+{
+    "model": "land_inspections.ticketworkstation",
+    "pk": "3",
+    "fields": {
+        "desc_est_trabajo_ticket": "asignado a operador (pendiente)"
+    }
+},
+{
+    "model": "land_inspections.ticketworkstation",
+    "pk": "4",
+    "fields": {
+        "desc_est_trabajo_ticket": "descargado (en proceso)"
+    }
+},
+{
+    "model": "land_inspections.ticketworkstation",
+    "pk": "5",
+    "fields": {
+        "desc_est_trabajo_ticket": "atendido en campo (atendido)"
+    }
+},
+{
+    "model": "land_inspections.ticketworkstation",
+    "pk": "6",
+    "fields": {
+        "desc_est_trabajo_ticket": "resuelto en gabinete"
+    }
+},
+{
+    "model": "land_inspections.ticketworkstation",
+    "pk": "98",
+    "fields": {
+        "desc_est_trabajo_ticket": "observado en gabinete"
+    }
+},
+{
+    "model": "land_inspections.ticketworkstation",
+    "pk": "99",
+    "fields": {
+        "desc_est_trabajo_ticket": "observado en campo (observado)"
+    }
+}
+]
