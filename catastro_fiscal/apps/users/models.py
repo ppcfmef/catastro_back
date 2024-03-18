@@ -139,8 +139,8 @@ class User(AbstractUser):
         return None
 
     def save(self, *args, **kwargs):
-        if self.place_scope is None:
-            self.set_place_scope()
+        #if self.place_scope is None:
+        self.set_place_scope()
         super(User, self).save(*args, **kwargs)
 
     def set_place_scope(self):
