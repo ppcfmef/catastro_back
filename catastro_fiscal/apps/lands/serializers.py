@@ -112,7 +112,8 @@ class LandOwnerSaveSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def exists_owner(self, data):
-        return LandOwner.objects.filter(document_type=data.get('document_type'), dni=data.get('dni')).exists()
+        return False
+        #return LandOwner.objects.filter(document_type=data.get('document_type'), dni=data.get('dni')).exists()
 
     @transaction.atomic
     def create(self, validated_data):
