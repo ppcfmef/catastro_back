@@ -122,7 +122,9 @@ class ApplicationViewSet( ModelViewSet):
                 else:
                     lands_id = ApplicationLandDetail.objects.filter(application_id=id_app).values_list('land_id', flat=True)
                     lands = Land.objects.filter(id__in=list(lands_id))
-                    lands.update(status=3)
+                    
+                    if(a.id_type != 5):
+                        lands.update(status=3)
                     for result in results:
                         data={
                             'ubigeo_id':result.get('ubigeo', None),
