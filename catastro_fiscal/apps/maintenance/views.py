@@ -1,4 +1,4 @@
-from rest_framework import mixins, status
+from rest_framework import mixins, status, exceptions
 from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView
 from rest_framework.viewsets import GenericViewSet ,ModelViewSet
@@ -81,8 +81,17 @@ class ApplicationViewSet( ModelViewSet):
                 rserializer.is_valid(raise_exception=True)
                 rserializer.save()
                 ApplicationResultDetail.objects.create(application_id= serializer.data['id'], result_id = rserializer.data['id'])
-            except:
+            except Exception as e:
+                
                 Application.objects.filter(id= serializer.data['id']).delete()
+                ApplicationLandDetail.objects.filter(application_id= serializer.data['id']).delete()
+                #response_serializer = self.response_serializer_class()
+
+                return Response( {
+                "status": "error",
+                "message": "Se duplica el codigo de predio {} en el distrito".format(result['cpm'])
+                }, status=status.HTTP_400_BAD_REQUEST)  
+                #raise exceptions.ValidationError(response_serializer.data)
         
          
         return Response(serializer.data, status=status.HTTP_201_CREATED)
