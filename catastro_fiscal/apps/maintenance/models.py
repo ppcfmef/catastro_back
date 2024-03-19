@@ -119,6 +119,7 @@ class Result(models.Model):
 
     class Meta:
         db_table = 'RESULTADO'
+        unique_together = ["ubigeo", "cpm"]
         verbose_name = _('Result Detail')
         verbose_name_plural = _('Results Detail')
 
