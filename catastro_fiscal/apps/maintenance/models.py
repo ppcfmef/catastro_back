@@ -21,6 +21,7 @@ class Application(models.Model):
         (1, 'Por atender'),
         (2, 'Atendido'),
         (3, 'Observado'),
+        (4,'De baja')
     )
     TYPE_CHOICE =(
         (1,'Reasignar ubicación'),
