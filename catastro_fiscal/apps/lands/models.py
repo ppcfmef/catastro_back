@@ -196,7 +196,8 @@ class LandBase(AbstractAudit):
     street_type =models.ForeignKey(MasterCodeStreet,models.SET_NULL,max_length=20,  blank=True, null=True, db_column='tip_via')
     street_name = models.CharField(max_length=255, blank=True, null=True, db_column='nom_via')
     street_name_alt = models.CharField(max_length=255, blank=True, null=True, db_column='nom_alt')
-    municipal_number = models.CharField(max_length=6, blank=True, null=True, db_column='num_mun')  # numero de puerta
+    municipal_number = models.CharField(max_length=10, blank=True, null=True, db_column='num_mun')  # numero de puerta
+    municipal_number_alt = models.CharField(max_length=100, blank=True, null=True, db_column='num_alt')  # numero de puerta
     block = models.CharField(max_length=6, blank=True, null=True, db_column='block')
     indoor = models.CharField(max_length=5, blank=True, null=True, db_column='interior')
     floor = models.CharField(max_length=2, blank=True, null=True, db_column='piso')
