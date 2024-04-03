@@ -136,6 +136,7 @@ class ApplicationViewSet( ModelViewSet):
                         lands.update(status=3)
                     for result in results:
                         data={
+                            
                             'ubigeo_id':result.get('ubigeo', None),
                             'habilitacion_name':result.get('nom_uu', None),
                             'reference_name':result.get('nom_ref', None)   ,
@@ -159,7 +160,11 @@ class ApplicationViewSet( ModelViewSet):
                             'status':1,
                             'source':'mantenimiento_pre'
                         }
-                            
+
+                        id=result.get('id', None)
+                        ApplicationLandDetail.objects.filter(id=id).update(cup=result.get('cod_cpu', None))
+                        
+
                         l=Land(**data)
                         serializer=LandSerializer(data =model_to_dict(l), many=False)
                         serializer.is_valid(raise_exception=True)

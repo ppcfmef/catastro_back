@@ -117,7 +117,7 @@ class ResultDetailCustomSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Result
-        fields = ('address','cpm','urban_lot_number','block','municipal_number','indoor','floor','km','municipal_address','cup')
+        fields = ('id','address','cpm','urban_lot_number','block','municipal_number','indoor','floor','km','municipal_address','cup')
         
     def get_address(self,obj):
         street_type=MasterCodeStreet.objects.get(id= obj.street_type)
