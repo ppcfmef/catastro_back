@@ -32,7 +32,7 @@ class ApplicationListSerializer(serializers.ModelSerializer):
 
     def get_lands(self, obj):
         lands_id=ApplicationLandDetail.objects.filter(application_id=obj.id).values_list('land_id', flat=True)
-        return  list(Land.objects.filter(id__in=list(lands_id)).values('cpm'))
+        return  list(Land.objects.filter(id__in=list(lands_id)).values('cpm','cup'))
     
     def get_status(self,obj):
         return obj.get_id_status_display()
@@ -117,7 +117,7 @@ class ResultDetailCustomSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Result
-        fields = ('address','cpm','urban_lot_number','block','municipal_number','indoor','floor','km','municipal_address')
+        fields = ('address','cpm','urban_lot_number','block','municipal_number','indoor','floor','km','municipal_address','cup')
         
     def get_address(self,obj):
         street_type=MasterCodeStreet.objects.get(id= obj.street_type)
