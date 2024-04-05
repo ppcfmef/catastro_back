@@ -242,7 +242,7 @@ class Land(LandBase):
 
     class Meta:
         db_table = 'PREDIO'
-        unique_together = ["ubigeo", "cpm"]
+        #unique_together = ["ubigeo", "cpm"]
         verbose_name = _('land')
         verbose_name_plural = _('lands')
 

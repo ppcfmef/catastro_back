@@ -25,10 +25,10 @@ class Application(models.Model):
     )
     TYPE_CHOICE =(
         (1,'Reasignar ubicación'),
-        (2,'Acumulación'),
-        (3,'División'),
+        (2,'Acumular'),
+        (3,'Dividir'),
         (4,'Inactivar'),
-        (5,'Independización')
+        (5,'Independizar')
     )
           
     
@@ -120,7 +120,7 @@ class Result(models.Model):
 
     class Meta:
         db_table = 'RESULTADO'
-        unique_together = ["ubigeo", "cpm"]
+        #unique_together = ["ubigeo", "cpm"]
         verbose_name = _('Result Detail')
         verbose_name_plural = _('Results Detail')
 
