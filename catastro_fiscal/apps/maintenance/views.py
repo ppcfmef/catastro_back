@@ -116,6 +116,7 @@ class ApplicationViewSet( ModelViewSet):
             else:
                 if a.id_type == 1:
                     for result in results:
+
                         r=Land.objects.get(ubigeo_id= result.get('ubigeo', None),cpm= result.get('cod_pre', None))
                         r.longitude = result.get('coord_x', None)
                         r.latitude = result.get('coord_y', None)
@@ -162,7 +163,11 @@ class ApplicationViewSet( ModelViewSet):
                         }
 
                         id=result.get('id', None)
-                        ApplicationLandDetail.objects.filter(id=id).update(cup=result.get('cod_cpu', None))
+                        
+                        #ApplicationResultDetail.objects.filter(id=id).update(cup=result.get('cod_cpu', None))
+                        
+                        Result.objects.filter(id=id).update(cup=result.get('cod_cpu', None))
+                        #ApplicationLandDetail.objects.filter(id=id).update(cup=result.get('cod_cpu', None))
                         
 
                         l=Land(**data)
