@@ -163,7 +163,10 @@ class ApplicationViewSet( ModelViewSet):
                         }
 
                         id=result.get('id', None)
-                        Land.objects.filter(id=id).update(cup=result.get('cod_cpu', None))
+                        
+                        #ApplicationResultDetail.objects.filter(id=id).update(cup=result.get('cod_cpu', None))
+                        
+                        Result.objects.filter(id=id).update(cup=result.get('cod_cpu', None))
                         #ApplicationLandDetail.objects.filter(id=id).update(cup=result.get('cod_cpu', None))
                         
 
