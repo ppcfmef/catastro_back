@@ -166,7 +166,7 @@ class LandBase(AbstractAudit):
     )
     id = models.AutoField(primary_key=True)
     ubigeo = models.ForeignKey(District, on_delete=models.CASCADE, db_column='ubigeo')
-    cpm = models.CharField(max_length=50, db_column='cod_pre')
+    cpm = models.CharField(max_length=50, db_column='cod_pre', blank=True, null=True)
     source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True, null=True, db_column='origen')
     status = models.PositiveSmallIntegerField(choices=STATUS_CHOICE, blank=True, null=True, default=0,
                                               db_column='estado')
