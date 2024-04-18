@@ -257,7 +257,8 @@ class ResultViewSet(ModelViewSet):
 class ApplicationObservationDetailViewSet(ModelViewSet):
     queryset = ApplicationObservationDetail.objects.all()
     serializer_class= ApplicationObservationDetailSerializer
-    
+    filterset_fields = ['application','id']
+    pagination_class = None
     def create(self,request, *args, **kwargs):
         application_id=request.data['application_id']
         description=request.data['description']
