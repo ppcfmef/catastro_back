@@ -143,7 +143,7 @@ class SummaryRecordSerializer(serializers.Serializer):
     total_records = serializers.IntegerField()
     mapping_records = serializers.IntegerField()
     without_mapping_records = serializers.IntegerField()
-
+    inactive_records= serializers.IntegerField()
 
 class TemporalUploadSummarySerializer(serializers.Serializer):
     upload_history_id = serializers.IntegerField()
