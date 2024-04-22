@@ -112,13 +112,15 @@ class LandOwnerSaveSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def exists_owner(self, data):
-        return False
+        return LandOwner.objects.filter(ubigeo=data.get('ubigeo'), code=data.get('code')).exists()
+        #return False
         #return LandOwner.objects.filter(document_type=data.get('document_type'), dni=data.get('dni')).exists()
 
     @transaction.atomic
     def create(self, validated_data):
         if self.exists_owner(data=validated_data) :
             raise serializers.ValidationError(f'Ya existe el contribuyente con el documento ingresado')
+        
         address = validated_data.pop('address')
         owner = LandOwner.objects.create(**validated_data)
 
@@ -137,6 +139,30 @@ class LandOwnerSaveSerializer(serializers.ModelSerializer):
         instance = super(LandOwnerSaveSerializer, self).update(instance, validated_data)
         OwnerAddress.objects.filter(owner=instance).update(**address)
         return instance
+
+
+
+
+
+class LandOwnerSRTMSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = LandOwner
+        fields = '__all__'
+
+
+    def exists_owner(self, data):
+        return LandOwner.objects.filter(ubigeo=data.get('ubigeo'), code=data.get('code')).exists()
+
+    @transaction.atomic
+    def create(self, validated_data):
+        if self.exists_owner(data=validated_data) :
+            raise serializers.ValidationError(f'Ya existe el contribuyente con el documento ingresado')
+    
+        owner = LandOwner.objects.create(**validated_data)
+
+        return owner
+
 
 
 class SummaryRecordSerializer(serializers.Serializer):
