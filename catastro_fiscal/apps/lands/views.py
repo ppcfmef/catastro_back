@@ -12,7 +12,7 @@ from .models import UploadHistory, Land, LandOwner, LandOwnerDetail
 from .serializers import (
     UploadHistorySerializer, UploadHistoryListSerializer, LandSerializer, LandOwnerSerializer,
     LandOwnerDetailSerializer, LandOwnerSaveSerializer, LandDetailSerializer, LandSaveSerializer,
-    SummaryRecordSerializer, TemporalUploadSummarySerializer, UploadStatusSerializer
+    SummaryRecordSerializer, TemporalUploadSummarySerializer, UploadStatusSerializer,LandOwnerSRTMSerializer
 )
 from .services.upload_temporal import UploadTemporalService
 from apps.historical.models import HistoricalRecord
@@ -211,3 +211,59 @@ class SummaryRecord(GenericAPIView):
             'without_mapping_records': without_mapping_records,
             'inactive_records':inactive_records,
         }
+
+
+class SRTMViewset(GenericAPIView):
+    queryset = LandOwner.objects.all()
+    serializer_class = LandOwnerSaveSerializer
+    
+    
+    # def create(self, request, *args, **kwargs):
+    #     serializer = LandOwnerSRTMSerializer(data=request.data)
+    #     serializer.is_valid(raise_exception=True)
+    #     a = serializer.save()
+    #     serializer_response = TemporalUploadSummarySerializer(a)
+    #     return Response(serializer_response.data, status=status.HTTP_201_CREATED)
+
+    @action(methods=['POST'], detail=False, url_path='create-owner')
+    def create_owner(self, request, *args, **kwargs):
+        serializer = LandOwnerSRTMSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        a = serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    
+    @action(methods=['POST'], detail=False, url_path='save-land-owner')
+    def save_land_owner(self, request, *args, **kwargs):
+        code_owner = request.data.get('codigo_contribuyente',None)
+        cpu = request.data.get('codigo_predio_unico',None)
+        cpm = request.data.get('codigo_predio_municipal',None)
+        ubigeo = request.data.get('ubigeo')
+        
+        
+        owners=LandOwner.objects.filter(code =code_owner,ubigeo = ubigeo)
+        
+        lands=[]
+        if cpu is not None:
+            lands=Land.objects.filter(cup =cpu,ubigeo = ubigeo)
+        
+        elif cpm is not None:
+            lands=Land.objects.filter(cpm =cpu,ubigeo = ubigeo)
+        
+        
+        if len(owners)==0:
+            return Response({'message':'Contribuyente no existe'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            owner = owners[0]
+        
+        if len(lands)==0:
+            return Response({'message':'Predio no existe'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            land = lands[0]
+        
+        LandOwnerDetail.objects.create(owner=owner.id, land=land.id, ubigeo=ubigeo)
+        serializer = LandOwnerSaveSerializer(data=request.data)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+        #HistoricalRecord.register(user, serializer.instance, type_event=HistoricalRecord.RecordEvent.CREATED)
