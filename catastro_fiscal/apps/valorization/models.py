@@ -18,7 +18,7 @@ class Photo(models.Model):
     cod_foto = models.CharField(primary_key=True,max_length=100)
     cod_ubicacion = models.CharField(max_length=100, null=True,blank=True)
     cod_tipo_foto = models.ForeignKey(PhotoType, on_delete=models.DO_NOTHING , null=True,blank=True)
-    url = models.ImageField(upload_to='valorization', blank=True, null=True)  # ToDo: genera url
+    url_foto = models.ImageField(upload_to='valorization', blank=True, null=True)  # ToDo: genera url
     class Meta:
         db_table = 'OFERTAS_INMOBILIARIAS_FOTO'
         verbose_name = _('Photo ')
