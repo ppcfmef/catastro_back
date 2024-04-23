@@ -101,7 +101,13 @@ class LandOwnerDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = LandOwner
         fields = '__all__'
+        
+        
+class LandOwnerDetailSRTMSerializer(serializers.ModelSerializer):
 
+    class Meta:
+        model = LandOwnerDetail
+        fields = '__all__'
 
 class LandOwnerSaveSerializer(serializers.ModelSerializer):
 
@@ -139,7 +145,6 @@ class LandOwnerSaveSerializer(serializers.ModelSerializer):
         instance = super(LandOwnerSaveSerializer, self).update(instance, validated_data)
         OwnerAddress.objects.filter(owner=instance).update(**address)
         return instance
-
 
 
 
