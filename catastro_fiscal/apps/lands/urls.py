@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     UploadHistoryViewset, LandViewSet, LandOwnerViewSet, OwnerSearchByDocumentViewset, CreateAndEditOwnerViewset,
     LandDetailViewSet, LandCreateAndEditViewset, SearchInactiveLandByCpu, SummaryRecord, LandOwnerDetailViewSet,
-    UploadStatusViewSet, UploadHistorySummaryViewSet
+    UploadStatusViewSet, UploadHistorySummaryViewSet,SRTMViewSet
 )
 
 app_name = 'api_lands'
@@ -20,6 +20,8 @@ router.register('owners', LandOwnerDetailViewSet, basename='owners')
 router.register('detail', LandDetailViewSet, basename='lands')
 router.register('register', LandCreateAndEditViewset, basename='lands_register')
 router.register('owners-search', OwnerSearchByDocumentViewset, basename='owners_search')
+router.register('external', SRTMViewSet, basename='external')
+
 urlpatterns = router.urls + [
     path('summary/', SummaryRecord.as_view()),
     path('exports/', include('apps.lands.exports.urls', namespace='lands_exports')),

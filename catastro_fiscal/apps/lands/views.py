@@ -12,13 +12,13 @@ from .models import UploadHistory, Land, LandOwner, LandOwnerDetail
 from .serializers import (
     UploadHistorySerializer, UploadHistoryListSerializer, LandSerializer, LandOwnerSerializer,
     LandOwnerDetailSerializer, LandOwnerSaveSerializer, LandDetailSerializer, LandSaveSerializer,
-    SummaryRecordSerializer, TemporalUploadSummarySerializer, UploadStatusSerializer,LandOwnerSRTMSerializer
+    SummaryRecordSerializer, TemporalUploadSummarySerializer, UploadStatusSerializer,LandOwnerSRTMSerializer,LandOwnerDetailSRTMSerializer
 )
 from .services.upload_temporal import UploadTemporalService
 from apps.historical.models import HistoricalRecord
 from .filters import LandOwnerFilter
-
-
+from rest_framework.decorators import authentication_classes ,permission_classes
+from apps.places.models import District
 class UploadHistoryViewset(CustomSerializerMixin, mixins.ListModelMixin, mixins.CreateModelMixin, GenericViewSet):
     queryset = UploadHistory.objects.all().order_by('-id')
     serializer_class = UploadHistoryListSerializer
@@ -213,19 +213,15 @@ class SummaryRecord(GenericAPIView):
         }
 
 
-class SRTMViewset(GenericAPIView):
-    queryset = LandOwner.objects.all()
-    serializer_class = LandOwnerSaveSerializer
+@authentication_classes([])
+@permission_classes([])
+class SRTMViewSet(GenericViewSet):
+    queryset = Land.objects.all()
+    serializer_class = LandSerializer
     
-    
-    # def create(self, request, *args, **kwargs):
-    #     serializer = LandOwnerSRTMSerializer(data=request.data)
-    #     serializer.is_valid(raise_exception=True)
-    #     a = serializer.save()
-    #     serializer_response = TemporalUploadSummarySerializer(a)
-    #     return Response(serializer_response.data, status=status.HTTP_201_CREATED)
 
-    @action(methods=['POST'], detail=False, url_path='create-owner')
+
+    @action(methods=['POST'], detail=False, url_path='crear-contribuyente')
     def create_owner(self, request, *args, **kwargs):
         serializer = LandOwnerSRTMSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -233,7 +229,7 @@ class SRTMViewset(GenericAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     
-    @action(methods=['POST'], detail=False, url_path='save-land-owner')
+    @action(methods=['POST'], detail=False, url_path='guardar-predio-contribuyente')
     def save_land_owner(self, request, *args, **kwargs):
         code_owner = request.data.get('codigo_contribuyente',None)
         cpu = request.data.get('codigo_predio_unico',None)
@@ -242,13 +238,14 @@ class SRTMViewset(GenericAPIView):
         
         
         owners=LandOwner.objects.filter(code =code_owner,ubigeo = ubigeo)
+        districts=District.objects.filter( code=ubigeo)
         
         lands=[]
         if cpu is not None:
             lands=Land.objects.filter(cup =cpu,ubigeo = ubigeo)
         
         elif cpm is not None:
-            lands=Land.objects.filter(cpm =cpu,ubigeo = ubigeo)
+            lands=Land.objects.filter(cpm =cpm,ubigeo = ubigeo)
         
         
         if len(owners)==0:
@@ -261,8 +258,14 @@ class SRTMViewset(GenericAPIView):
         else:
             land = lands[0]
         
-        LandOwnerDetail.objects.create(owner=owner.id, land=land.id, ubigeo=ubigeo)
-        serializer = LandOwnerSaveSerializer(data=request.data)
+        if len(districts)==0:
+            return Response({'message':'Distrito no existe'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            district = districts[0]
+        
+        #dataSerializer=LandOwnerDetail(owner=owner, land=land, ubigeo=district)
+        serializer = LandOwnerDetailSRTMSerializer(data={"owner":owner.id,"land":land.id,"ubigeo": district.code})
+        serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
