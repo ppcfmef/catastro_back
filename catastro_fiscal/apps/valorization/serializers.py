@@ -73,7 +73,8 @@ class PhotoSaveMobileSerializer(serializers.Serializer):
         cod_location = tb_photo.get('cod_ubicacion')
         cod_photo = tb_photo.get('cod_foto')
         photo_base64 = tb_photo.get('url_foto')
-        file_name = f'{cod_location}_{cod_photo}.jpg'
+        cod_tipo_foto = tb_photo.get('cod_tipo_foto', None)
+        file_name = f'{cod_location}_{cod_tipo_foto}.jpg'
         file_path = tmp_upload / file_name
 
         try:
