@@ -19,15 +19,19 @@ class PhotoViewSet(ModelViewSet):
     
     @action(methods=['post'], detail=False, url_path='guardar-fotos')
     def guardar_fotos(self, request, *args, **kwargs):
-        photos=request.data
+        #cod_ubicacion = request.data.get(cod_ubicacion)
+        
+        #photos=request.data.get('photos',None)
         
         try:
-            for data in photos:
-                serializer=PhotoSaveMobileSerializer(data=data)
-                serializer.is_valid(raise_exception=True)
-                serializer.save()
             
-            
+            #for data in photos:
+                #serializer=PhotoSaveMobileSerializer(data=data)
+                #serializer.is_valid(raise_exception=True)
+                #serializer.save()
+            serializer=PhotoSaveMobileSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
             response_serializer = {
                 "status": "success",
                 "message": "Los registros se guardaron correctamente"
