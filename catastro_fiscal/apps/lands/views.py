@@ -226,7 +226,7 @@ class SRTMViewSet(GenericViewSet):
         serializer = LandOwnerSRTMSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         a = serializer.save()
-        return Response({'message':'Contribuyente creado',status:True}, status=status.HTTP_201_CREATED)
+        return Response({'message':'Contribuyente creado','status':True}, status=status.HTTP_201_CREATED)
     
     
     @action(methods=['POST'], detail=False, url_path='guardar-predio-contribuyente')
@@ -249,17 +249,17 @@ class SRTMViewSet(GenericViewSet):
         
         
         if len(owners)==0:
-            return Response({'message':'Contribuyente no existe',status:False}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message':'Contribuyente no existe','status':False}, status=status.HTTP_400_BAD_REQUEST)
         else:
             owner = owners[0]
         
         if len(lands)==0:
-            return Response({'message':'Predio no existe',status:False}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message':'Predio no existe','status':False}, status=status.HTTP_400_BAD_REQUEST)
         else:
             land = lands[0]
         
         if len(districts)==0:
-            return Response({'message':'Distrito no existe' ,status:False }, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message':'Distrito no existe' ,'status':False }, status=status.HTTP_400_BAD_REQUEST)
         else:
             district = districts[0]
         
@@ -267,6 +267,6 @@ class SRTMViewSet(GenericViewSet):
         serializer = LandOwnerDetailSRTMSerializer(data={"owner":owner.id,"land":land.id,"ubigeo": district.code})
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response({'message':'Registro guardado' ,status:True }, status=status.HTTP_201_CREATED)
+        return Response({'message':'Registro guardado' ,'status':True }, status=status.HTTP_201_CREATED)
     
         #HistoricalRecord.register(user, serializer.instance, type_event=HistoricalRecord.RecordEvent.CREATED)
