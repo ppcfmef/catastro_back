@@ -26,7 +26,7 @@ class Application(models.Model):
     TYPE_CHOICE =(
         (1,'Reasignar ubicación'),
         (2,'Acumular'),
-        (3,'Dividir'),
+        (3,'SubDividir'),
         (4,'Inactivar'),
         (5,'Independizar')
     )
