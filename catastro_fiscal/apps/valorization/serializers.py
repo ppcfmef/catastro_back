@@ -6,6 +6,7 @@ import base64
 from django.db import transaction
 from django.conf import settings
 from django.core.files import File
+
 class PhotoTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = PhotoType
@@ -14,6 +15,7 @@ class PhotoTypeSerializer(serializers.ModelSerializer):
 
 class PhotoSerializer(serializers.ModelSerializer):
     desc_tipo_foto =  serializers.CharField(source='cod_tipo_foto.desc_tipo_foto',read_only=True)
+    
     class Meta:
         model = Photo
         fields = '__all__'  # ToDo: estandarizar listado de predios
@@ -54,23 +56,30 @@ class PhotoSerializer(serializers.ModelSerializer):
     #     self.photo_base64_to_jpg(tb_photo, photo)
 
 
-class PhotoSaveMobileSerializer(serializers.Serializer):
-    
+class PhotoSaveSerializer(serializers.Serializer):
     cod_foto = serializers.CharField()
-    cod_ubicacion = serializers.CharField()
     cod_tipo_foto = serializers.CharField()
     url_foto = serializers.CharField()
+
+
+class PhotoSaveMobileSerializer(serializers.Serializer):
+    
+    #cod_foto = serializers.CharField()
+    cod_ubicacion = serializers.CharField()
+    tb_foto = PhotoSaveSerializer(many=True)
+    #cod_tipo_foto = serializers.CharField()
+    #url_foto = serializers.CharField()
 
     def blank_to_null(self, value):
         if value == "":
             return None
         return value
     
-    def photo_base64_to_jpg(self, tb_photo, photo):
+    def photo_base64_to_jpg(self, tb_photo, photo,cod_ubicacion):
         tmp_upload = settings.MEDIA_ROOT / 'tmp_uploads'
         tmp_upload.mkdir(parents=True, exist_ok=True)
 
-        cod_location = tb_photo.get('cod_ubicacion')
+        cod_location =cod_ubicacion
         cod_photo = tb_photo.get('cod_foto')
         photo_base64 = tb_photo.get('url_foto')
         cod_tipo_foto = tb_photo.get('cod_tipo_foto', None)
@@ -90,16 +99,32 @@ class PhotoSaveMobileSerializer(serializers.Serializer):
     
     @transaction.atomic
     def save(self, **kwargs):
-        tb_photo = dict(self.validated_data)
         
-        photo = Photo.objects.create(
-            cod_ubicacion=tb_photo.get('cod_ubicacion'),
+        tb_fotos = self.validated_data.get('tb_foto')
+        
+        cod_ubicacion =self.validated_data.get('cod_ubicacion',None)
+        #print('cod_ubicacion>>',cod_ubicacion)
+        for el in tb_fotos:                   
+            tb_photo = el
+            #print('tb_photo',tb_photo)
+            photo = Photo.objects.create(
+            cod_ubicacion=cod_ubicacion,
             cod_foto=tb_photo.get('cod_foto'),
             cod_tipo_foto_id=self.blank_to_null(tb_photo.get('cod_tipo_foto', None)),
             url_foto=None
-        )
+            )
+            
+            #self.create_location(tb_location, ticket,tb_ticket)
+            self.photo_base64_to_jpg(tb_photo, photo,cod_ubicacion)    
+            
+                #serializer=PhotoSaveMobileSerializer(data=data)
+                #serializer.is_valid(raise_exception=True)
+                #serializer.save()
         
-        self.photo_base64_to_jpg(tb_photo, photo)
+        
+        
+        
+        #self.photo_base64_to_jpg(tb_photo, photo)
         #photos = list(tb_location.get('tb_foto', []))
         
         #for photo in photos:
