@@ -116,7 +116,7 @@ class LandOwner(AbstractAudit):
     upload_history = models.ForeignKey(UploadHistory, blank=True, null=True, on_delete=models.SET_NULL,
                                        db_column='historial_carga')
     lands = models.ManyToManyField('Land', through='LandOwnerDetail', related_name='owners')
-
+    
     class Meta:
         db_table = 'PROPIETARIO'
         unique_together = ["ubigeo", "code"]
@@ -251,7 +251,8 @@ class LandOwnerDetail(models.Model):
     land = models.ForeignKey(Land, on_delete=models.CASCADE, db_column='id_predio',related_name='predio_contribuyente')
     owner = models.ForeignKey(LandOwner, on_delete=models.CASCADE, db_column='id_propietario',related_name='contribuyentes')
     ubigeo = models.ForeignKey(District, on_delete=models.SET_NULL, blank=True, null=True, db_column='ubigeo')
-
+    status = models.IntegerField(db_column='estado', blank=True, null=True)
+    date_register =  models.DateField(db_column='fecha_registro', blank=True, null=True)
     class Meta:
         db_table = 'PREDIO_PROPIETARIO'
         verbose_name = _('land Owner Detail')

@@ -163,9 +163,13 @@ class LandOwnerSRTMSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         if self.exists_owner(data=validated_data) :
             raise serializers.ValidationError(f'Ya existe el contribuyente con el documento ingresado')
-        
         owner = LandOwner.objects.create(**validated_data)
 
+        if validated_data.get('address'):
+            address = validated_data.pop('address')
+            address.update({"owner": owner})
+            OwnerAddress.objects.create(**address)
+                
         return owner
 
 

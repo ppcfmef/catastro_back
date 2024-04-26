@@ -128,5 +128,5 @@ class ResultDetailCustomSerializer(serializers.ModelSerializer):
         try:
             resolution=MasterResolutionType.objects.get(id= obj.resolution_type)
             return resolution.name
-        except MasterCodeStreet.DoesNotExist:
+        except MasterResolutionType.DoesNotExist:
             return ''
