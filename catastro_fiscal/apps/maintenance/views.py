@@ -199,7 +199,7 @@ class LandViewSet(ModelViewSet):
     @action(methods=['GET'], detail=False, url_path='has-not-applications')
     def get_has_not_applications(self, request, *args, **kwargs):
         lands_id = ApplicationLandDetail.objects.values_list('land_id', flat=True)
-        lands = self.get_queryset().exclude(id__in=list(lands_id))
+        lands = self.get_queryset().exclude(id__in=list(lands_id), status__in=[0,3])
          
         queryset = self.filter_queryset(lands)
         page = self.paginate_queryset(queryset)
