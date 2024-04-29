@@ -2,20 +2,21 @@
 {% load static %}
 {%block css%} 
 <style>
-
-    .blue{
-        border: 1px solid #0795FA;
-        background-color: #0795FA;
+    @page {
+        margin: 2cm; /* Establecer los márgenes superiores, derechos, inferiores e izquierdos a 2cm */
+    }
+    .head{
+        border: 1px solid #000000;
+        background-color: #000000;
         color: white;
         text-align: center;
-        padding-top: 2px;
+        padding: 2px;
     
     }
 
-    .celda-blue{
-        border: 1px solid #0795FA;
-        text-align: center;
-        padding-top: 2px;
+    .celda{
+        border: 1px solid #000000;
+        padding: 2px;
     
     }
 
@@ -95,10 +96,57 @@
 <p>SR(A). {{contribuyente|upper}}</p>
 <p>Presente.-</p>
 
+<p>{{texto}}</p>
 
-<p>La Municipalidad Distrital de {{distrito.name}}, a través de la Gerencia de Administración Tributaria le hace llegar saludos cordiales 
-y a la vez comunicarle que se ha detectado que usted ha omitido en inscribir oportunamente su propiedad ubicada en {{direccion}}, 
-por lo que lo invitamos a cumplir con la inscripción y la presentación de la Declaración Jurada de su predio seguido del pago de sus obligaciones tributarias, 
+
+<table  >
+    <tr >
+    <td class ='head'>Datos del Predio</td>
+    <td class ='head'>Fotografía del Predio</td>
+ 
+    </tr>
+    
+    <tr>
+
+    <td class="celda">
+
+        <b>Tipo de Predio:</b> {{ land.cod_tipo_predio.desc_tipo_predio}}
+        <br>
+        <b>Ubicación del Predio:</b>
+        <br>
+
+        {{ ubicacion.cod_tipo_uu}}  {{ ubicacion.nom_uu}} Mz.{{ubicacion.mzn_urb}} Lote {{ubicacion.lot_urb}}
+       
+        <br>
+        <br>
+        <b>Características del Predio:</b>
+        <br>
+        Material Predominante:{{ caracteristicas.material_pred}}
+        <br>
+        Estado de Conservación: {{ caracteristicas.estado_conserva}}
+        <br>
+        Año de Construcción: {{ caracteristicas.anio_construccion}}
+  
+         
+    </td>
+    <td class="celda">
+
+        {% for f in fotos %}
+    
+            <img class="img" src="{{ f.foto.path }}" >
+      
+        {% endfor %} 
+        <br>
+        Fecha: {% now F %}
+    </td>
+
+  </tr>
+  
+</table>
+
+
+<p>
+Por lo que lo invitamos a cumplir con la inscripción y la presentación de la Declaración Jurada de su predio seguido del pago de sus obligaciones tributarias, 
 como es el Impuesto Predial y los Arbitrios Municipales.
 </p>
 
@@ -115,7 +163,18 @@ estos servicios como también la seguridad ciudadana del distrito; mejorando as�
 </p>
 
 <p>Atentamente</p>
-            
+    
+<br>
+
+<p>
+    Nombre: {{ usuario }}
+    <br>
+    Cargo: {{rol}}
+</p>
+
+
+
+
 
 {% endblock %}
 

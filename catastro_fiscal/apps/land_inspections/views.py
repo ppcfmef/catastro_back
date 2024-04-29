@@ -136,10 +136,12 @@ class ExportPdfViewSet(GenericViewSet):
         
     @action(methods=['post'], detail=False, url_path='generar_notificacion')
     def generar_notificacion(self, request, *args, **kwargs):
-        username=request.data.get('username',None)
+        usuario=request.data.get('usuario',None)
+        rol=request.data.get('rol',None)
         cod_ticket=request.data.get('cod_ticket',None)
         cod_tit=request.data.get('cod_tit',None)
         texto=request.data.get('texto',None)
+        id_land=request.data.get('id_land',None)
         contribuyente =request.data.get('contribuyente',None)
         context_dict = { }
         if cod_ticket is not None:
@@ -148,13 +150,25 @@ class ExportPdfViewSet(GenericViewSet):
                
                 r=RecordOwnerShip.objects.get(cod_tit = cod_tit)
                 if r is not None:
+                    fotos = LocationPhoto.objects.filter(cod_ubicacion=r.cod_ubicacion,cod_tipo_foto__in =[1])
+                    print('fotos>>',fotos)
                     l=Location.objects.get(cod_ubicacion=r.cod_ubicacion)
                     d=District.objects.get(code = r.ubigeo)
-                
+                    land=LandInspection.objects.get(id = id_land)
+                    if r is not None:
+                        c=LandCharacteristic.objects.get(cod_tit=r.cod_tit )
+                    else:
+                        c={}
+                 
+             
+                        
+                    
                 else:
                     r={}
                 t.nro_notificacion=t.nro_notificacion+1
                 t.save()    
-                context_dict = { 'username' : username, 'cod_ticket':cod_ticket ,'ticket':t,'ubicacion':l,'texto':texto,'nro_notificacion': (t.nro_notificacion),'distrito': d,'contribuyente':contribuyente}
+                print('c>>',c)
+                context_dict = { 'usuario' : usuario,'rol':rol, 'cod_ticket':cod_ticket ,'ticket':t,'ubicacion':l,'texto':texto,'nro_notificacion': (t.nro_notificacion),'distrito': d,'contribuyente':contribuyente,'fotos':fotos,'caracteristicas':c,'land':land}
+                
                 
         return render_to_pdf('pdf/notificacion.html', context_dict)       
