@@ -203,7 +203,7 @@ class SummaryRecord(GenericAPIView):
     def get_summary(self, queryset):
         total_records = queryset.count()
         without_mapping_records = queryset.filter(status=0).count()
-        inactive_records =  Land.objects.filter(status=3).count()
+        inactive_records =  queryset.filter(status=3).count()
         mapping_records = total_records - without_mapping_records
         return {
             'total_records': total_records,
