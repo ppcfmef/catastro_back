@@ -127,12 +127,16 @@ class RecordOwnerShipRetriveSerializer(serializers.ModelSerializer):
             land=lands[0]
             # print('land.cod_pre',land.cod_pre)
             # print('land.ubigeo',land.ubigeo)
-            landPadrons=Land.objects.filter(cpm=land.cod_pre, ubigeo =land.ubigeo)
-            if len(landPadrons)>0:
-            
-                return LandPadronRetrieveSerializer(landPadrons[0],many=False).data
-            else:
+
+            if land.cod_pre =='' or land.cod_pre is None :
                 return None
+            else:
+                landPadrons=Land.objects.filter(cpm=land.cod_pre, ubigeo =land.ubigeo)
+                if len(landPadrons)>0:
+                
+                    return LandPadronRetrieveSerializer(landPadrons[0],many=False).data
+                else:
+                    return None
         else:
             return None
 
