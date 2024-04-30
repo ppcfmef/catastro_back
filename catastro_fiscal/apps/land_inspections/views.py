@@ -151,7 +151,7 @@ class ExportPdfViewSet(GenericViewSet):
                 r=RecordOwnerShip.objects.get(cod_tit = cod_tit)
                 if r is not None:
                     fotos = LocationPhoto.objects.filter(cod_ubicacion=r.cod_ubicacion,cod_tipo_foto__in =[1])
-                    print('fotos>>',fotos)
+                    #print('fotos>>',fotos)
                     l=Location.objects.get(cod_ubicacion=r.cod_ubicacion)
                     d=District.objects.get(code = r.ubigeo)
                     land=LandInspection.objects.get(id = id_land)
@@ -167,7 +167,7 @@ class ExportPdfViewSet(GenericViewSet):
                     r={}
                 t.nro_notificacion=t.nro_notificacion+1
                 t.save()    
-                print('c>>',c)
+                #print('c>>',c)
                 context_dict = { 'usuario' : usuario,'rol':rol, 'cod_ticket':cod_ticket ,'ticket':t,'ubicacion':l,'texto':texto,'nro_notificacion': (t.nro_notificacion),'distrito': d,'contribuyente':contribuyente,'fotos':fotos,'caracteristicas':c,'land':land}
                 
                 
