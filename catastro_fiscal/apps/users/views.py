@@ -107,7 +107,9 @@ class RoleSelectViewSet(mixins.ListModelMixin, GenericViewSet):
     queryset = Role.objects.all()
     serializer_class = RoleShortSerializer
     pagination_class = None
-
+    filter_backends = [DjangoFilterBackend]
+    
+    filterset_fields = ['is_active', 'name',]
 
 class PermissionViewSet(CustomListMixin, ModelViewSet):
     queryset = Permission.objects.all()

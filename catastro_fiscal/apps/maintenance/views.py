@@ -188,7 +188,7 @@ class LandViewSet(ModelViewSet):
     queryset = Land.objects.all()
     serializer_class = LandListSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, CamelCaseOrderFilter]
-    filterset_fields = ['id','cpm','ubigeo']
+    filterset_fields = ['id','cpm','ubigeo','cup']
     search_fields = ['ubigeo__code','ubigeo__name','cpm' ,'cup']
     
     def get_serializer_class(self):
