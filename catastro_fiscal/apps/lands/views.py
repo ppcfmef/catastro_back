@@ -223,17 +223,32 @@ class SRTMViewSet(GenericViewSet):
 
     @action(methods=['POST'], detail=False, url_path='crear-contribuyente')
     def create_owner(self, request, *args, **kwargs):
-        serializer = LandOwnerSRTMSerializer(data=request.data)
+
+        data = {
+            'code' : request.data.get('contribuyente_numero',None),
+            'ubigeo' : request.data.get('ubigeo',None),
+            'document_type' : request.data.get('doc_identidad_id',None),
+            'dni':request.data.get('num_doc_identidad',None),
+            'name': request.data.get('nombres',None),
+            'paternal_surname': request.data.get('ape_paterno',None),
+            'maternal_surname': request.data.get('ape_materno',None),
+            'domicilios': request.data.get('domicilios',[]),
+            'contactos': request.data.get('contactos',[]),
+        }
+
+        
+        serializer = LandOwnerSRTMSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         a = serializer.save()
         return Response({'message':'Contribuyente creado','status':True}, status=status.HTTP_201_CREATED)
     
     
-    @action(methods=['POST'], detail=False, url_path='guardar-predio-contribuyente')
+    @action(methods=['POST'], detail=False, url_path='guardar-predio-contribuyente',url_name='guardar-predio-contribuyente')
     def save_land_owner(self, request, *args, **kwargs):
         code_owner = request.data.get('codigo_contribuyente',None)
         cpu = request.data.get('codigo_predio_unico',None)
         cpm = request.data.get('codigo_predio_municipal',None)
+        fecha_registro = request.data.get('fecha_registro',None)
         ubigeo = request.data.get('ubigeo')
         
         
@@ -264,7 +279,7 @@ class SRTMViewSet(GenericViewSet):
             district = districts[0]
         
         #dataSerializer=LandOwnerDetail(owner=owner, land=land, ubigeo=district)
-        serializer = LandOwnerDetailSRTMSerializer(data={"owner":owner.id,"land":land.id,"ubigeo": district.code})
+        serializer = LandOwnerDetailSRTMSerializer(data={"owner":owner.id,"land":land.id,"ubigeo": district.code,"fecha_registro": fecha_registro,"estado":1})
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({'message':'Registro guardado' ,'status':True }, status=status.HTTP_201_CREATED)
