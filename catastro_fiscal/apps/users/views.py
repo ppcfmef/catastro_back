@@ -19,7 +19,7 @@ from .filters import UserCustomFilter
 from apps.historical.models import HistoricalRecord
 import requests
 from django.conf import settings
-
+from rest_framework import mixins, status
 
 class UserProfileShortView(APIView):
     queryset = User.objects.all()
@@ -119,6 +119,19 @@ class PermissionViewSet(CustomListMixin, ModelViewSet):
     @swagger_auto_schema(responses={200: PermissionListSerializer()})
     def list(self, request, *args, **kwargs):
         return super(PermissionViewSet, self).custom_list(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        permission = self.get_object()
+        print('permission>>',permission)
+        role_permission = permission.rolepermission_set.first()
+        if role_permission is not None:
+            role = role_permission.role
+            role.is_active = False
+            role.save()
+
+        self.perform_destroy(permission)        
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
 
 
 class PermissionSelectViewSet(mixins.ListModelMixin, GenericViewSet):

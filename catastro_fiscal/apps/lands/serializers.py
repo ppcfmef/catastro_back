@@ -1,6 +1,6 @@
 from django.db import transaction
 from rest_framework import serializers
-from .models import UploadHistory, Land, LandOwner, OwnerAddress, LandAudit, LandOwnerDetail
+from .models import UploadHistory, Land, LandOwner, OwnerAddress, LandAudit, LandOwnerDetail , Domicilio, Contacto
 from .tasks import process_upload_tenporal, process_upload_land
 from .services.upload_temporal import UploadTemporalService
 from .services.upload_land import UploadLandService
@@ -145,12 +145,21 @@ class LandOwnerSaveSerializer(serializers.ModelSerializer):
         instance = super(LandOwnerSaveSerializer, self).update(instance, validated_data)
         OwnerAddress.objects.filter(owner=instance).update(**address)
         return instance
+    
 
+class ContactoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contacto
+        fields = '__all__'
 
-
+class DomicilioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Domicilio
+        fields = '__all__'
 
 class LandOwnerSRTMSerializer(serializers.ModelSerializer):
-    
+    domicilios = DomicilioSerializer(many = True,allow_null=True)
+    contactos = ContactoSerializer(many = True,allow_null=True)
     class Meta:
         model = LandOwner
         fields = '__all__'
@@ -161,14 +170,27 @@ class LandOwnerSRTMSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
+        print('validated_data>>',validated_data)
         if self.exists_owner(data=validated_data) :
             raise serializers.ValidationError(f'Ya existe el contribuyente con el documento ingresado')
+
+
+        domicilios =validated_data.pop('domicilios')   if validated_data.get('domicilios') else []
+        contactos =validated_data.pop('contactos')   if validated_data.get('contactos') else []
         owner = LandOwner.objects.create(**validated_data)
 
-        if validated_data.get('address'):
-            address = validated_data.pop('address')
-            address.update({"owner": owner})
-            OwnerAddress.objects.create(**address)
+        for domicilio in domicilios:
+            domicilio.update({"contribuyente": owner})
+            Domicilio.objects.create(**domicilio)
+        
+        for contacto in contactos:
+            contacto.update({"contribuyente": owner})
+            Contacto.objects.create(**contacto)
+
+        # if validated_data.get('domicilios'):
+        #     domicilios = validated_data.pop('domicilios')
+        #     print('domicilios>>',domicilios)
+
                 
         return owner
 

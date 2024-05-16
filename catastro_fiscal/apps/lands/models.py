@@ -142,6 +142,45 @@ class OwnerAddress(models.Model):
     km = models.CharField(max_length=100, blank=True, null=True)
 
 
+class TipoMedioContacto(models.Model):
+    id= models.AutoField(primary_key=True)
+    descripcion = models.CharField(max_length=100, blank=True, null=True)
+    
+    class Meta:
+        db_table = 'TIPO_MEDIO_CONTACTO'
+        verbose_name = _('tipo de medio de contacto')
+        verbose_name_plural = _('tipo de medios de contactos')
+
+
+class Contacto(models.Model):
+    id= models.AutoField(primary_key=True)
+    contribuyente = models.ForeignKey(LandOwner, models.DO_NOTHING, related_name='contacto', blank=True, null=True)
+    decripcion = models.CharField(max_length=100, blank=True, null=True)
+    principal  = models.IntegerField(blank=True, null=True)
+    tipo_med_contacto  = models.ForeignKey(TipoMedioContacto, models.DO_NOTHING,blank=True, null=True)
+
+    class Meta:
+        db_table = 'CONTACTO'
+        verbose_name = _('contacto')
+        verbose_name_plural = _('contactos')
+
+class Domicilio(models.Model):
+    id= models.AutoField(primary_key=True)
+    contribuyente = models.ForeignKey(LandOwner, models.DO_NOTHING, related_name='domicilio', blank=True, null=True)
+    ubigeo = models.CharField(max_length=10, blank=True, null=True)
+    des_domicilio= models.CharField(max_length=500, blank=True, null=True)
+    longitud = models.FloatField(blank=True, null=True)
+    latitud = models.FloatField(blank=True, null=True)
+    block = models.CharField(max_length=6, blank=True, null=True)
+    puerta = models.CharField(max_length=5, blank=True, null=True)
+    piso = models.CharField(max_length=2, blank=True, null=True)
+    kilometro = models.CharField(max_length=4, blank=True, null=True)
+    referencia = models.CharField(max_length=200, blank=True, null=True)
+    class Meta:
+        db_table = 'DOMICILIO'
+        verbose_name = _('direccion')
+        verbose_name_plural = _('direcciones')
+
 class LandBase(AbstractAudit):
     SOURCE_CHOICES = (
         ('carga_masiva', 'Carga Masiva'),
@@ -251,8 +290,8 @@ class LandOwnerDetail(models.Model):
     land = models.ForeignKey(Land, on_delete=models.CASCADE, db_column='id_predio',related_name='predio_contribuyente')
     owner = models.ForeignKey(LandOwner, on_delete=models.CASCADE, db_column='id_propietario',related_name='contribuyentes')
     ubigeo = models.ForeignKey(District, on_delete=models.SET_NULL, blank=True, null=True, db_column='ubigeo')
-    status = models.IntegerField(db_column='estado', blank=True, null=True)
-    date_register =  models.DateField(db_column='fecha_registro', blank=True, null=True)
+    estado = models.IntegerField(db_column='estado', blank=True, null=True)
+    fecha_registro =  models.DateField(db_column='fecha_registro', blank=True, null=True)
     class Meta:
         db_table = 'PREDIO_PROPIETARIO'
         verbose_name = _('land Owner Detail')
