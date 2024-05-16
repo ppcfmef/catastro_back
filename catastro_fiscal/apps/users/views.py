@@ -104,12 +104,12 @@ class RoleViewSet(CustomListMixin, ModelViewSet):
 
 
 class RoleSelectViewSet(mixins.ListModelMixin, GenericViewSet):
-    queryset = Role.objects.all()
+    queryset = Role.objects.all().exclude(is_active=False)
     serializer_class = RoleShortSerializer
     pagination_class = None
     filter_backends = [DjangoFilterBackend]
     
-    filterset_fields = ['is_active', 'name',]
+    #filterset_fields = ['is_active', 'name',]
 
 class PermissionViewSet(CustomListMixin, ModelViewSet):
     queryset = Permission.objects.all()
