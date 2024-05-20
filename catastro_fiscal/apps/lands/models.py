@@ -116,7 +116,7 @@ class LandOwner(AbstractAudit):
     upload_history = models.ForeignKey(UploadHistory, blank=True, null=True, on_delete=models.SET_NULL,
                                        db_column='historial_carga')
     lands = models.ManyToManyField('Land', through='LandOwnerDetail', related_name='owners')
-
+    
     class Meta:
         db_table = 'PROPIETARIO'
         unique_together = ["ubigeo", "code"]
@@ -142,6 +142,45 @@ class OwnerAddress(models.Model):
     km = models.CharField(max_length=100, blank=True, null=True)
 
 
+class TipoMedioContacto(models.Model):
+    id= models.AutoField(primary_key=True)
+    descripcion = models.CharField(max_length=100, blank=True, null=True)
+    
+    class Meta:
+        db_table = 'TIPO_MEDIO_CONTACTO'
+        verbose_name = _('tipo de medio de contacto')
+        verbose_name_plural = _('tipo de medios de contactos')
+
+
+class Contacto(models.Model):
+    id= models.AutoField(primary_key=True)
+    contribuyente = models.ForeignKey(LandOwner, models.DO_NOTHING, related_name='contacto', blank=True, null=True)
+    decripcion = models.CharField(max_length=100, blank=True, null=True)
+    principal  = models.IntegerField(blank=True, null=True)
+    tipo_med_contacto  = models.ForeignKey(TipoMedioContacto, models.DO_NOTHING,blank=True, null=True)
+
+    class Meta:
+        db_table = 'CONTACTO'
+        verbose_name = _('contacto')
+        verbose_name_plural = _('contactos')
+
+class Domicilio(models.Model):
+    id= models.AutoField(primary_key=True)
+    contribuyente = models.ForeignKey(LandOwner, models.DO_NOTHING, related_name='domicilio', blank=True, null=True)
+    ubigeo = models.CharField(max_length=10, blank=True, null=True)
+    des_domicilio= models.CharField(max_length=500, blank=True, null=True)
+    longitud = models.FloatField(blank=True, null=True)
+    latitud = models.FloatField(blank=True, null=True)
+    block = models.CharField(max_length=6, blank=True, null=True)
+    puerta = models.CharField(max_length=5, blank=True, null=True)
+    piso = models.CharField(max_length=2, blank=True, null=True)
+    kilometro = models.CharField(max_length=4, blank=True, null=True)
+    referencia = models.CharField(max_length=200, blank=True, null=True)
+    class Meta:
+        db_table = 'DOMICILIO'
+        verbose_name = _('direccion')
+        verbose_name_plural = _('direcciones')
+
 class LandBase(AbstractAudit):
     SOURCE_CHOICES = (
         ('carga_masiva', 'Carga Masiva'),
@@ -166,7 +205,7 @@ class LandBase(AbstractAudit):
     )
     id = models.AutoField(primary_key=True)
     ubigeo = models.ForeignKey(District, on_delete=models.CASCADE, db_column='ubigeo')
-    cpm = models.CharField(max_length=50, db_column='cod_pre')
+    cpm = models.CharField(max_length=50, db_column='cod_pre', blank=True, null=True)
     source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True, null=True, db_column='origen')
     status = models.PositiveSmallIntegerField(choices=STATUS_CHOICE, blank=True, null=True, default=0,
                                               db_column='estado')
@@ -196,7 +235,8 @@ class LandBase(AbstractAudit):
     street_type =models.ForeignKey(MasterCodeStreet,models.SET_NULL,max_length=20,  blank=True, null=True, db_column='tip_via')
     street_name = models.CharField(max_length=255, blank=True, null=True, db_column='nom_via')
     street_name_alt = models.CharField(max_length=255, blank=True, null=True, db_column='nom_alt')
-    municipal_number = models.CharField(max_length=6, blank=True, null=True, db_column='num_mun')  # numero de puerta
+    municipal_number = models.CharField(max_length=10, blank=True, null=True, db_column='num_mun')  # numero de puerta
+    municipal_number_alt = models.CharField(max_length=100, blank=True, null=True, db_column='num_alt')  # numero de puerta
     block = models.CharField(max_length=6, blank=True, null=True, db_column='block')
     indoor = models.CharField(max_length=5, blank=True, null=True, db_column='interior')
     floor = models.CharField(max_length=2, blank=True, null=True, db_column='piso')
@@ -241,7 +281,7 @@ class Land(LandBase):
 
     class Meta:
         db_table = 'PREDIO'
-        unique_together = ["ubigeo", "cpm"]
+        #unique_together = ["ubigeo", "cpm"]
         verbose_name = _('land')
         verbose_name_plural = _('lands')
 
@@ -250,7 +290,8 @@ class LandOwnerDetail(models.Model):
     land = models.ForeignKey(Land, on_delete=models.CASCADE, db_column='id_predio',related_name='predio_contribuyente')
     owner = models.ForeignKey(LandOwner, on_delete=models.CASCADE, db_column='id_propietario',related_name='contribuyentes')
     ubigeo = models.ForeignKey(District, on_delete=models.SET_NULL, blank=True, null=True, db_column='ubigeo')
-
+    estado = models.IntegerField(db_column='estado', blank=True, null=True)
+    fecha_registro =  models.DateField(db_column='fecha_registro', blank=True, null=True)
     class Meta:
         db_table = 'PREDIO_PROPIETARIO'
         verbose_name = _('land Owner Detail')

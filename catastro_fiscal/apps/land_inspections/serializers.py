@@ -11,7 +11,7 @@ from .models import (
     LandInspection, LandOwnerInspection, LandOwnerDetailInspection, LocationPhoto
 )
 
-
+from apps.master_data.models import MasterTypeUrbanUnit
 class LandOwnerInspectionSerializer(serializers.Serializer):
     """tb_contribuyente"""
     tip_doc = serializers.CharField()
@@ -260,6 +260,11 @@ class MobileLandInspectionSerializer(serializers.Serializer):
         )
 
     def create_location(self, tb_location, ticket,tb_ticket):
+        cod_tipo_uu =tb_location.get('cod_tipo_uu', None)
+        uu = None
+        if cod_tipo_uu is not None:
+            uu=MasterTypeUrbanUnit.objects.get(id=cod_tipo_uu)
+            
         location = Location.objects.create(
             cod_ticket=ticket,
             cod_ubicacion=tb_location.get('cod_ubicacion', None),
@@ -268,7 +273,7 @@ class MobileLandInspectionSerializer(serializers.Serializer):
             nom_via=tb_location.get('nom_via', None),
             num_alt=tb_location.get('num_alt', None),
             nom_alt=tb_location.get('nom_alt', None),
-            cod_tipo_uu=tb_location.get('cod_tipo_uu', None),
+            cod_tipo_uu=uu,
             cod_uu=tb_location.get('cod_uu', None),
             nom_uu=tb_location.get('nom_uu', None),
             nom_ref=tb_location.get('nom_ref', None),

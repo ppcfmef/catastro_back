@@ -1,4 +1,4 @@
-from rest_framework import mixins, status
+from rest_framework import mixins, status, exceptions
 from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView
 from rest_framework.viewsets import GenericViewSet ,ModelViewSet
@@ -81,8 +81,17 @@ class ApplicationViewSet( ModelViewSet):
                 rserializer.is_valid(raise_exception=True)
                 rserializer.save()
                 ApplicationResultDetail.objects.create(application_id= serializer.data['id'], result_id = rserializer.data['id'])
-            except:
+            except Exception as e:
+                
                 Application.objects.filter(id= serializer.data['id']).delete()
+                ApplicationLandDetail.objects.filter(application_id= serializer.data['id']).delete()
+                #response_serializer = self.response_serializer_class()
+
+                return Response( {
+                "status": "error",
+                "message": "Se duplica el codigo de predio {} en el distrito".format(result['cpm'])
+                }, status=status.HTTP_400_BAD_REQUEST)  
+                #raise exceptions.ValidationError(response_serializer.data)
         
          
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -107,6 +116,7 @@ class ApplicationViewSet( ModelViewSet):
             else:
                 if a.id_type == 1:
                     for result in results:
+
                         r=Land.objects.get(ubigeo_id= result.get('ubigeo', None),cpm= result.get('cod_pre', None))
                         r.longitude = result.get('coord_x', None)
                         r.latitude = result.get('coord_y', None)
@@ -122,9 +132,12 @@ class ApplicationViewSet( ModelViewSet):
                 else:
                     lands_id = ApplicationLandDetail.objects.filter(application_id=id_app).values_list('land_id', flat=True)
                     lands = Land.objects.filter(id__in=list(lands_id))
-                    lands.update(status=3)
+                    
+                    if(a.id_type != 5):
+                        lands.update(status=3)
                     for result in results:
                         data={
+                            
                             'ubigeo_id':result.get('ubigeo', None),
                             'habilitacion_name':result.get('nom_uu', None),
                             'reference_name':result.get('nom_ref', None)   ,
@@ -148,7 +161,15 @@ class ApplicationViewSet( ModelViewSet):
                             'status':1,
                             'source':'mantenimiento_pre'
                         }
-                            
+
+                        id=result.get('id', None)
+                        
+                        #ApplicationResultDetail.objects.filter(id=id).update(cup=result.get('cod_cpu', None))
+                        
+                        Result.objects.filter(id=id).update(cup=result.get('cod_cpu', None))
+                        #ApplicationLandDetail.objects.filter(id=id).update(cup=result.get('cod_cpu', None))
+                        
+
                         l=Land(**data)
                         serializer=LandSerializer(data =model_to_dict(l), many=False)
                         serializer.is_valid(raise_exception=True)
@@ -167,7 +188,7 @@ class LandViewSet(ModelViewSet):
     queryset = Land.objects.all()
     serializer_class = LandListSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, CamelCaseOrderFilter]
-    filterset_fields = ['id','cpm','ubigeo']
+    filterset_fields = ['id','cpm','ubigeo','cup']
     search_fields = ['ubigeo__code','ubigeo__name','cpm' ,'cup']
     
     def get_serializer_class(self):
@@ -178,7 +199,7 @@ class LandViewSet(ModelViewSet):
     @action(methods=['GET'], detail=False, url_path='has-not-applications')
     def get_has_not_applications(self, request, *args, **kwargs):
         lands_id = ApplicationLandDetail.objects.values_list('land_id', flat=True)
-        lands = self.get_queryset().exclude(id__in=list(lands_id))
+        lands = self.get_queryset().exclude(id__in=list(lands_id), status__in=[0,3])
          
         queryset = self.filter_queryset(lands)
         page = self.paginate_queryset(queryset)
@@ -236,7 +257,8 @@ class ResultViewSet(ModelViewSet):
 class ApplicationObservationDetailViewSet(ModelViewSet):
     queryset = ApplicationObservationDetail.objects.all()
     serializer_class= ApplicationObservationDetailSerializer
-    
+    filterset_fields = ['application','id']
+    pagination_class = None
     def create(self,request, *args, **kwargs):
         application_id=request.data['application_id']
         description=request.data['description']

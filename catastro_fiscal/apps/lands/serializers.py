@@ -1,6 +1,6 @@
 from django.db import transaction
 from rest_framework import serializers
-from .models import UploadHistory, Land, LandOwner, OwnerAddress, LandAudit, LandOwnerDetail
+from .models import UploadHistory, Land, LandOwner, OwnerAddress, LandAudit, LandOwnerDetail , Domicilio, Contacto
 from .tasks import process_upload_tenporal, process_upload_land
 from .services.upload_temporal import UploadTemporalService
 from .services.upload_land import UploadLandService
@@ -101,6 +101,29 @@ class LandOwnerDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = LandOwner
         fields = '__all__'
+        
+        
+class LandOwnerDetailSRTMSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = LandOwnerDetail
+        fields = '__all__'
+        
+    def exists_detail(self, data):
+        return LandOwnerDetail.objects.filter(owner=data.get('owner'), land=data.get('land'),ubigeo =data.get('ubigeo')).exists()
+
+    @transaction.atomic
+    def create(self, validated_data):
+        print('validated_data>>',validated_data)
+        if self.exists_detail(data=validated_data) :
+            raise serializers.ValidationError(f'Ya existe la relacion')
+
+        detail = LandOwnerDetail.objects.create(**validated_data)
+
+
+                
+        return detail
+    
 
 
 class LandOwnerSaveSerializer(serializers.ModelSerializer):
@@ -112,13 +135,15 @@ class LandOwnerSaveSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def exists_owner(self, data):
-        return False
+        return LandOwner.objects.filter(ubigeo=data.get('ubigeo'), code=data.get('code')).exists()
+        #return False
         #return LandOwner.objects.filter(document_type=data.get('document_type'), dni=data.get('dni')).exists()
 
     @transaction.atomic
     def create(self, validated_data):
         if self.exists_owner(data=validated_data) :
             raise serializers.ValidationError(f'Ya existe el contribuyente con el documento ingresado')
+        
         address = validated_data.pop('address')
         owner = LandOwner.objects.create(**validated_data)
 
@@ -137,13 +162,65 @@ class LandOwnerSaveSerializer(serializers.ModelSerializer):
         instance = super(LandOwnerSaveSerializer, self).update(instance, validated_data)
         OwnerAddress.objects.filter(owner=instance).update(**address)
         return instance
+    
+
+class ContactoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contacto
+        fields = '__all__'
+
+class DomicilioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Domicilio
+        fields = '__all__'
+
+
+
+
+class LandOwnerSRTMSerializer(serializers.ModelSerializer):
+    domicilios = DomicilioSerializer(many = True,allow_null=True)
+    contactos = ContactoSerializer(many = True,allow_null=True)
+    class Meta:
+        model = LandOwner
+        fields = '__all__'
+
+
+    def exists_owner(self, data):
+        return LandOwner.objects.filter(ubigeo=data.get('ubigeo'), code=data.get('code')).exists()
+
+    @transaction.atomic
+    def create(self, validated_data):
+        print('validated_data>>',validated_data)
+        if self.exists_owner(data=validated_data) :
+            raise serializers.ValidationError(f'Ya existe el contribuyente con el documento ingresado')
+
+
+        domicilios =validated_data.pop('domicilios')   if validated_data.get('domicilios') else []
+        contactos =validated_data.pop('contactos')   if validated_data.get('contactos') else []
+        owner = LandOwner.objects.create(**validated_data)
+
+        for domicilio in domicilios:
+            domicilio.update({"contribuyente": owner})
+            Domicilio.objects.create(**domicilio)
+        
+        for contacto in contactos:
+            contacto.update({"contribuyente": owner})
+            Contacto.objects.create(**contacto)
+
+        # if validated_data.get('domicilios'):
+        #     domicilios = validated_data.pop('domicilios')
+        #     print('domicilios>>',domicilios)
+
+                
+        return owner
+
 
 
 class SummaryRecordSerializer(serializers.Serializer):
     total_records = serializers.IntegerField()
     mapping_records = serializers.IntegerField()
     without_mapping_records = serializers.IntegerField()
-
+    inactive_records= serializers.IntegerField()
 
 class TemporalUploadSummarySerializer(serializers.Serializer):
     upload_history_id = serializers.IntegerField()

@@ -3,7 +3,7 @@ from apps.users.models import User
 from django.utils.translation import gettext_lazy as _
 from apps.lands.models import LandOwner
 # Create your models here.
-
+from apps.master_data.models import MasterTypeUrbanUnit
 
 class LandInspectionUpload(models.Model):
     """LandInspectionUpload
@@ -114,7 +114,7 @@ class Location(models.Model):
     nom_via = models.CharField(max_length=255, blank=True, null=True)
     num_alt = models.CharField(max_length=255, blank=True, null=True)
     nom_alt = models.CharField(max_length=255, blank=True, null=True)
-    cod_tipo_uu = models.CharField(max_length=255, blank=True, null=True)  # ToDo: ver FK
+    cod_tipo_uu = models.ForeignKey(MasterTypeUrbanUnit, on_delete=models.SET_NULL, blank=True, null=True)  # ToDo: ver FK
     cod_uu = models.CharField(max_length=255, blank=True, null=True)  # ToDo: ver FK
     nom_uu = models.CharField(max_length=255, blank=True, null=True)
     nom_ref = models.CharField(max_length=255, blank=True, null=True)

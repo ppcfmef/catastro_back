@@ -50,11 +50,12 @@ class UserProfileShortSerializer(serializers.ModelSerializer):
     name = serializers.CharField()
     place_scope = PlaceScopeSerializer()
     permissions_navigation = serializers.SerializerMethodField(read_only=True)
+    role = RoleShortSerializer()
 
     class Meta:
         model = User
         fields = ('id', 'username', 'name', 'avatar', 'email', 'place_scope', 'ubigeo', 'is_superuser',
-                  'permissions_navigation')
+                  'permissions_navigation','dni','job_title','role')
 
     def get_permissions_navigation(self, obj):
         permissions = RolePermission.objects.filter(role=obj.role).values_list('permission', flat=True)
@@ -149,6 +150,14 @@ class PermissionSerializer(serializers.ModelSerializer):
             permissions_navigation=permissions_navigation
         )
         return instance
+    
+    # @transaction.atomic
+    # def delete(self, instance):
+
+    #     print('instance>>',instance)
+    #     self.update_role_inactive(permission=instance)
+    #     instance.delete()
+    #     return True
 
     def create_permissions_navigation(self, permission, permissions_navigation):
         permissions_navigation_bulk = []
@@ -162,6 +171,15 @@ class PermissionSerializer(serializers.ModelSerializer):
         # create all records
         PermissionNavigation.objects.bulk_create(permissions_navigation_bulk)
 
+
+    # def update_role_inactive(self, permission):
+    #     role_permission = permission.rolepermission_set.first()
+    #     if role_permission is not None:
+    #         role = role_permission.role
+    #         role.is_active = False
+    #         role.save()
+
+    
     def update_role_name(self, permission):
         role_permission = permission.rolepermission_set.first()
         if role_permission is not None:

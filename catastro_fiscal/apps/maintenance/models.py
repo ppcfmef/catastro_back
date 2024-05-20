@@ -21,13 +21,14 @@ class Application(models.Model):
         (1, 'Por atender'),
         (2, 'Atendido'),
         (3, 'Observado'),
+        (4,'De baja')
     )
     TYPE_CHOICE =(
         (1,'Reasignar ubicación'),
-        (2,'Acumulación'),
-        (3,'División'),
+        (2,'Acumular'),
+        (3,'SubDividir'),
         (4,'Inactivar'),
-        (5,'Independización')
+        (5,'Independizar')
     )
           
     
@@ -111,6 +112,7 @@ class Result(models.Model):
     deduction = models.FloatField(blank=True, null=True, db_column='deduccion')
     self_assessment_affection = models.FloatField(blank=True, null=True, db_column='autoavaluo_afecto')
     source_information = models.CharField(max_length=255, blank=True, null=True, db_column='fuente')
+    resolution_date = models.DateField( blank=True, null=True, db_column='date_res')
     resolution_type = models.CharField(max_length=2, blank=True, null=True, db_column='tdoc_res')
     resolution_document = models.CharField(max_length=255, blank=True, null=True, db_column='ndoc_res')
     apartment_number = models.CharField(max_length=20, blank=True, null=True, db_column='numero_departamento')
@@ -119,6 +121,7 @@ class Result(models.Model):
 
     class Meta:
         db_table = 'RESULTADO'
+        #unique_together = ["ubigeo", "cpm"]
         verbose_name = _('Result Detail')
         verbose_name_plural = _('Results Detail')
 

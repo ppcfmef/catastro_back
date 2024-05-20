@@ -4,7 +4,7 @@ from .models import  Result,Application,ApplicationObservationDetail,Application
 #,AplicationType,
 
 from apps.lands.models import Land
-from apps.master_data.models import MasterCodeStreet
+from apps.master_data.models import MasterCodeStreet,MasterResolutionType
 import django_filters
 from django import forms
 # class AplicationType(serializers.ModelSerializer):
@@ -32,7 +32,7 @@ class ApplicationListSerializer(serializers.ModelSerializer):
 
     def get_lands(self, obj):
         lands_id=ApplicationLandDetail.objects.filter(application_id=obj.id).values_list('land_id', flat=True)
-        return  list(Land.objects.filter(id__in=list(lands_id)).values('cpm'))
+        return  list(Land.objects.filter(id__in=list(lands_id)).values('cpm','cup'))
     
     def get_status(self,obj):
         return obj.get_id_status_display()
@@ -114,11 +114,19 @@ class ResultSerializer(serializers.ModelSerializer):
 
 class ResultDetailCustomSerializer(serializers.ModelSerializer):
     address = serializers.SerializerMethodField()
-    
+    resolution_type_name = serializers.SerializerMethodField()
+
     class Meta:
         model = Result
-        fields = ('address','cpm','urban_lot_number','block','municipal_number','indoor','floor','km','municipal_address')
+        fields = ('id','address','cpm','urban_lot_number','block','municipal_number','indoor','floor','km','municipal_address','cup','resolution_type','resolution_type_name','resolution_document')
         
     def get_address(self,obj):
         street_type=MasterCodeStreet.objects.get(id= obj.street_type)
         return '{street_type} {street_name} {municipal_number} {urban_mza} {urban_lot_number}'.format(street_type=street_type,street_name = obj.street_name,municipal_number =obj.municipal_number if obj.municipal_number is not None else '' ,urban_mza =' Mz.{}'.format(obj.urban_mza) if obj.urban_mza is not None else '' ,urban_lot_number =' Lote {}'.format( obj.urban_lot_number) if  obj.urban_lot_number is not None else '' )
+    
+    def get_resolution_type_name(self,obj):
+        try:
+            resolution=MasterResolutionType.objects.get(id= obj.resolution_type)
+            return resolution.name
+        except MasterResolutionType.DoesNotExist:
+            return ''
