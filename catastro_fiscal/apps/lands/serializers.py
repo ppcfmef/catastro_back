@@ -108,6 +108,23 @@ class LandOwnerDetailSRTMSerializer(serializers.ModelSerializer):
     class Meta:
         model = LandOwnerDetail
         fields = '__all__'
+        
+    def exists_detail(self, data):
+        return LandOwnerDetail.objects.filter(owner=data.get('owner'), land=data.get('land'),ubigeo =data.get('ubigeo')).exists()
+
+    @transaction.atomic
+    def create(self, validated_data):
+        print('validated_data>>',validated_data)
+        if self.exists_detail(data=validated_data) :
+            raise serializers.ValidationError(f'Ya existe la relacion')
+
+        detail = LandOwnerDetail.objects.create(**validated_data)
+
+
+                
+        return detail
+    
+
 
 class LandOwnerSaveSerializer(serializers.ModelSerializer):
 
@@ -156,6 +173,9 @@ class DomicilioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Domicilio
         fields = '__all__'
+
+
+
 
 class LandOwnerSRTMSerializer(serializers.ModelSerializer):
     domicilios = DomicilioSerializer(many = True,allow_null=True)
