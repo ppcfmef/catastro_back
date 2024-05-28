@@ -12,6 +12,7 @@ from core.views import CustomListMixin
 from apps.lands.models import Land
 from .models import Result,ApplicationLandDetail,ApplicationResultDetail,Application,ApplicationObservationDetail
 from apps.lands.serializers import LandSerializer
+from apps.maintenance.filters import ApplicationFilter
 from rest_framework.decorators import authentication_classes ,permission_classes
 from django.forms.models import model_to_dict
 from .serializers import (
@@ -25,7 +26,7 @@ class ApplicationViewSet( ModelViewSet):
     queryset = Application.objects.all()
     serializer_class = ApplicationSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, CamelCaseOrderFilter]
-    filterset_fields = ['id' , 'ubigeo','id_status','id_type']
+    filterset_class = ApplicationFilter
     
     def get_serializer_class(self):
         if self.action == 'list' :

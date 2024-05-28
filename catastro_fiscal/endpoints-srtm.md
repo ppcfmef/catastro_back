@@ -20,7 +20,7 @@ https://vmd120205.contaboserver.net
 { 
 "ubigeo":"040501", 
 "codigoContribuyente":"100000", 
-"codigoPredioUnico":"30151040-0001-9",
+"codigoPredioMunicipal":"30151040",
 "fechaRegistro":"2024-01-01"
 }
 ```
