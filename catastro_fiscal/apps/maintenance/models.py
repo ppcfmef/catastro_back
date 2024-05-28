@@ -135,7 +135,7 @@ class Result(models.Model):
         verbose_name_plural = _('Results Detail')
 
 class ApplicationResultDetail(models.Model):
-    application = models.ForeignKey(Application, on_delete=models.CASCADE, db_column='id_solicitud')
+    application = models.ForeignKey(Application, related_name='results', on_delete=models.CASCADE, db_column='id_solicitud')
     result = models.ForeignKey(Result, on_delete=models.CASCADE, db_column='id_resultado')
     
     class Meta:
@@ -144,7 +144,7 @@ class ApplicationResultDetail(models.Model):
         verbose_name_plural = _('Applications Result Detail')
         
 class ApplicationLandDetail(models.Model):
-    application = models.ForeignKey(Application, on_delete=models.CASCADE, db_column='id_solicitud',related_name='toapplication')
+    application = models.ForeignKey(Application, on_delete=models.CASCADE, db_column='id_solicitud',related_name='lands')
     land = models.ForeignKey(Land, on_delete=models.CASCADE, db_column='id_predio',related_name='toland')
     class Meta:
         db_table = 'SOLICITUD_PREDIO'
