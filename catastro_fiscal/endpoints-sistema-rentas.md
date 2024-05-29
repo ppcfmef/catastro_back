@@ -14,7 +14,7 @@ https://vmd120205.contaboserver.net
 
 *1 => ubigeo
 *2 => codigo de contribuyente
-*3 => codigo de predio municipal(cpu)
+*3 => codigo de predio municipal(cpm)
 *4 => fecha de registro del predio
 **/
 { 
