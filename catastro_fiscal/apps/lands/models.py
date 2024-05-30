@@ -271,7 +271,9 @@ class LandBase(AbstractAudit):
     # ToDo: Este campo sera eliminado no utilizar
     owner = models.ForeignKey(LandOwner, models.SET_NULL, blank=True, null=True, db_column='id_propietario')
     inactive_reason = models.TextField(blank=True, null=True, db_column='razon_inactivo')
-
+    longitude_puerta = models.FloatField(blank=True, null=True, db_column='coor_x_puerta')
+    latitude_puerta = models.FloatField(blank=True, null=True, db_column='coor_y_puerta') 
+    id_lote_puerta =models.CharField(max_length=25, blank=True, null=True, db_column='id_lote_puerta')
     class Meta:
         abstract = True
 
