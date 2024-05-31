@@ -153,6 +153,8 @@ class LandOwnerDetailViewSet(mixins.RetrieveModelMixin, GenericViewSet):
     queryset = LandOwner.objects.all()
     serializer_class = LandOwnerDetailSerializer
 
+# @authentication_classes([])
+# @permission_classes([])
 
 class OwnerSearchByDocumentViewset(mixins.ListModelMixin, GenericViewSet):
     """
