@@ -19,7 +19,7 @@ class MasterDomain(models.Model):
     name = models.CharField(_('name'), max_length=150)
     description = models.CharField(_('description'), max_length=150)
     short_name = models.CharField(_('short name'), max_length=100)
-
+    estado = models.IntegerField(blank=True, null=True, default=1)
     class Meta:
         abstract = True
 
@@ -60,3 +60,48 @@ class MasterResolutionType(MasterDomain):
         db_table = 'M_TDOC_RES'
         verbose_name = _('resolution type')
         verbose_name_plural = _('resolution types')
+
+class MasterTipoDocumentoIdentidad(MasterDomain):
+    class Meta:
+        db_table = 'M_TDOC_IDENTIDAD'
+        verbose_name = _('tipo de documento de identidad')
+        verbose_name_plural = _('tipos de documento de identidad')
+
+
+class MasterType(models.Model):
+    id = models.IntegerField(primary_key=True)
+    name = models.CharField(_('name'), max_length=150,blank=True, null=True)
+    description = models.CharField(_('description'), max_length=150)
+    short_name = models.CharField(_('short name'), max_length=100)
+    estado = models.IntegerField(blank=True, null=True, default=1)
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return self.name
+
+class MasterTipoContribuyente(MasterType):
+    class Meta:
+        db_table = 'M_TIPO_CONTRIBUYENTE'
+        verbose_name = _('tipo de contribuyente')
+        verbose_name_plural = _('tipos de contribuyente')
+
+class MasterTipoPropiedad(MasterType):
+    class Meta:
+        db_table = 'M_TIPO_PROPIEDAD'
+        verbose_name = _('tipo de propiedad')
+        verbose_name_plural = _('tipos de propiedad')
+
+
+class MasterTipoTransferencia(MasterType):
+    class Meta:
+        db_table = 'M_TIPO_TRANSFERENCIA'
+        verbose_name = _('tipo de transferencia')
+        verbose_name_plural = _('tipos de transferencia')
+
+
+class MasterTipoUsoPredio(MasterType):
+    class Meta:
+        db_table = 'M_TIPO_USO_PREDIO'
+        verbose_name = _('tipo uso de predio')
+        verbose_name_plural = _('tipo uso de predio')
