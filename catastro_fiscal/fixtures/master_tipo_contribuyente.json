@@ -1,0 +1,1 @@
+[{"model": "master_data.mastertipocontribuyente", "pk": 1, "fields": {"name": "PERSONA NATURAL", "description": "PERSONA NATURAL", "short_name": "PE", "estado": 1}}, {"model": "master_data.mastertipocontribuyente", "pk": 2, "fields": {"name": "PERSONA JURIDICA", "description": "PERSONA JURIDICA", "short_name": "PJ", "estado": 1}}]
