@@ -70,7 +70,20 @@ class ApplicationViewSet( ModelViewSet):
         serializer=self.get_serializer(data=application)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        
+        land_ids=  [land['id'] for land in lands]
+
+        land_details=ApplicationLandDetail.objects.filter( land_id__in = land_ids)
+        
+        sin_atender=[land_detail for land_detail in  land_details if land_detail.application.id_status ==1]
+
+        if len(sin_atender)>0:
+                return Response( {
+                "status": "error",
+                "message": "La solicitud que quiere registrar contiene predios con solicitud por atender"
+                }, status=status.HTTP_400_BAD_REQUEST)  
             
+
         for land in lands:
             try:
                 ApplicationLandDetail.objects.create(application_id= serializer.data['id'], land_id = land['id'])
@@ -199,8 +212,9 @@ class LandViewSet(ModelViewSet):
     
     @action(methods=['GET'], detail=False, url_path='has-not-applications')
     def get_has_not_applications(self, request, *args, **kwargs):
-        lands_id = ApplicationLandDetail.objects.values_list('land_id', flat=True)
-        lands = self.get_queryset().exclude(id__in=list(lands_id), status__in=[0,3])
+        lands_id = ApplicationLandDetail.objects.filter(application__id_status =1).values_list('land_id', flat=True)
+
+        lands = self.get_queryset().exclude(id__in=list(lands_id))
          
         queryset = self.filter_queryset(lands)
         page = self.paginate_queryset(queryset)
