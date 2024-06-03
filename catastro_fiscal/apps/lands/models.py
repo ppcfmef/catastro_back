@@ -275,6 +275,8 @@ class LandBase(AbstractAudit):
     longitude_puerta = models.FloatField(blank=True, null=True, db_column='coor_x_puerta')
     latitude_puerta = models.FloatField(blank=True, null=True, db_column='coor_y_puerta') 
     id_lote_puerta =models.CharField(max_length=25, blank=True, null=True, db_column='id_lote_puerta')
+    lote_urbano_puerta =models.CharField(max_length=10, blank=True, null=True) 
+    manzana_urbana_puerta = models.CharField(max_length=10, blank=True, null=True) 
     class Meta:
         abstract = True
 
