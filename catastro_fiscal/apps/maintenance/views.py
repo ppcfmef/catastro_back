@@ -130,7 +130,7 @@ class ApplicationViewSet( ModelViewSet):
     def update_application_attended(self,request, *args, **kwargs):
         id_app=request.data.get('id')
         results = request.data.get('results')
-        id_land_inactives = request.data.get('idLandInactive')
+        id_land_inactives = request.data.get('idLandInactive',[])
         try:
             a=Application.objects.get(id=id_app)
             if(a.id_status==2):
