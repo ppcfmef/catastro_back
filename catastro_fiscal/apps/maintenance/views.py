@@ -239,7 +239,7 @@ class LandViewSet(ModelViewSet):
         
         lands_id = ApplicationLandDetail.objects.filter(application_id=application_id).values_list('land_id', flat=True)
         
-        lands = self.get_queryset().filter(id__in=list(lands_id)).exclude(status__in=(1,4))
+        lands = self.get_queryset().filter(id__in=list(lands_id))
         queryset = self.filter_queryset(lands)
         page = self.paginate_queryset(queryset)
         
