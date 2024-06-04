@@ -76,14 +76,21 @@ class ApplicationViewSet( ModelViewSet):
         land_details=ApplicationLandDetail.objects.filter( land_id__in = land_ids)
         
         sin_atender=[land_detail for land_detail in  land_details if land_detail.application.id_status ==1]
+        inactivos=[land_detail for land_detail in  land_details if land_detail.land.status ==3]
+
+
 
         if len(sin_atender)>0:
                 return Response( {
                 "status": "error",
                 "message": "La solicitud que quiere registrar contiene predios con solicitud por atender"
                 }, status=status.HTTP_400_BAD_REQUEST)  
-            
-
+        
+        if len(inactivos)>0:
+                return Response( {
+                            "status": "error",
+                            "message": "La solicitud que quiere registrar contiene predios inactivos"
+                            }, status=status.HTTP_400_BAD_REQUEST)  
         for land in lands:
             try:
                 ApplicationLandDetail.objects.create(application_id= serializer.data['id'], land_id = land['id'])
@@ -214,7 +221,7 @@ class LandViewSet(ModelViewSet):
     def get_has_not_applications(self, request, *args, **kwargs):
         lands_id = ApplicationLandDetail.objects.filter(application__id_status =1).values_list('land_id', flat=True)
 
-        lands = self.get_queryset().exclude(id__in=list(lands_id))
+        lands = self.get_queryset().exclude(id__in=list(lands_id)).filter(status__in=(1,4))
          
         queryset = self.filter_queryset(lands)
         page = self.paginate_queryset(queryset)
@@ -232,7 +239,7 @@ class LandViewSet(ModelViewSet):
         
         lands_id = ApplicationLandDetail.objects.filter(application_id=application_id).values_list('land_id', flat=True)
         
-        lands = self.get_queryset().filter(id__in=list(lands_id))
+        lands = self.get_queryset().filter(id__in=list(lands_id)).exclude(status__in=(1,4))
         queryset = self.filter_queryset(lands)
         page = self.paginate_queryset(queryset)
         
