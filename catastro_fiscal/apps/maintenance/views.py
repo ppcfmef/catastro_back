@@ -130,7 +130,7 @@ class ApplicationViewSet( ModelViewSet):
     def update_application_attended(self,request, *args, **kwargs):
         id_app=request.data.get('id')
         results = request.data.get('results')
-        id_land_inactives = request.data.get('idLandInactive')
+        id_land_inactives = request.data.get('idLandInactive',[])
         try:
             a=Application.objects.get(id=id_app)
             if(a.id_status==2):
@@ -160,8 +160,9 @@ class ApplicationViewSet( ModelViewSet):
                     #     lands.update(status=3)
                     
                     if(a.id_type != 5):
-                        lands_inactive = Land.objects.filter(cup__in=list(id_land_inactives))
-                        lands_inactive.update(status=3)
+                        if id_land_inactives is not None and len(id_land_inactives):
+                            lands_inactive = Land.objects.filter(cup__in=list(id_land_inactives))
+                            lands_inactive.update(status=3)
                         lands.update(status=3)
 
                     for result in results:
