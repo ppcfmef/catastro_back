@@ -160,8 +160,9 @@ class ApplicationViewSet( ModelViewSet):
                     #     lands.update(status=3)
                     
                     if(a.id_type != 5):
-                        lands_inactive = Land.objects.filter(cup__in=list(id_land_inactives))
-                        lands_inactive.update(status=3)
+                        if id_land_inactives is not None and len(id_land_inactives):
+                            lands_inactive = Land.objects.filter(cup__in=list(id_land_inactives))
+                            lands_inactive.update(status=3)
                         lands.update(status=3)
 
                     for result in results:
