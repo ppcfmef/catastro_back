@@ -4,8 +4,8 @@ from core.models import AbstractAudit
 from apps.places.models import District
 from apps.lands.models import Land
 from django.contrib.auth import get_user_model
-
-
+import os
+from datetime import datetime
 
 User = get_user_model()
 
@@ -43,6 +43,15 @@ class Application(models.Model):
     support = models.FileField(upload_to='sustento/',db_column='sustento', blank=True, null=True)
     class Meta:
         db_table = 'SOLICITUD'
+
+    def save(self, *args, **kwargs):
+        if self.support:
+            c = datetime.now()
+            current_time = c.strftime( "%d_%m_%Y_%H_%M_%S")
+            filename, extension = os.path.splitext(self.support.name)
+            nuevo_nombre = f"{self.ubigeo.code}_{self.ubigeo.name}_{current_time}{extension}"
+            self.support.name = nuevo_nombre
+        super(Application, self).save(*args, **kwargs)
     
 class Result(models.Model):
     SOURCE_CHOICES = (
@@ -126,7 +135,7 @@ class Result(models.Model):
         verbose_name_plural = _('Results Detail')
 
 class ApplicationResultDetail(models.Model):
-    application = models.ForeignKey(Application, on_delete=models.CASCADE, db_column='id_solicitud')
+    application = models.ForeignKey(Application, related_name='results', on_delete=models.CASCADE, db_column='id_solicitud')
     result = models.ForeignKey(Result, on_delete=models.CASCADE, db_column='id_resultado')
     
     class Meta:
@@ -135,7 +144,7 @@ class ApplicationResultDetail(models.Model):
         verbose_name_plural = _('Applications Result Detail')
         
 class ApplicationLandDetail(models.Model):
-    application = models.ForeignKey(Application, on_delete=models.CASCADE, db_column='id_solicitud',related_name='toapplication')
+    application = models.ForeignKey(Application, on_delete=models.CASCADE, db_column='id_solicitud',related_name='lands')
     land = models.ForeignKey(Land, on_delete=models.CASCADE, db_column='id_predio',related_name='toland')
     class Meta:
         db_table = 'SOLICITUD_PREDIO'

@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from core.models import AbstractAudit
 from apps.places.models import District
-from apps.master_data.models import MasterCodeStreet
+from apps.master_data.models import MasterCodeStreet , MasterTipoPropiedad, MasterTipoTransferencia,MasterTipoUsoPredio,MasterTipoDocumentoIdentidad, MasterTipoContribuyente
 
 
 class UploadHistory(models.Model):
@@ -102,7 +102,8 @@ class LandOwner(AbstractAudit):
     id = models.AutoField(primary_key=True)
     ubigeo = models.ForeignKey(District, on_delete=models.CASCADE, db_column='ubigeo')
     code = models.CharField(max_length=50, db_column='cod_contr')
-    document_type = models.CharField(max_length=2, blank=True, null=True, db_column='tip_doc')
+    document_type = models.ForeignKey(MasterTipoDocumentoIdentidad, on_delete=models.DO_NOTHING,blank=True, null=True, db_column='tip_doc')
+    tipo_contribuyente = models.ForeignKey(MasterTipoContribuyente, on_delete=models.DO_NOTHING,blank=True, null=True)
     dni = models.CharField(max_length=20, blank=True, null=True, db_column='doc_iden')  # ToDo: Change for document
     name = models.CharField(max_length=150, blank=True, null=True, db_column='nombre')
     paternal_surname = models.CharField(max_length=150, blank=True, null=True, db_column='ap_pat')
@@ -111,7 +112,7 @@ class LandOwner(AbstractAudit):
     phone = models.CharField(max_length=20, blank=True, null=True, db_column='telefono')
     email = models.CharField(max_length=150, blank=True, null=True, db_column='correo_electronico')
     # ToDo: This field now is OwnerAddress
-    tax_address = models.CharField(max_length=255, blank=True, null=True, db_column='dir_fiscal')
+    #tax_address = models.CharField(max_length=255, blank=True, null=True, db_column='dir_fiscal')
     number_lands = models.IntegerField(default=0, blank=True, null=True, db_column='numero_tierras')
     upload_history = models.ForeignKey(UploadHistory, blank=True, null=True, on_delete=models.SET_NULL,
                                        db_column='historial_carga')
@@ -171,11 +172,11 @@ class Domicilio(models.Model):
     des_domicilio= models.CharField(max_length=500, blank=True, null=True)
     longitud = models.FloatField(blank=True, null=True)
     latitud = models.FloatField(blank=True, null=True)
-    block = models.CharField(max_length=6, blank=True, null=True)
-    puerta = models.CharField(max_length=5, blank=True, null=True)
-    piso = models.CharField(max_length=2, blank=True, null=True)
-    kilometro = models.CharField(max_length=4, blank=True, null=True)
-    referencia = models.CharField(max_length=200, blank=True, null=True)
+    # block = models.CharField(max_length=6, blank=True, null=True)
+    # puerta = models.CharField(max_length=5, blank=True, null=True)
+    # piso = models.CharField(max_length=2, blank=True, null=True)
+    # kilometro = models.CharField(max_length=4, blank=True, null=True)
+    # referencia = models.CharField(max_length=200, blank=True, null=True)
     class Meta:
         db_table = 'DOMICILIO'
         verbose_name = _('direccion')
@@ -271,7 +272,11 @@ class LandBase(AbstractAudit):
     # ToDo: Este campo sera eliminado no utilizar
     owner = models.ForeignKey(LandOwner, models.SET_NULL, blank=True, null=True, db_column='id_propietario')
     inactive_reason = models.TextField(blank=True, null=True, db_column='razon_inactivo')
-
+    longitude_puerta = models.FloatField(blank=True, null=True, db_column='coor_x_puerta')
+    latitude_puerta = models.FloatField(blank=True, null=True, db_column='coor_y_puerta') 
+    id_lote_puerta =models.CharField(max_length=25, blank=True, null=True, db_column='id_lote_puerta')
+    lote_urbano_puerta =models.CharField(max_length=10, blank=True, null=True) 
+    manzana_urbana_puerta = models.CharField(max_length=10, blank=True, null=True) 
     class Meta:
         abstract = True
 
@@ -286,12 +291,32 @@ class Land(LandBase):
         verbose_name_plural = _('lands')
 
 
+
+
 class LandOwnerDetail(models.Model):
     land = models.ForeignKey(Land, on_delete=models.CASCADE, db_column='id_predio',related_name='predio_contribuyente')
     owner = models.ForeignKey(LandOwner, on_delete=models.CASCADE, db_column='id_propietario',related_name='contribuyentes')
-    ubigeo = models.ForeignKey(District, on_delete=models.SET_NULL, blank=True, null=True, db_column='ubigeo')
-    estado = models.IntegerField(db_column='estado', blank=True, null=True)
-    fecha_registro =  models.DateField(db_column='fecha_registro', blank=True, null=True)
+    cpm = models.CharField(max_length=50, db_column='cod_cpm', blank=True, null=True)
+    cup = models.CharField(max_length=20, blank=True, null=True, db_column='cod_cpu')
+    area_terreno =  models.FloatField( blank=True, null=True)
+    area_tot_terr_comun =  models.FloatField( blank=True, null=True)
+    area_construida = models.FloatField( blank=True, null=True)
+    area_tot_cons_comun = models.FloatField( blank=True, null=True)
+    por_propiedad = models.FloatField( blank=True, null=True)
+    tip_transferencia = models.ForeignKey(MasterTipoTransferencia,on_delete=models.DO_NOTHING,blank=True, null=True)
+    tip_uso_predio = models.ForeignKey(MasterTipoUsoPredio,on_delete=models.DO_NOTHING,blank=True, null=True)
+    tip_propiedad = models.ForeignKey(MasterTipoPropiedad,on_delete=models.DO_NOTHING,blank=True, null=True)
+    fec_transferencia =models.DateField( blank=True, null=True)
+    longitud_frente =models.FloatField( blank=True, null=True)
+    cantidad_habitantes = models.IntegerField( blank=True, null=True)
+    pre_inhabitable = models.IntegerField( blank=True, null=True)
+    par_registral = models.CharField( max_length=20,blank=True, null=True)
+    numero_dj = models.CharField( max_length=25,blank=True, null=True)
+    fecha_dj = models.DateField( max_length=25,blank=True, null=True)
+    usuario_creacion = models.CharField( max_length=30,blank=True, null=True)
+    ubigeo = models.ForeignKey(District, on_delete=models.SET_NULL, blank=True, null=True)
+    estado = models.IntegerField( blank=True, null=True, default=1)
+    fecha =  models.DateField( blank=True, null=True)
     class Meta:
         db_table = 'PREDIO_PROPIETARIO'
         verbose_name = _('land Owner Detail')

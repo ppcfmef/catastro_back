@@ -25,3 +25,4 @@ class ContactoAdmin(admin.ModelAdmin):
 @admin.register(TipoMedioContacto)
 class TipoMedioContactoAdmin(admin.ModelAdmin):
     pass
+

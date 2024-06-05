@@ -153,6 +153,8 @@ class LandOwnerDetailViewSet(mixins.RetrieveModelMixin, GenericViewSet):
     queryset = LandOwner.objects.all()
     serializer_class = LandOwnerDetailSerializer
 
+# @authentication_classes([])
+# @permission_classes([])
 
 class OwnerSearchByDocumentViewset(mixins.ListModelMixin, GenericViewSet):
     """
@@ -189,7 +191,7 @@ class SearchInactiveLandByCpu(mixins.RetrieveModelMixin, GenericViewSet):
 
 
 class SummaryRecord(GenericAPIView):
-    queryset = Land.objects.exclude(status=3)
+    queryset = Land.objects.all()
     serializer_class = SummaryRecordSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, CamelCaseOrderFilter]
     filterset_fields = ['ubigeo']
@@ -202,9 +204,9 @@ class SummaryRecord(GenericAPIView):
 
     def get_summary(self, queryset):
         total_records = queryset.count()
-        without_mapping_records = self.filter_queryset(Land.objects.exclude(status=3).filter(status=0)).count()
+        without_mapping_records = self.filter_queryset(Land.objects.filter(status=0)).count()
         inactive_records =  self.filter_queryset(Land.objects.filter(status=3)).count()
-        mapping_records = total_records - without_mapping_records
+        mapping_records = total_records - without_mapping_records -inactive_records
         return {
             'total_records': total_records,
             'mapping_records': mapping_records,

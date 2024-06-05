@@ -12,6 +12,7 @@ from core.views import CustomListMixin
 from apps.lands.models import Land
 from .models import Result,ApplicationLandDetail,ApplicationResultDetail,Application,ApplicationObservationDetail
 from apps.lands.serializers import LandSerializer
+from apps.maintenance.filters import ApplicationFilter
 from rest_framework.decorators import authentication_classes ,permission_classes
 from django.forms.models import model_to_dict
 from .serializers import (
@@ -25,7 +26,7 @@ class ApplicationViewSet( ModelViewSet):
     queryset = Application.objects.all()
     serializer_class = ApplicationSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, CamelCaseOrderFilter]
-    filterset_fields = ['id' , 'ubigeo','id_status','id_type']
+    filterset_class = ApplicationFilter
     
     def get_serializer_class(self):
         if self.action == 'list' :
@@ -69,7 +70,27 @@ class ApplicationViewSet( ModelViewSet):
         serializer=self.get_serializer(data=application)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-            
+        
+        land_ids=  [land['id'] for land in lands]
+
+        land_details=ApplicationLandDetail.objects.filter( land_id__in = land_ids)
+        
+        sin_atender=[land_detail for land_detail in  land_details if land_detail.application.id_status ==1]
+        inactivos=[land_detail for land_detail in  land_details if land_detail.land.status ==3]
+
+
+
+        if len(sin_atender)>0:
+                return Response( {
+                "status": "error",
+                "message": "La solicitud que quiere registrar contiene predios con solicitud por atender"
+                }, status=status.HTTP_400_BAD_REQUEST)  
+        
+        if len(inactivos)>0:
+                return Response( {
+                            "status": "error",
+                            "message": "La solicitud que quiere registrar contiene predios inactivos"
+                            }, status=status.HTTP_400_BAD_REQUEST)  
         for land in lands:
             try:
                 ApplicationLandDetail.objects.create(application_id= serializer.data['id'], land_id = land['id'])
@@ -109,6 +130,9 @@ class ApplicationViewSet( ModelViewSet):
     def update_application_attended(self,request, *args, **kwargs):
         id_app=request.data.get('id')
         results = request.data.get('results')
+        id_land_inactives = request.data.get('id_land_inactive',[])
+
+        print('id_land_inactives>>',id_land_inactives)
         try:
             a=Application.objects.get(id=id_app)
             if(a.id_status==2):
@@ -132,9 +156,17 @@ class ApplicationViewSet( ModelViewSet):
                 else:
                     lands_id = ApplicationLandDetail.objects.filter(application_id=id_app).values_list('land_id', flat=True)
                     lands = Land.objects.filter(id__in=list(lands_id))
+
+
+                    # for cpu in  id_land_inactives:
+                    #     lands.update(status=3)
                     
                     if(a.id_type != 5):
+                        if id_land_inactives is not None and len(id_land_inactives):
+                            lands_inactive = Land.objects.filter(cup__in=list(id_land_inactives))
+                            lands_inactive.update(status=3)
                         lands.update(status=3)
+
                     for result in results:
                         data={
                             
@@ -198,8 +230,9 @@ class LandViewSet(ModelViewSet):
     
     @action(methods=['GET'], detail=False, url_path='has-not-applications')
     def get_has_not_applications(self, request, *args, **kwargs):
-        lands_id = ApplicationLandDetail.objects.values_list('land_id', flat=True)
-        lands = self.get_queryset().exclude(id__in=list(lands_id), status__in=[0,3])
+        lands_id = ApplicationLandDetail.objects.filter(application__id_status =1).values_list('land_id', flat=True)
+
+        lands = self.get_queryset().exclude(id__in=list(lands_id)).filter(status__in=(1,4))
          
         queryset = self.filter_queryset(lands)
         page = self.paginate_queryset(queryset)
