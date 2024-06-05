@@ -132,7 +132,7 @@ class ApplicationViewSet( ModelViewSet):
         results = request.data.get('results')
         id_land_inactives = request.data.get('id_land_inactive',[])
 
-        print('id_land_inactives>>',id_land_inactives)
+        #print('id_land_inactives>>',id_land_inactives)
         try:
             a=Application.objects.get(id=id_app)
             if(a.id_status==2):
