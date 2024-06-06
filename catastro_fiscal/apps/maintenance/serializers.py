@@ -26,6 +26,7 @@ class ApplicationListSerializer(serializers.ModelSerializer):
     lands = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
     type = serializers.SerializerMethodField()
+    #lands_affected = serializers.SerializerMethodField()
     class Meta:
         model = Application
         fields = '__all__'
@@ -39,6 +40,14 @@ class ApplicationListSerializer(serializers.ModelSerializer):
     
     def get_type(self,obj):
         return obj.get_id_type_display()
+
+    # def get_lands_affected(self,obj):
+
+    #     lands_id=ApplicationLandDetail.objects.filter(application_id=obj.id).values_list('land_id', flat=True)
+    #     id_plotes=list(Land.objects.filter(id__in=list(lands_id)).values_list('id_plot'))
+    #     return Land.objects.filter(id_plot__in=list(id_plotes))
+
+        #list(Land.objects.filter(id__in=list(lands_id)).values('cpm','cup'))
 
 
 # class ApplicationStatusSerializer(serializers.ModelSerializer):
@@ -60,7 +69,15 @@ class ApplicationSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
+class LandAffectedSerializer(serializers.ModelSerializer):
+    district = serializers.CharField(source='ubigeo.name')
+    province = serializers.CharField(source='ubigeo.province.name')
+    department = serializers.CharField(source='ubigeo.province.department.name')
+    
+    class Meta:
+        model = Land
+        fields = '__all__'  
+    
     
 class LandListSerializer(serializers.ModelSerializer):
     has_applications = serializers.SerializerMethodField()
@@ -69,12 +86,23 @@ class LandListSerializer(serializers.ModelSerializer):
     department = serializers.CharField(source='ubigeo.province.department.name')
     #street_type_name = serializers.SerializerMethodField()
     street_type_name= serializers.CharField(source='street_type.name',read_only=True)
+    lands_affected = serializers.SerializerMethodField()
     class Meta:
         model = Land
         fields = '__all__'  # ToDo: estandarizar listado de predios
         
     def get_has_applications(self, obj):
-        return ApplicationLandDetail.objects.filter(land_id=obj.id).exists()
+  
+        return ApplicationLandDetail.objects.filter(land_id=obj.id).filter(application__id_status=1).exists()
+    
+    def get_lands_affected(self,obj):
+        queryset = Land.objects.filter(id_plot=obj.id_plot).filter(status__in=[1,4]).exclude(id=obj.id)
+        serializer=LandAffectedSerializer(queryset,many= True)
+
+        return serializer.data
+        #lands_id=Land.objects.filter(land_id=obj.id).values_list('land_id', flat=True)
+
+
     
     # def get_street_type_name(self,obj):
     #     try:

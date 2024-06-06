@@ -1,6 +1,7 @@
 from django.db import transaction
 from rest_framework import serializers
 from .models import UploadHistory, Land, LandOwner, OwnerAddress, LandAudit, LandOwnerDetail , Domicilio, Contacto
+from apps.maintenance.models import ApplicationLandDetail
 from .tasks import process_upload_tenporal, process_upload_land
 from .services.upload_temporal import UploadTemporalService
 from .services.upload_land import UploadLandService
@@ -45,6 +46,8 @@ class UploadStatusSerializer(serializers.ModelSerializer):
 
 class LandSerializer(serializers.ModelSerializer):
     has_owners = serializers.SerializerMethodField(read_only=True)
+    has_applications  = serializers.SerializerMethodField(read_only=True)
+    has_lands_affected_applications = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Land
@@ -52,6 +55,15 @@ class LandSerializer(serializers.ModelSerializer):
 
     def get_has_owners(self, obj):
         return LandOwnerDetail.objects.filter(land_id=obj.id).exists()
+
+    def get_has_applications(self, obj):
+
+        return ApplicationLandDetail.objects.filter(land_id=obj.id).filter(application__id_status=1).exists()
+    
+    def get_has_lands_affected_applications(self,obj):
+        id_lands_affected=Land.objects.filter(id_plot=obj.id_plot).filter(status__in=[1,4]).exclude(id=obj.id).values_list('id', flat=True)
+        return ApplicationLandDetail.objects.filter(land_id__in=id_lands_affected).filter(application__id_status=1).exists()
+
 
 
 class LandSaveSerializer(serializers.ModelSerializer):

@@ -32,7 +32,7 @@ class ApplicationViewSet( ModelViewSet):
         if self.action == 'list' :
             return ApplicationListSerializer
         return ApplicationSerializer 
-        
+         
     
     def list(self, request, *args, **kwargs):
         cpm = self.request.query_params.get('cpm',None)
@@ -213,7 +213,9 @@ class ApplicationViewSet( ModelViewSet):
                 return Response({'success':True})
         except Application.DoesNotExist:
             return Response({'error': 'No se encontro la solicitud'}, status=status.HTTP_400_BAD_REQUEST)
-        
+
+
+
 @authentication_classes([])
 @permission_classes([])
 class LandViewSet(ModelViewSet):
@@ -260,6 +262,32 @@ class LandViewSet(ModelViewSet):
 
         serializer = LandByApplicationListSerializer(queryset, many=True)
         return Response(serializer.data)
+    
+    @action(methods=['GET'], detail=False, url_path='lands-affected-by-application/(?P<application_id>[0-9]+)')
+    def get_lands_affected_by_application(self, request, *args, **kwargs):
+
+        application_id = kwargs.get('application_id')
+        
+        lands_id = ApplicationLandDetail.objects.filter(application_id=application_id).values_list('land_id', flat=True)
+        #ApplicationLandDetail.objects.filter(application_id=application_id).values_list('land_id', flat=True)
+        print('lands_id>>',lands_id)
+        id_plotes=Land.objects.filter(id__in=list(lands_id)).values_list('id_plot', flat=True)
+        print('id_plotes>>',id_plotes)
+        lands_affected=Land.objects.filter(id_plot__in=list(id_plotes)).exclude(id__in= lands_id)
+        print('lands_affected>>',lands_affected)
+        #lands = self.get_queryset().filter(id__in=list(lands_id))
+        
+        queryset = self.filter_queryset(lands_affected)
+        
+        page = self.paginate_queryset(queryset)
+        
+        if page is not None:
+            serializer = LandByApplicationListSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = LandByApplicationListSerializer(queryset, many=True)
+        return Response(serializer.data)
+
 
 @authentication_classes([])
 @permission_classes([])
@@ -292,6 +320,7 @@ class ApplicationObservationDetailViewSet(ModelViewSet):
     serializer_class= ApplicationObservationDetailSerializer
     filterset_fields = ['application','id']
     pagination_class = None
+
     def create(self,request, *args, **kwargs):
         application_id=request.data['application_id']
         description=request.data['description']
