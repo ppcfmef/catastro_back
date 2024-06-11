@@ -191,7 +191,8 @@ class ApplicationViewSet( ModelViewSet):
                             'cod_uu':result.get('cod_uu', None),
                             'street_name':result.get('nom_via', None),
                             'status':1,
-                            'source':'mantenimiento_pre'
+                            'source':'mantenimiento_pre',
+                            'id_lote_p':result.get('id_lote_p', None),
                         }
 
                         id=result.get('id', None)
@@ -270,11 +271,11 @@ class LandViewSet(ModelViewSet):
         
         lands_id = ApplicationLandDetail.objects.filter(application_id=application_id).values_list('land_id', flat=True)
         #ApplicationLandDetail.objects.filter(application_id=application_id).values_list('land_id', flat=True)
-        print('lands_id>>',lands_id)
-        id_plotes=Land.objects.filter(id__in=list(lands_id)).values_list('id_plot', flat=True)
-        print('id_plotes>>',id_plotes)
-        lands_affected=Land.objects.filter(id_plot__in=list(id_plotes)).exclude(id__in= lands_id)
-        print('lands_affected>>',lands_affected)
+        
+        id_lotes=Land.objects.filter(id__in=list(lands_id)).values_list('id_lote_p', flat=True)
+        
+        lands_affected=Land.objects.filter(id_lote_p__in=list(id_lotes)).exclude(id__in= lands_id)
+        
         #lands = self.get_queryset().filter(id__in=list(lands_id))
         
         queryset = self.filter_queryset(lands_affected)

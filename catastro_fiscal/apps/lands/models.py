@@ -215,6 +215,7 @@ class LandBase(AbstractAudit):
     id_land_cartographic = models.CharField(max_length=18, blank=True, null=True, help_text=_('id land cartographic'),
                                             db_column='id_predio_cartografico')
     id_plot = models.CharField(max_length=25, blank=True, null=True, help_text=_('id plot'), db_column='id_lote')
+    id_lote_p = models.IntegerField( blank=True, null=True, help_text=_('id lot poligono'), db_column='id_lote_p')
     id_cartographic_img = models.CharField(max_length=26, blank=True, null=True, help_text=_('id cartographic image'),
                                            db_column='id_imagen_cartografica')
     id_object_img = models.IntegerField(blank=True, null=True, help_text=_('id object image'),

@@ -61,7 +61,7 @@ class LandSerializer(serializers.ModelSerializer):
         return ApplicationLandDetail.objects.filter(land_id=obj.id).filter(application__id_status=1).exists()
     
     def get_has_lands_affected_applications(self,obj):
-        id_lands_affected=Land.objects.filter(id_plot=obj.id_plot).filter(status__in=[1,4]).exclude(id=obj.id).values_list('id', flat=True)
+        id_lands_affected=Land.objects.filter(id_lote_p=obj.id_lote_p).filter(status__in=[1,4]).exclude(id=obj.id).values_list('id', flat=True)
         return ApplicationLandDetail.objects.filter(land_id__in=id_lands_affected).filter(application__id_status=1).exists()
 
 
