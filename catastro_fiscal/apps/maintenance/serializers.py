@@ -70,13 +70,13 @@ class ApplicationSerializer(serializers.ModelSerializer):
 
 
 class LandAffectedSerializer(serializers.ModelSerializer):
-    district = serializers.CharField(source='ubigeo.name')
-    province = serializers.CharField(source='ubigeo.province.name')
-    department = serializers.CharField(source='ubigeo.province.department.name')
+    # district = serializers.CharField(source='ubigeo.name')
+    # province = serializers.CharField(source='ubigeo.province.name')
+    # department = serializers.CharField(source='ubigeo.province.department.name')
     
     class Meta:
         model = Land
-        fields = '__all__'  
+        fields =('cpm','cup','cod_cuc','street_type','street_name_alt','street_name','sec_ejec','urban_lot_number','urban_mza','municipal_number','id_lote_p') 
     
     
 class LandListSerializer(serializers.ModelSerializer):
@@ -96,11 +96,16 @@ class LandListSerializer(serializers.ModelSerializer):
         return ApplicationLandDetail.objects.filter(land_id=obj.id).filter(application__id_status=1).exists()
     
     def get_lands_affected(self,obj):
-        queryset = Land.objects.filter(id_lote_p=obj.id_lote_p).filter(status__in=[1,4]).exclude(id=obj.id)
-        serializer=LandAffectedSerializer(queryset,many= True)
+        
 
-        return serializer.data
-        #lands_id=Land.objects.filter(land_id=obj.id).values_list('land_id', flat=True)
+        if obj.id_lote_p is not None and obj.id_lote_p !='': 
+            queryset = Land.objects.filter(id_lote_p=obj.id_lote_p, ubigeo = obj.ubigeo ).filter(status__in=[1,4]).exclude(id=obj.id)
+            serializer=LandAffectedSerializer(queryset,many= True)
+
+            return serializer.data
+        else:
+            return []
+            #lands_id=Land.objects.filter(land_id=obj.id).values_list('land_id', flat=True)
 
 
     
