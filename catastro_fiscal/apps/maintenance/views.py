@@ -281,7 +281,7 @@ class LandViewSet(ModelViewSet):
         lands_id = ApplicationLandDetail.objects.filter(application_id=application_id).values_list('land_id', flat=True)
         #ApplicationLandDetail.objects.filter(application_id=application_id).values_list('land_id', flat=True)
         
-        id_lotes=Land.objects.filter(id__in=list(lands_id)).values_list('id_lote_p', flat=True)
+        id_lotes=Land.objects.filter(id__in=list(lands_id)).exclude(id_lote_p__isnull= False).values_list('id_lote_p', flat=True)
         
         lands_affected=Land.objects.filter(id_lote_p__in=list(id_lotes)).exclude(id__in= lands_id)
         
