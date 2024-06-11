@@ -248,7 +248,7 @@ class LandViewSet(ModelViewSet):
         page = self.paginate_queryset(queryset)
 
         if page is not None:
-            print('page>>',page)
+            #print('page>>',page)
             serializer = LandListSerializer(page, many=True)
             return self.get_paginated_response(serializer.data)
 
