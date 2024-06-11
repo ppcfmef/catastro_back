@@ -96,7 +96,7 @@ class LandListSerializer(serializers.ModelSerializer):
         return ApplicationLandDetail.objects.filter(land_id=obj.id).filter(application__id_status=1).exists()
     
     def get_lands_affected(self,obj):
-        queryset = Land.objects.filter(id_plot=obj.id_plot).filter(status__in=[1,4]).exclude(id=obj.id)
+        queryset = Land.objects.filter(id_lote_p=obj.id_lote_p).filter(status__in=[1,4]).exclude(id=obj.id)
         serializer=LandAffectedSerializer(queryset,many= True)
 
         return serializer.data
@@ -126,6 +126,7 @@ class LandByApplicationListSerializer(serializers.ModelSerializer):
         #print('obj.street_type>>',obj.street_type)
         #street_type=MasterCodeStreet.objects.get(id= obj.street_type)
         return '{street_type} {street_name} {municipal_number} {urban_mza} {urban_lot_number}'.format(street_type=obj.street_type,street_name = obj.street_name,municipal_number =obj.municipal_number,urban_mza =' Mz.{}'.format(obj.urban_mza) if obj.urban_mza is not None else '' ,urban_lot_number =' Lote {}'.format( obj.urban_lot_number) if  obj.urban_lot_number is not None else '' )
+
 
      
     
