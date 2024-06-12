@@ -1,11 +1,12 @@
 from django.db import transaction
 from rest_framework import serializers
 from .models import UploadHistory, Land, LandOwner, OwnerAddress, LandAudit, LandOwnerDetail , Domicilio, Contacto
-from apps.maintenance.models import ApplicationLandDetail
+from apps.maintenance.models import ApplicationLandDetail , Application
 from .tasks import process_upload_tenporal, process_upload_land
 from .services.upload_temporal import UploadTemporalService
 from .services.upload_land import UploadLandService
 
+from apps.maintenance.serializers import ApplicationSerializer,ApplicationListSerializer
 
 class UploadHistoryListSerializer(serializers.ModelSerializer):
     class Meta:
@@ -46,8 +47,10 @@ class UploadStatusSerializer(serializers.ModelSerializer):
 
 class LandSerializer(serializers.ModelSerializer):
     has_owners = serializers.SerializerMethodField(read_only=True)
-    has_applications  = serializers.SerializerMethodField(read_only=True)
-    has_lands_affected_applications = serializers.SerializerMethodField(read_only=True)
+    has_applications  = serializers.SerializerMethodField()
+    #has_lands_affected_applications = serializers.SerializerMethodField(read_only=True)
+    applications = serializers.SerializerMethodField()
+    #lands_affected_applications = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Land
@@ -57,12 +60,49 @@ class LandSerializer(serializers.ModelSerializer):
         return LandOwnerDetail.objects.filter(land_id=obj.id).exists()
 
     def get_has_applications(self, obj):
+        #ApplicationLandDetail.objects.filter(land_id=obj.id_lote_p).filter(application__id_status=1).exists()
+        #return ApplicationLandDetail.objects.filter(land_id=obj.id).filter(application__id_status=1).exists()
 
-        return ApplicationLandDetail.objects.filter(land_id=obj.id).filter(application__id_status=1).exists()
+        if obj.id_lote_p is not None and obj.id_lote_p !='':
+            return ApplicationLandDetail.objects.filter(land__id_lote_p=obj.id_lote_p).filter(application__id_status=1).exists()
+            
+        else:
+            return ApplicationLandDetail.objects.filter(land_id=obj.id).filter(application__id_status=1).exists()
+        
     
-    def get_has_lands_affected_applications(self,obj):
-        id_lands_affected=Land.objects.filter(id_lote_p=obj.id_lote_p).filter(status__in=[1,4]).exclude(id=obj.id).values_list('id', flat=True)
-        return ApplicationLandDetail.objects.filter(land_id__in=id_lands_affected).filter(application__id_status=1).exists()
+    def get_applications(self, obj):
+        respuesta = []
+        if  obj.id_lote_p is not None and obj.id_lote_p !='':
+            id_lands_affected=Land.objects.filter(id_lote_p=obj.id_lote_p).filter(status__in=[1,4]).values_list('id', flat=True)
+            
+            application_ids=ApplicationLandDetail.objects.filter(land_id__in=id_lands_affected).filter(application__id_status=1).values_list('application__id', flat=True)
+            
+            data_app=Application.objects.filter(id__in =application_ids)
+            print('data_app',data_app)
+            if len(data_app)>0:
+                serializer =ApplicationListSerializer(data_app[0], many = False)
+                return serializer.data
+            else:
+                return None
+        
+
+        else:
+            application_ids=ApplicationLandDetail.objects.filter(land_id=obj.id).filter(application__id_status=1).values_list('application__id', flat=True)
+            data_app=Application.objects.filter(id__in =application_ids)
+            if len(data_app)>0:
+
+                serializer =ApplicationListSerializer(data_app[0], many = False)
+                return serializer.data
+            else:
+                return None
+        # data = ApplicationLandDetail.objects.filter(land_id=obj.id).filter(application__id_status=1)
+        # serializer =ApplicationSerializer(data= data, many = True)
+        # return serializer.data
+    
+    # def get_has_lands_affected_applications(self,obj):
+    #     id_lands_affected=Land.objects.filter(id_lote_p=obj.id_lote_p).filter(status__in=[1,4]).exclude(id=obj.id).values_list('id', flat=True)
+
+    #     return ApplicationLandDetail.objects.filter(land_id__in=id_lands_affected).filter(application__id_status=1).exists()
 
 
 

@@ -76,7 +76,7 @@ class LandAffectedSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Land
-        fields =('cpm','cup','cod_cuc','street_type','street_name_alt','street_name','sec_ejec','urban_lot_number','urban_mza','municipal_number','id_lote_p') 
+        fields =('cpm','cup','cod_cuc','street_type','street_name_alt','street_name','sec_ejec','urban_lot_number','urban_mza','municipal_number','id_lote_p', 'creation_date') 
     
     
 class LandListSerializer(serializers.ModelSerializer):
