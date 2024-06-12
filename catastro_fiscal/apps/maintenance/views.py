@@ -242,7 +242,7 @@ class LandViewSet(ModelViewSet):
         #queryset =self.get_queryset()
         #print('queryset>>',queryset)
 
-        lands_id = ApplicationLandDetail.objects.filter(application__id_status =1,land__ubigeo='').values_list('land_id', flat=True)
+        lands_id = ApplicationLandDetail.objects.filter(application__id_status =1).values_list('land_id', flat=True)
         lands = self.get_queryset().exclude(id__in=list(lands_id)).filter(status__in=(1,4))
         queryset = self.filter_queryset(lands)
         page = self.paginate_queryset(queryset)
@@ -280,9 +280,11 @@ class LandViewSet(ModelViewSet):
         
         lands_id = ApplicationLandDetail.objects.filter(application_id=application_id).values_list('land_id', flat=True)
         #ApplicationLandDetail.objects.filter(application_id=application_id).values_list('land_id', flat=True)
+
+        #print('lands_id>>',lands_id)
         
-        id_lotes=Land.objects.filter(id__in=list(lands_id)).exclude(id_lote_p__isnull= False).values_list('id_lote_p', flat=True)
-        
+        id_lotes=Land.objects.filter(id__in=lands_id).exclude(id_lote_p__isnull= True).values_list('id_lote_p', flat=True)
+        #print('id_lote_p>>',id_lotes)
         lands_affected=Land.objects.filter(id_lote_p__in=list(id_lotes)).exclude(id__in= lands_id)
         
         #lands = self.get_queryset().filter(id__in=list(lands_id))
