@@ -51,8 +51,8 @@ class MasterCodeStreet(MasterDomain):
 class MasterPropertyType(MasterDomain):
     class Meta:
         db_table = 'M_TIPO_PREDIO'
-        verbose_name = _('property type')
-        verbose_name_plural = _('property types')
+        verbose_name = _('tipo de predio')
+        verbose_name_plural = _('tipos de predio')
 
 
 class MasterResolutionType(MasterDomain):
