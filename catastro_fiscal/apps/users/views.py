@@ -122,7 +122,7 @@ class PermissionViewSet(CustomListMixin, ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         permission = self.get_object()
-        print('permission>>',permission)
+        #print('permission>>',permission)
         role_permission = permission.rolepermission_set.first()
         if role_permission is not None:
             role = role_permission.role
