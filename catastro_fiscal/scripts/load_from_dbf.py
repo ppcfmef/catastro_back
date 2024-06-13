@@ -105,15 +105,15 @@ def run():
         owner_code = record.get('cod_contr')
 
         if ubigeo_record is None:
-            print('>>> error ubigeo: ', record)
+            #print('>>> error ubigeo: ', record)
             continue
 
         if cpm is None:
-            print('>>> error cpm: ', record)
+            #print('>>> error cpm: ', record)
             continue
 
         if owner_code is None:
-            print('>>> error owner_code: ', owner_code)
+            #print('>>> error owner_code: ', owner_code)
             continue
 
         valid_records.append(record)
