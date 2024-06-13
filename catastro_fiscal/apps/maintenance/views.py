@@ -285,7 +285,7 @@ class LandViewSet(ModelViewSet):
         
         id_lotes=Land.objects.filter(id__in=lands_id).exclude(id_lote_p__isnull= True).values_list('id_lote_p', flat=True)
         #print('id_lote_p>>',id_lotes)
-        lands_affected=Land.objects.filter(id_lote_p__in=list(id_lotes)).exclude(id__in= lands_id)
+        lands_affected=Land.objects.filter(id_lote_p__in=list(id_lotes)).filter(estado=1).exclude(id__in= lands_id)
         
         #lands = self.get_queryset().filter(id__in=list(lands_id))
         
