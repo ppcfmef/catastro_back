@@ -78,7 +78,7 @@ class LandSerializer(serializers.ModelSerializer):
             application_ids=ApplicationLandDetail.objects.filter(land_id__in=id_lands_affected).filter(application__id_status=1).values_list('application__id', flat=True)
             
             data_app=Application.objects.filter(id__in =application_ids)
-            print('data_app',data_app)
+            #print('data_app',data_app)
             if len(data_app)>0:
                 serializer =ApplicationListSerializer(data_app[0], many = False)
                 return serializer.data
