@@ -166,7 +166,7 @@ class LandOwnerDetailSRTMSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        print('validated_data>>',validated_data)
+        #print('validated_data>>',validated_data)
         if self.exists_detail(data=validated_data) :
             raise serializers.ValidationError(f'Ya existe la relacion')
 
@@ -242,7 +242,7 @@ class LandOwnerSRTMSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        print('validated_data>>',validated_data)
+        #print('validated_data>>',validated_data)
         if self.exists_owner(data=validated_data) :
             raise serializers.ValidationError(f'Ya existe el contribuyente con el documento ingresado')
 
