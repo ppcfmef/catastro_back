@@ -8,6 +8,8 @@ https://vmd120205.contaboserver.net
 
 #### request:
 ###### body: 
+
+```json
 /**
 
 *1 => ubigeo
@@ -30,8 +32,6 @@ https://vmd120205.contaboserver.net
 *17 => usuario de creacion
 *18 => estado
 **/
-```json
-
 { 
 "ubigeo":"040501", 
 "codigoContribuyente":"100000011", 
@@ -59,10 +59,11 @@ https://vmd120205.contaboserver.net
  
 
 ###### response:
+
+```json
 /**
 status 201
 **/
-```json
 {
    "success"  : true,
    "message" : "Registro guardado"
@@ -70,10 +71,11 @@ status 201
 ``` 
 
 ##### response:
+
+```json
 /**
 status 400
 **/
-```json
 {
    "success" : false,
    "message" : "Contribuyente no existe",
@@ -110,6 +112,9 @@ status 400
 
 ###### body: 
 
+
+```json
+
 /**
 
 *1 => ubigeo
@@ -140,7 +145,6 @@ contactos=>array
    *2 => es principal (1 si es principal , 0 si no lo es)
    *3 => tipo de medio de contacto
 **/
-```json
 {
 "ubigeo":"040501", 
 "codigoContribuyente":"100000011", 
@@ -179,10 +183,11 @@ contactos=>array
 
 
 ###### response:
+
+```json
 /**
 status 201
 **/
-```json
 {
    "success" : true,
    "message" : "Contribuyente creado",
@@ -193,10 +198,11 @@ status 201
 
 
 ###### response:
+
+```json
 /**
 status 400
 **/
-```json
 {
    "success" : false,
    "message" : "Ya existe el contribuyente en este distrito",

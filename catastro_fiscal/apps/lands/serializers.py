@@ -167,9 +167,10 @@ class LandOwnerDetailSRTMSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def create(self, validated_data):
         #print('validated_data>>',validated_data)
-        if self.exists_detail(data=validated_data) :
-
-            raise serializers.ValidationError({'message':'Ya existe esta relacion entre predio y contribuyente'})
+        if self.exists_detail(data=validated_data):
+            landOwnerDetails=LandOwnerDetail.objects.filter(owner=validated_data.get('owner'), land=validated_data.get('land'),ubigeo =validated_data.get('ubigeo'))
+            landOwnerDetails.update(estado=0)
+            #raise serializers.ValidationError({'message':'Ya existe esta relacion entre predio y contribuyente'})
 
         detail = LandOwnerDetail.objects.create(**validated_data)
 

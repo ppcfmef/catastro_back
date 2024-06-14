@@ -8,6 +8,8 @@ https://vmd120205.contaboserver.net
 
 #### request:
 ###### body: 
+
+```json
 /**
 
 *1 => ubigeo
@@ -30,8 +32,6 @@ https://vmd120205.contaboserver.net
 *17 => usuario de creacion
 *18 => estado
 **/
-```json
-
 { 
 "ubigeo":"040501", 
 "codigoContribuyente":"100000011", 
@@ -59,10 +59,11 @@ https://vmd120205.contaboserver.net
  
 
 ###### response:
+
+```json
 /**
 status 201
 **/
-```json
 {
    "success"  : true,
    "message" : "Registro guardado"
@@ -70,10 +71,11 @@ status 201
 ``` 
 
 ##### response:
+
+```json
 /**
 status 400
 **/
-```json
 {
    "success" : false,
    "message" : "Contribuyente no existe",
@@ -82,6 +84,9 @@ status 400
 ```
 
 ```json
+/**
+status 400
+**/
 {
    "success" : false,
    "message" : "Distrito no existe",
@@ -90,6 +95,9 @@ status 400
 ```
 
 ```json
+/**
+status 400
+**/
 {
    "success" : false,
    "message" : "Predio no existe",
@@ -109,6 +117,8 @@ status 400
 #### request:
 
 ###### body: 
+
+```json
 
 /**
 
@@ -140,7 +150,6 @@ contactos=>array
    *2 => es principal (1 si es principal , 0 si no lo es)
    *3 => tipo de medio de contacto
 **/
-```json
 {
 "ubigeo":"040501", 
 "codigoContribuyente":"100000011", 
@@ -179,10 +188,11 @@ contactos=>array
 
 
 ###### response:
+
+```json
 /**
 status 201
 **/
-```json
 {
    "success" : true,
    "message" : "Contribuyente creado",
@@ -193,11 +203,12 @@ status 201
 
 
 ###### response:
+
+
+```json
 /**
 status 400
 **/
-```json
-```json
 {
    "success" : false,
    "message" : "Ya existe el contribuyente en este distrito",
@@ -247,10 +258,11 @@ status 400
 
 
 ###### response:
+
+```json
 /**
 status 201
 **/
-```json
 {
    "success" : true,
    "message" : "Registro guardado",
@@ -261,10 +273,11 @@ status 201
 
 
 ###### response:
+
+```json
 /**
 status 400
 **/
-```json
 {  "success" : false,
     "message": "Ya existe este nivel para el predio"
 }
@@ -289,10 +302,11 @@ status 400
 
 
 ###### response:
+
+```json
 /**
 status 201
 **/
-```json
 {
    "success" : true,
    "message" : "Registro guardado",
@@ -303,10 +317,11 @@ status 201
 
 
 ###### response:
+
+```json
 /**
 status 400
 **/
-```json
 {  "success" : false,
     "message": "Ya existe esta deuda para este contribuyente y con este año"
 }
