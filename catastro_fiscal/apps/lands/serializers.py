@@ -1,6 +1,6 @@
 from django.db import transaction
 from rest_framework import serializers
-from .models import UploadHistory, Land, LandOwner, OwnerAddress, LandAudit, LandOwnerDetail , Domicilio, Contacto
+from .models import UploadHistory, Land, LandOwner, OwnerAddress, LandAudit, LandOwnerDetail , Domicilio, Contacto , LandNivelConstruccion,OwnerDeuda
 from apps.maintenance.models import ApplicationLandDetail , Application
 from .tasks import process_upload_tenporal, process_upload_land
 from .services.upload_temporal import UploadTemporalService
@@ -168,7 +168,8 @@ class LandOwnerDetailSRTMSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         #print('validated_data>>',validated_data)
         if self.exists_detail(data=validated_data) :
-            raise serializers.ValidationError(f'Ya existe la relacion')
+
+            raise serializers.ValidationError({'message':'Ya existe esta relacion entre predio y contribuyente'})
 
         detail = LandOwnerDetail.objects.create(**validated_data)
 
@@ -194,7 +195,7 @@ class LandOwnerSaveSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def create(self, validated_data):
         if self.exists_owner(data=validated_data) :
-            raise serializers.ValidationError(f'Ya existe el contribuyente con el documento ingresado')
+            raise serializers.ValidationError({'message':'Ya existe el contribuyente con el documento ingresado'})
         
         address = validated_data.pop('address')
         owner = LandOwner.objects.create(**validated_data)
@@ -300,3 +301,40 @@ class LandDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Land
         fields = '__all__'
+
+
+class LandNivelConstruccionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LandNivelConstruccion
+        fields = '__all__'
+
+    def exists_nivel(self, data):
+        return LandNivelConstruccion.objects.filter(land_owner_detail=data.get('land_owner_detail'), num_piso=data.get('num_piso')).exists()
+        #return False
+        #return LandOwner.objects.filter(document_type=data.get('document_type'), dni=data.get('dni')).exists()
+
+    @transaction.atomic
+    def create(self, validated_data):
+        if self.exists_nivel(data=validated_data) :
+            raise serializers.ValidationError({'message':'Ya existe este nivel para el predio'})
+        
+        detail = LandNivelConstruccion.objects.create(**validated_data)
+        return detail
+
+    
+
+class OwnerDeudaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OwnerDeuda
+        fields= '__all__'
+    def exists_deuda(self, data):
+        return OwnerDeuda.objects.filter(owner=data.get('owner'), anio=data.get('anio')).exists()
+
+
+    @transaction.atomic
+    def create(self, validated_data):
+        if self.exists_deuda(data=validated_data) :
+            raise serializers.ValidationError({'message':'Ya existe esta deuda para este contribuyente y con este año'})
+        
+        detail = OwnerDeuda.objects.create(**validated_data)
+        return detail
