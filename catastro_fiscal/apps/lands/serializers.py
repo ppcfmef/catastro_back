@@ -245,7 +245,7 @@ class LandOwnerSRTMSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         #print('validated_data>>',validated_data)
         if self.exists_owner(data=validated_data) :
-            raise serializers.ValidationError(f'Ya existe el contribuyente con el documento ingresado')
+            raise serializers.ValidationError({'message':'Ya existe el contribuyente en este distrito','status':False}  )
 
 
         domicilios =validated_data.pop('domicilios')   if validated_data.get('domicilios') else []
@@ -316,7 +316,7 @@ class LandNivelConstruccionSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def create(self, validated_data):
         if self.exists_nivel(data=validated_data) :
-            raise serializers.ValidationError({'message':'Ya existe este nivel para el predio'})
+            raise serializers.ValidationError({'message':'Ya existe este nivel para el predio','status':False})
         
         detail = LandNivelConstruccion.objects.create(**validated_data)
         return detail
@@ -334,7 +334,7 @@ class OwnerDeudaSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def create(self, validated_data):
         if self.exists_deuda(data=validated_data) :
-            raise serializers.ValidationError({'message':'Ya existe esta deuda para este contribuyente y con este año'})
+            raise serializers.ValidationError({'message':'Ya existe esta deuda para este contribuyente y con este año','status':False})
         
         detail = OwnerDeuda.objects.create(**validated_data)
         return detail
