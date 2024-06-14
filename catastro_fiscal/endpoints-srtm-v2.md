@@ -197,9 +197,10 @@ status 201
 status 400
 **/
 ```json
+```json
 {
    "success" : false,
-   "message" : "Contribuyente ya existe",
+   "message" : "Ya existe el contribuyente en este distrito",
   
 }
 ```
@@ -264,7 +265,7 @@ status 201
 status 400
 **/
 ```json
-{
+{  "success" : false,
     "message": "Ya existe este nivel para el predio"
 }
 ```
@@ -306,7 +307,7 @@ status 201
 status 400
 **/
 ```json
-{
+{  "success" : false,
     "message": "Ya existe esta deuda para este contribuyente y con este año"
 }
 ```

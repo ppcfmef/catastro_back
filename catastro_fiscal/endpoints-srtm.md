@@ -199,7 +199,7 @@ status 400
 ```json
 {
    "success" : false,
-   "message" : "Contribuyente ya existe",
+   "message" : "Ya existe el contribuyente en este distrito",
   
 }
 ```
