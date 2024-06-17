@@ -51,8 +51,8 @@ class MasterCodeStreet(MasterDomain):
 class MasterPropertyType(MasterDomain):
     class Meta:
         db_table = 'M_TIPO_PREDIO'
-        verbose_name = _('property type')
-        verbose_name_plural = _('property types')
+        verbose_name = _('tipo de predio')
+        verbose_name_plural = _('tipos de predio')
 
 
 class MasterResolutionType(MasterDomain):
@@ -104,4 +104,22 @@ class MasterTipoUsoPredio(MasterType):
     class Meta:
         db_table = 'M_TIPO_USO_PREDIO'
         verbose_name = _('tipo uso de predio')
-        verbose_name_plural = _('tipo uso de predio')
+        verbose_name_plural = _('tipos uso de predio')
+
+class MasterTipoNivel(MasterType):
+    class Meta:
+        db_table = 'M_TIPO_NIVEL'
+        verbose_name = _('tipo de nivel')
+        verbose_name_plural = _('tipos de nivel')
+
+class MasterTipoMaterial(MasterType):
+    class Meta:
+        db_table = 'M_TIPO_MATERIAL'
+        verbose_name = _('tipo de material')
+        verbose_name_plural = _('tipos de material')
+
+class MasterTipoEstadoConservacion(MasterType):
+    class Meta:
+        db_table = 'M_TIPO_ESTADO_CONSERVACION'
+        verbose_name = _('tipo de estado de conservacion')
+        verbose_name_plural = _('tipos de estado de conservacion')

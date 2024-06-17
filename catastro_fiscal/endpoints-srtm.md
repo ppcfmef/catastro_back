@@ -15,28 +15,67 @@ https://vmd120205.contaboserver.net
 *1 => ubigeo
 *2 => codigo de contribuyente
 *3 => codigo de predio municipal(cpu)
-*4 => fecha de registro del predio
+*4 => area del terreno
+*5 => area total del terreno comun
+*6 => area construida
+*7 => area total construida comun
+*8 => porcentaje de propiedad
+*9 => tipo de Uso del Predio
+*10 => tipo de Propiedad
+*11 => fecha de transferencia
+*12 => longitud de Frente
+*13 => cantidad de habitantes
+*14 => predio inhabitable(0 falso, 1  verdadero)
+*14 => partida registral
+*15 => numero de declaracion jurada
+*16 => fecha de declaracion jurada
+*17 => usuario de creacion
+*18 => estado
 **/
 { 
 "ubigeo":"040501", 
-"codigoContribuyente":"100000", 
-"codigoPredioMunicipal":"30151040",
-"fechaRegistro":"2024-01-01"
+"codigoContribuyente":"100000011", 
+"codigoPredioUnico":"30151040-0001-9",
+"area_terreno":100.00,
+"areaTotTerrComun": 50.00,
+"areaConstruida": 50.00,
+"areaTotConsComun": 50.00,
+"porPropiedad": 50.00,
+"tipTransferencia": 1,
+"tipUsoPredio": 1,
+"tipPropiedad": 1,
+"fec_transferencia": "2024-06-14",
+"longitudFrente": 100.00,
+"cantidad_habitantes": 10,
+"preInhabitable": 0,
+"parRegistral": "2000-59-6",
+"numero_dj": "200000",
+"fecha_dj": "2024-06-14",
+"usuarioCreacion": "TEST",
+"estado": 1
 }
 ```
 
  
 
 ###### response:
+
 ```json
+/**
+status 201
+**/
 {
    "success"  : true,
    "message" : "Registro guardado"
 }
 ``` 
 
+##### response:
 
 ```json
+/**
+status 400
+**/
 {
    "success" : false,
    "message" : "Contribuyente no existe",
@@ -65,9 +104,18 @@ https://vmd120205.contaboserver.net
 
 ---
 
-[POST] <hostname>/api/v1/lands/external/crear-contribuyente/
+[POST] <hostname>/api/v1/lands/external/crear-contribuyente
 
- /**
+ 
+
+#### request:
+
+###### body: 
+
+
+```json
+
+/**
 
 *1 => ubigeo
 *2 => codigo de contribuyente
@@ -97,18 +145,12 @@ contactos=>array
    *2 => es principal (1 si es principal , 0 si no lo es)
    *3 => tipo de medio de contacto
 **/
-
-#### request:
-###### body: 
-
-```json
-
 {
 "ubigeo":"040501", 
-"contribuyenteNumero":"100000009", 
+"codigoContribuyente":"100000011", 
 "docIdentidadId":1, 
-"numDocIdentidad":"45257502", 
-"nombres":"frank2", 
+"numDocIdentidad":"45257503", 
+"nombres":"frank", 
 "apePaterno":"soto", 
 "apeMaterno":"peña", 
 "domicilios":[
@@ -117,18 +159,13 @@ contactos=>array
 "desDomicilio":"ejemplo 1",
 "latitud":0,
 "longitud":0,
-"referencia":"ejemplo referencia",
-"piso":"2",
-"manzana":"E",
-"lote": "4",
-"kilometro":"3",
-
+"referencia":"ejemplo referencia"
 }
 
 ], 
 "contactos":[
     {
-        "descripcion":"999999",
+        "descripcion":"965193248",
         "principal":1,
         "tipoMedContacto":2
     },
@@ -139,14 +176,18 @@ contactos=>array
     }
 
 ]
- }
+}
 ```
 
 
 
 
 ###### response:
+
 ```json
+/**
+status 201
+**/
 {
    "success" : true,
    "message" : "Contribuyente creado",
@@ -157,10 +198,14 @@ contactos=>array
 
 
 ###### response:
+
 ```json
+/**
+status 400
+**/
 {
    "success" : false,
-   "message" : "Contribuyente ya existe",
+   "message" : "Ya existe el contribuyente en este distrito",
   
 }
 ```

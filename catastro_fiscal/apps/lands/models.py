@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from core.models import AbstractAudit
 from apps.places.models import District
-from apps.master_data.models import MasterCodeStreet , MasterTipoPropiedad, MasterTipoTransferencia,MasterTipoUsoPredio,MasterTipoDocumentoIdentidad, MasterTipoContribuyente
+from apps.master_data.models import MasterCodeStreet , MasterTipoPropiedad, MasterTipoTransferencia,MasterTipoUsoPredio,MasterTipoDocumentoIdentidad, MasterTipoContribuyente, MasterTipoNivel,MasterTipoEstadoConservacion,MasterTipoMaterial
 
 
 class UploadHistory(models.Model):
@@ -215,6 +215,7 @@ class LandBase(AbstractAudit):
     id_land_cartographic = models.CharField(max_length=18, blank=True, null=True, help_text=_('id land cartographic'),
                                             db_column='id_predio_cartografico')
     id_plot = models.CharField(max_length=25, blank=True, null=True, help_text=_('id plot'), db_column='id_lote')
+    id_lote_p = models.IntegerField( blank=True, null=True, help_text=_('id lot poligono'), db_column='id_lote_p')
     id_cartographic_img = models.CharField(max_length=26, blank=True, null=True, help_text=_('id cartographic image'),
                                            db_column='id_imagen_cartografica')
     id_object_img = models.IntegerField(blank=True, null=True, help_text=_('id object image'),
@@ -297,7 +298,7 @@ class LandOwnerDetail(models.Model):
     land = models.ForeignKey(Land, on_delete=models.CASCADE, db_column='id_predio',related_name='predio_contribuyente')
     owner = models.ForeignKey(LandOwner, on_delete=models.CASCADE, db_column='id_propietario',related_name='contribuyentes')
     cpm = models.CharField(max_length=50, db_column='cod_cpm', blank=True, null=True)
-    cup = models.CharField(max_length=20, blank=True, null=True, db_column='cod_cpu')
+    cup = models.CharField(max_length=20, db_column='cod_cpu', blank=True, null=True)
     area_terreno =  models.FloatField( blank=True, null=True)
     area_tot_terr_comun =  models.FloatField( blank=True, null=True)
     area_construida = models.FloatField( blank=True, null=True)
@@ -310,18 +311,58 @@ class LandOwnerDetail(models.Model):
     longitud_frente =models.FloatField( blank=True, null=True)
     cantidad_habitantes = models.IntegerField( blank=True, null=True)
     pre_inhabitable = models.IntegerField( blank=True, null=True)
-    par_registral = models.CharField( max_length=20,blank=True, null=True)
-    numero_dj = models.CharField( max_length=25,blank=True, null=True)
-    fecha_dj = models.DateField( max_length=25,blank=True, null=True)
+    par_registral = models.CharField( max_length=30,blank=True, null=True)
+    numero_dj = models.CharField( max_length=30,blank=True, null=True)
+    fecha_dj = models.DateField(blank=True, null=True)
     usuario_creacion = models.CharField( max_length=30,blank=True, null=True)
     ubigeo = models.ForeignKey(District, on_delete=models.SET_NULL, blank=True, null=True)
-    estado = models.IntegerField( blank=True, null=True, default=1)
-    fecha =  models.DateField( blank=True, null=True)
+    estado = models.IntegerField( blank=True, null=True, default=1) 
+    fecha =  models.DateField( blank=True, null=True, auto_now=True)
+
     class Meta:
         db_table = 'PREDIO_PROPIETARIO'
         verbose_name = _('land Owner Detail')
         verbose_name_plural = _('lands Owner Detail')
 
+
+
+
+class LandNivelConstruccion(models.Model):
+
+    id = models.AutoField(primary_key=True)
+    ubigeo = models.ForeignKey(District, on_delete=models.DO_NOTHING, db_column='ubigeo', related_name='nivel_ubigeo')
+    land_owner_detail= models.ForeignKey(LandOwnerDetail, on_delete=models.DO_NOTHING, related_name='nivel_land_owner_detail')
+    tip_nivel = models.ForeignKey(MasterTipoNivel, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='nivel_tipo_nivel')
+    num_piso = models.IntegerField(blank=True, null=True)
+    tip_material = models.ForeignKey(MasterTipoMaterial, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='nivel_tipo_material')
+    est_conservacion = models.ForeignKey(MasterTipoEstadoConservacion, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='nivel_estado_conservacion')
+    anio_construccion = models.IntegerField( blank=True, null=True)
+    mes_construccion = models.IntegerField( blank=True, null=True)
+    area_construida = models.FloatField( blank=True, null=True)
+    area_construida_comun =models.FloatField( blank=True, null=True)
+    por_area_construida_comun =models.FloatField( blank=True, null=True)
+    categoria_muro_columna = models.CharField(max_length=10, blank=True, null=True)
+    categoria_puerta_ventana = models.CharField(max_length=10, blank=True, null=True)
+    categoria_revestimiento = models.CharField(max_length=10, blank=True, null=True)
+    categoria_bano = models.CharField(max_length=10, blank=True, null=True)
+    categoria_inst_electrica_sanita = models.CharField(max_length=10, blank=True, null=True)
+    estado = models.IntegerField( blank=True, null=True)
+
+    class Meta:
+        db_table = 'PREDIO_NIVEL_CONSTRUCCION'
+        verbose_name = _('nivel de construccion')
+        verbose_name_plural = _('niveles de construccion')
+
+class OwnerDeuda(models.Model):
+    id = models.AutoField(primary_key=True)
+    owner = models.ForeignKey(LandOwner, on_delete=models.DO_NOTHING, blank=True, null=True)
+    tiene_deuda  = models.IntegerField( blank=True, null=True)
+    anio = models.IntegerField( blank=True, null=True)
+    
+    class Meta:
+        db_table = 'PROPIETARIO_DEUDA'
+        verbose_name = _('nivel de construccion')
+        verbose_name_plural = _('niveles de construccion')
 
 class LandAudit(LandBase):
     SOURCE_CHANGE_CHOICES = (

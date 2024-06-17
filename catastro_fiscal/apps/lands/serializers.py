@@ -1,10 +1,12 @@
 from django.db import transaction
 from rest_framework import serializers
-from .models import UploadHistory, Land, LandOwner, OwnerAddress, LandAudit, LandOwnerDetail , Domicilio, Contacto
+from .models import UploadHistory, Land, LandOwner, OwnerAddress, LandAudit, LandOwnerDetail , Domicilio, Contacto , LandNivelConstruccion,OwnerDeuda
+from apps.maintenance.models import ApplicationLandDetail , Application
 from .tasks import process_upload_tenporal, process_upload_land
 from .services.upload_temporal import UploadTemporalService
 from .services.upload_land import UploadLandService
 
+from apps.maintenance.serializers import ApplicationSerializer,ApplicationListSerializer
 
 class UploadHistoryListSerializer(serializers.ModelSerializer):
     class Meta:
@@ -45,6 +47,10 @@ class UploadStatusSerializer(serializers.ModelSerializer):
 
 class LandSerializer(serializers.ModelSerializer):
     has_owners = serializers.SerializerMethodField(read_only=True)
+    has_applications  = serializers.SerializerMethodField()
+    #has_lands_affected_applications = serializers.SerializerMethodField(read_only=True)
+    applications = serializers.SerializerMethodField()
+    #lands_affected_applications = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Land
@@ -52,6 +58,52 @@ class LandSerializer(serializers.ModelSerializer):
 
     def get_has_owners(self, obj):
         return LandOwnerDetail.objects.filter(land_id=obj.id).exists()
+
+    def get_has_applications(self, obj):
+        #ApplicationLandDetail.objects.filter(land_id=obj.id_lote_p).filter(application__id_status=1).exists()
+        #return ApplicationLandDetail.objects.filter(land_id=obj.id).filter(application__id_status=1).exists()
+
+        if obj.id_lote_p is not None and obj.id_lote_p !='':
+            return ApplicationLandDetail.objects.filter(land__id_lote_p=obj.id_lote_p).filter(application__id_status=1).exists()
+            
+        else:
+            return ApplicationLandDetail.objects.filter(land_id=obj.id).filter(application__id_status=1).exists()
+        
+    
+    def get_applications(self, obj):
+        respuesta = []
+        if  obj.id_lote_p is not None and obj.id_lote_p !='':
+            id_lands_affected=Land.objects.filter(id_lote_p=obj.id_lote_p).filter(status__in=[1,4]).values_list('id', flat=True)
+            
+            application_ids=ApplicationLandDetail.objects.filter(land_id__in=id_lands_affected).filter(application__id_status=1).values_list('application__id', flat=True)
+            
+            data_app=Application.objects.filter(id__in =application_ids)
+            #print('data_app',data_app)
+            if len(data_app)>0:
+                serializer =ApplicationListSerializer(data_app[0], many = False)
+                return serializer.data
+            else:
+                return None
+        
+
+        else:
+            application_ids=ApplicationLandDetail.objects.filter(land_id=obj.id).filter(application__id_status=1).values_list('application__id', flat=True)
+            data_app=Application.objects.filter(id__in =application_ids)
+            if len(data_app)>0:
+
+                serializer =ApplicationListSerializer(data_app[0], many = False)
+                return serializer.data
+            else:
+                return None
+        # data = ApplicationLandDetail.objects.filter(land_id=obj.id).filter(application__id_status=1)
+        # serializer =ApplicationSerializer(data= data, many = True)
+        # return serializer.data
+    
+    # def get_has_lands_affected_applications(self,obj):
+    #     id_lands_affected=Land.objects.filter(id_lote_p=obj.id_lote_p).filter(status__in=[1,4]).exclude(id=obj.id).values_list('id', flat=True)
+
+    #     return ApplicationLandDetail.objects.filter(land_id__in=id_lands_affected).filter(application__id_status=1).exists()
+
 
 
 class LandSaveSerializer(serializers.ModelSerializer):
@@ -114,9 +166,11 @@ class LandOwnerDetailSRTMSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        print('validated_data>>',validated_data)
-        if self.exists_detail(data=validated_data) :
-            raise serializers.ValidationError(f'Ya existe la relacion')
+        #print('validated_data>>',validated_data)
+        if self.exists_detail(data=validated_data):
+            landOwnerDetails=LandOwnerDetail.objects.filter(owner=validated_data.get('owner'), land=validated_data.get('land'),ubigeo =validated_data.get('ubigeo'))
+            landOwnerDetails.update(estado=0)
+            #raise serializers.ValidationError({'message':'Ya existe esta relacion entre predio y contribuyente'})
 
         detail = LandOwnerDetail.objects.create(**validated_data)
 
@@ -142,7 +196,7 @@ class LandOwnerSaveSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def create(self, validated_data):
         if self.exists_owner(data=validated_data) :
-            raise serializers.ValidationError(f'Ya existe el contribuyente con el documento ingresado')
+            raise serializers.ValidationError({'message':'Ya existe el contribuyente con el documento ingresado'})
         
         address = validated_data.pop('address')
         owner = LandOwner.objects.create(**validated_data)
@@ -190,9 +244,9 @@ class LandOwnerSRTMSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        print('validated_data>>',validated_data)
+        #print('validated_data>>',validated_data)
         if self.exists_owner(data=validated_data) :
-            raise serializers.ValidationError(f'Ya existe el contribuyente con el documento ingresado')
+            raise serializers.ValidationError({'message':'Ya existe el contribuyente en este distrito','status':False}  )
 
 
         domicilios =validated_data.pop('domicilios')   if validated_data.get('domicilios') else []
@@ -248,3 +302,40 @@ class LandDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Land
         fields = '__all__'
+
+
+class LandNivelConstruccionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LandNivelConstruccion
+        fields = '__all__'
+
+    def exists_nivel(self, data):
+        return LandNivelConstruccion.objects.filter(land_owner_detail=data.get('land_owner_detail'), num_piso=data.get('num_piso')).exists()
+        #return False
+        #return LandOwner.objects.filter(document_type=data.get('document_type'), dni=data.get('dni')).exists()
+
+    @transaction.atomic
+    def create(self, validated_data):
+        if self.exists_nivel(data=validated_data) :
+            raise serializers.ValidationError({'message':'Ya existe este nivel para el predio','status':False})
+        
+        detail = LandNivelConstruccion.objects.create(**validated_data)
+        return detail
+
+    
+
+class OwnerDeudaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OwnerDeuda
+        fields= '__all__'
+    def exists_deuda(self, data):
+        return OwnerDeuda.objects.filter(owner=data.get('owner'), anio=data.get('anio')).exists()
+
+
+    @transaction.atomic
+    def create(self, validated_data):
+        if self.exists_deuda(data=validated_data) :
+            raise serializers.ValidationError({'message':'Ya existe esta deuda para este contribuyente y con este año','status':False})
+        
+        detail = OwnerDeuda.objects.create(**validated_data)
+        return detail

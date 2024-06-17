@@ -6,7 +6,7 @@ from apps.lands.models import Land, LandOwner, LandOwnerDetail, UploadHistory
 
 def land_map():
     return {
-        # 'id': 'id_pred',
+
         'id_land_cartographic': 'id_pred',
         'cpm': 'cod_pre',
         'id_plot': 'id_lote',
@@ -17,13 +17,12 @@ def land_map():
         'cod_uu': 'cod_uu',
         'cod_mzn': 'cod_mzn',
         'cod_land': 'cod_lote',
-        # 'cod_cuc': 'cod_cuc',
+
         'uu_type': 'tipo_uu',
         'habilitacion_name': 'nom_uu',
         'reference_name': 'nom_ref',
         'urban_mza': 'mzn_urb',
         'urban_lot_number': 'lot_urb',
-        # 'cod_street': 'cod_via',
         'street_type': 'tip_via',
         'street_name': 'nom_via',
         'street_name_alt': 'nom_alt',
@@ -41,7 +40,6 @@ def land_map():
         'id_aranc': 'id_aranc',
         'land_area': 'area_terre',
         'front_length': 'longitud_f',
-        # 'location_park': 'ubicacion_parque',
         'group_use_desc': 'grupo_uso_',
         'number_inhabitants': 'cantidad_h',
         'classification_land_desc': 'clasificac',
@@ -71,7 +69,7 @@ def land_owner():
         'paternal_surname': 'ap_pat',
         'maternal_surname': 'ap_mat',
         'description_owner': 'contribuye',
-        'tax_address': 'dir_fiscal'
+        #'tax_address': 'dir_fiscal'
     }
 
 

@@ -4,7 +4,7 @@
 #### URL
 https://vmd120205.contaboserver.net
 
-[POST]  <hostname>/api/v1/lands/external/guardar-caracteristicas
+[POST]  <hostname>/api/v1/lands/external/guardar-predio-contribuyente
 
 #### request:
 ###### body: 
@@ -12,59 +12,70 @@ https://vmd120205.contaboserver.net
 ```json
 /**
 
-*idPredio => identificador del Predio
-*idContribuyente => identificador del Contribuyente
-*ubigeo => Ubicación Geográfica
-*tipUsoPredioId => Tipo de Uso de Predio
-*tipPropiedadId => Tipo de Propiedad
-*areaTerreno => Area del Terreno
-*areaTotTerrComun => Area total del Terreno comun
-*areaConstruida => Area construida
-*areaTotConsComun => Area total de construccion comun
-*porPropiedad => Porcentaje de propiedad
-*tipTransferenciaId => Identificador de tipo de Transferencia
-*fecTransferencia => fecha de Transferencia
-*longitudFrente => longitud del frente
-*cantidadHabitantes => cantidad de habitantes
-*preInhabitable => indicador de si la propiedad es habitable
-*parRegistral => Partidad registral
-*activo => estado del registro
+*1 => ubigeo
+*2 => codigo de contribuyente
+*3 => codigo de predio municipal(cpu)
+*4 => area del terreno
+*5 => area total del terreno comun
+*6 => area construida
+*7 => area total construida comun
+*8 => porcentaje de propiedad
+*9 => tipo de Uso del Predio
+*10 => tipo de Propiedad
+*11 => fecha de transferencia
+*12 => longitud de Frente
+*13 => cantidad de habitantes
+*14 => predio inhabitable(0 falso, 1  verdadero)
+*14 => partida registral
+*15 => numero de declaracion jurada
+*16 => fecha de declaracion jurada
+*17 => usuario de creacion
+*18 => estado
 **/
-{
-   
-   "idPredio":1,
-   "idContribuyente":2,
-   "ubigeo":"010101",
-   "tipUsoPredioId": 1,
-   "tipPropiedadId": 1,
-   "areaTerreno": 200.0,
-   "areaTotTerrComun":100.0,
-   "areaConstruida":100.0,
-   "areaTotConsComun":50.0,
-   "porPropiedad":25.0,
-   "tipTransferenciaId":1,
-   "fecTransferencia":"2024-01-01",
-   "longitudFrente":12.0,
-   "cantidadHabitantes":10,
-   "preInhabitable":0,
-   "parRegistral":"10452555",
-   "activo":1
+{ 
+"ubigeo":"040501", 
+"codigoContribuyente":"100000011", 
+"codigoPredioUnico":"30151040-0001-9",
+"area_terreno":100.00,
+"areaTotTerrComun": 50.00,
+"areaConstruida": 50.00,
+"areaTotConsComun": 50.00,
+"porPropiedad": 50.00,
+"tipTransferencia": 1,
+"tipUsoPredio": 1,
+"tipPropiedad": 1,
+"fec_transferencia": "2024-06-14",
+"longitudFrente": 100.00,
+"cantidad_habitantes": 10,
+"preInhabitable": 0,
+"parRegistral": "2000-59-6",
+"numero_dj": "200000",
+"fecha_dj": "2024-06-14",
+"usuarioCreacion": "TEST",
+"estado": 1
 }
 ```
 
  
 
 ###### response:
+
 ```json
+/**
+status 201
+**/
 {
    "success"  : true,
-   "message" : "Registro guardado",
-   "id":1
+   "message" : "Registro guardado"
 }
 ``` 
 
+##### response:
 
 ```json
+/**
+status 400
+**/
 {
    "success" : false,
    "message" : "Contribuyente no existe",
@@ -73,6 +84,9 @@ https://vmd120205.contaboserver.net
 ```
 
 ```json
+/**
+status 400
+**/
 {
    "success" : false,
    "message" : "Distrito no existe",
@@ -81,6 +95,9 @@ https://vmd120205.contaboserver.net
 ```
 
 ```json
+/**
+status 400
+**/
 {
    "success" : false,
    "message" : "Predio no existe",
@@ -93,80 +110,219 @@ https://vmd120205.contaboserver.net
 
 ---
 
-[POST] <hostname>/api/v1/lands/external/guardar-niv-construccion
+[POST] <hostname>/api/v1/lands/external/crear-contribuyente
 
+ 
 
 #### request:
+
 ###### body: 
 
 ```json
+
 /**
 
-*ubigeo => Ubicación Geográfica
-*idCaracteristica => identificador de caracteristicas
-*tipNivelId => Tipo de nivel
-*numPiso => Numero de piso
-*tipMaterialId => Tipo de Material
-*estConservacionId => Identificador de estado de conservación
-*anioConstruccion => Año de construccion
-*mesConstruccion => Mes de construccion
-*areaConstruccion => Area de construccion
-*areaConsComun => Area  de construccion comun
-*porAreaConsComun => Porcentaje de area de Construccion Comun
-*murosColumnas => Clasificacion de muros y columnas
-*techos => clasificacion de material de techo
-*piso => clasificacion de material de piso
-*puertasVentanas => Clasificacion de material de puertas y ventanas
-*revestimientos => Clasificacion de material de revestimientos
-*banos =>  Clasificacion de material de baños
-*insElectricaSanita => Clasificación de instalación eléctrica y sanitaria
-*activo => estado del registro
-**/
+*1 => ubigeo
+*2 => codigo de contribuyente
+*3 => tipo de documento
+*4 => numero de documento(dni o ruc)
+*5 => nombre 
+*6 => apellido paterno 
+*7 => apellido materno
+*8 => domicilios
+*9 => contactos
 
-[
+
+domicilios=>array 
+   *1 => ubigeo del domicilio 
+   *2 => decripcion de domicilio
+   *3 => latitud
+   *4 => longitud
+   *5  => referencia adicional
+   *6  => piso
+   *7  => manzana
+   *8  => lote
+   *9  => kilometro
+
+
+contactos=>array 
+   *1 => descripcion 
+   *2 => es principal (1 si es principal , 0 si no lo es)
+   *3 => tipo de medio de contacto
+**/
 {
-    "ubigeo":"040501",
-    "idCaracteristica":1,
-    "tipNivelId":1,
-    "numPiso":2,
-    "tipMaterialId":1,
-    "estConservacionId":2,
-    "anioConstruccion":2024,
-    "mesConstruccion":1,
-    "areaConstruccion":200.0,
-    "areaConsComun":100.0,
-    "porAreaConsComun":50.0,
-    "murosColumnas":"2",
-    "techos":"2",
-    "piso":"2",
-    "puertasVentanas":"5",
-    "revestimientos":"5",
-    "banos":"5",
-    "insElectricaSanita":"5",
-    "activo":1,
-}]
+"ubigeo":"040501", 
+"codigoContribuyente":"100000011", 
+"docIdentidadId":1, 
+"numDocIdentidad":"45257503", 
+"nombres":"frank", 
+"apePaterno":"soto", 
+"apeMaterno":"peña", 
+"domicilios":[
+{
+"ubigeo":"040501",
+"desDomicilio":"ejemplo 1",
+"latitud":0,
+"longitud":0,
+"referencia":"ejemplo referencia"
+}
+
+], 
+"contactos":[
+    {
+        "descripcion":"965193248",
+        "principal":1,
+        "tipoMedContacto":2
+    },
+       {
+        "descripcion":"frank@gmail.com",
+        "principal":0,
+        "tipoMedContacto":3
+    }
+
+]
+}
+```
+
+
+
+
+###### response:
+
+```json
+/**
+status 201
+**/
+{
+   "success" : true,
+   "message" : "Contribuyente creado",
+  
+}
+```
+
+
+
+###### response:
+
+
+```json
+/**
+status 400
+**/
+{
+   "success" : false,
+   "message" : "Ya existe el contribuyente en este distrito",
+  
+}
+```
+
+
+
+
+
+---
+
+[POST] <hostname>/api/v1/lands/external/guardar-nivel-construccion
+
+
+
+#### request:
+
+###### body: 
+
+
+```json
+
+{ 
+"ubigeo":"040501", 
+"codigoContribuyente":"100000011", 
+"codigoPredioUnico":"30151040-0001-9",
+"tipNivel": 1,
+"num_piso":2, 
+"tipMaterial":1,
+"estConservacion":1, 
+"anioConstruccion":2024, 
+"mesConstruccion":5 ,
+"areaConstruida":100.00 ,
+"areaConstruidaComun":5.0 ,
+"porAreaConstruidaComun":100, 
+"categoriaMuroColumna":"A" ,
+"categoriaPuertaVentana":"B", 
+"categoriaRevestimiento":"A", 
+"categoriaBano":"A",
+"categoriaInstElectricaSanita ":"A",
+"estado":1 
+           
+}
 ```
 
 
 ###### response:
+
 ```json
+/**
+status 201
+**/
 {
    "success" : true,
-   "message" : "Niveles registrados",
+   "message" : "Registro guardado",
   
 }
 ```
 
+
+
+###### response:
+
 ```json
-{
-   "success" : false,
-   "message" : "Registro de Caracteristica no existe",
-  
+/**
+status 400
+**/
+{  "success" : false,
+    "message": "Ya existe este nivel para el predio"
 }
-{
-   "success" : false,
-   "message" : "El distrito no existe ",
-  
+```
+
+---
+
+[POST] <hostname>/api/v1/lands/external/guardar-deuda-contribuyente
+
+#### request:
+
+###### body: 
+```json
+{ 
+"ubigeo":"040501", 
+"codigoContribuyente":"100000011", 
+"tieneDeuda":1,
+"anio":2024
 }
 
+```
+
+
+###### response:
+
+```json
+/**
+status 201
+**/
+{
+   "success" : true,
+   "message" : "Registro guardado",
+  
+}
+```
+
+
+
+###### response:
+
+```json
+/**
+status 400
+**/
+{  "success" : false,
+    "message": "Ya existe esta deuda para este contribuyente y con este año"
+}
 ```
