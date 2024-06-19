@@ -3,13 +3,14 @@ from apps.historical.models import HistoricalRecord
 
 
 def run():
-    UploadHistory.objects.all().delete()
+    Domicilio.objects.filter(ubigeo='100704').delete()
+    UploadHistory.objects.filter(ubigeo='100704').delete()
     TemploralUploadRecord.objects.all().delete()
-    LandOwner.objects.all().delete()
-    OwnerAddress.objects.all().delete()
-    Land.objects.all().delete()
-    LandOwnerDetail.objects.all().delete()
-    LandAudit.objects.all().delete()
+    LandOwner.objects.filter(ubigeo='100704').delete()
+    OwnerAddress.objects.filter(ubigeo='100704').delete()
+    Land.objects.filter(ubigeo='100704').delete()
+    LandOwnerDetail.objects.filter(ubigeo='100704').delete()
+    LandAudit.objects.filter(ubigeo='100704').delete()
 
     # clean Historical
     HistoricalRecord.objects.all().delete()

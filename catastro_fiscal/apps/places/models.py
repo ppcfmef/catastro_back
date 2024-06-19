@@ -44,7 +44,8 @@ class District(models.Model):
     )
     name = models.CharField(_('name'), max_length=150)
     zone = models.CharField(_('zone'), max_length=2)
-
+    municipal_name = models.CharField( max_length=150,null=True, blank=True)
+    sec_ejec =models.IntegerField( null=True, blank=True)
     class Meta:
         db_table = 'DISTRITO'
         verbose_name = _('district')
