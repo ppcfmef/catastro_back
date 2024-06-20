@@ -48,4 +48,4 @@ class DistrictResourceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = District
-        fields = ('code', 'name', 'department', 'province', 'extensions', 'resources')
+        fields = ('code', 'name', 'department', 'province', 'extensions', 'resources','municipal_name')
