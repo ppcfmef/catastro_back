@@ -11,6 +11,7 @@ def land_map():
         'ubigeo_id': 'UBIGEO',
         'cpm': 'COD_PRE',
         'cup': 'COD_CPU',
+        'resolution_document':'PARTIDA',
 
         'sec_ejec': 'SEC_EJEC',
         'id_plot': 'ID_LOTE',
@@ -39,6 +40,7 @@ def land_map():
         'latitude': 'COORD_Y',
         'id_aranc': 'ID_ARANC',
         'land_area': 'Area_terreno',
+       
 
 
     }
@@ -49,24 +51,32 @@ def land_map():
 
 
 def run():
-    excel_file = path.join(settings.MEDIA_ROOT , 'cf_predio_prueba.xlsx')
+    excel_file = path.join(settings.MEDIA_ROOT , 'predio.xlsx')
 
     df = pd.read_excel(excel_file, dtype={'UBIGEO':str,'COD_SECT': str,'COD_MZN':str,'COD_UU':str,'COD_LOTE':str,'TIPO_UU':str,'TIP_VIA':str,'SEC_EJEC':str})
 
-    queryset = Land.objects.filter(ubigeo='100704').values()
+    queryset = Land.objects.filter(ubigeo__in=['040403', '040502', '040509', '040510', '040513', '040604', '040607', '040811', '150401', '061005', '250201', '100704', '110404', '021510']).values('id','ubigeo_id','cup')
     df_django = pd.DataFrame(list(queryset))
 
     land_mapper = land_map()
     batch_size =100
     land_records_unique =[]
 
-    df_merged = pd.merge(df, df_django, how='left',left_on=['UBIGEO','COD_CPU'] ,right_on=['ubigeo_id','cup'] , indicator=True)
-    # Filtrar los registros que no tienen correspondencia en el DataFrame derecho
-    df_only_left = df_merged[df_merged['_merge'] == 'left_only']
 
-    # Eliminar la columna '_merge'
-    df_only_left = df_only_left.drop(columns=['_merge']+df_django.columns.to_list())
-    print(df_only_left.columns.tolist())
+    if len(queryset)>0:
+        df_merged = pd.merge(df, df_django, how='left',left_on=['UBIGEO','COD_CPU'] ,right_on=['ubigeo_id','cup'] , indicator=True)
+        # Filtrar los registros que no tienen correspondencia en el DataFrame derecho
+        df_only_left = df_merged[df_merged['_merge'] == 'left_only']
+
+        # Eliminar la columna '_merge'
+        df_only_left = df_only_left.drop(columns=['_merge']+df_django.columns.to_list())
+
+      
+    else:
+        df_only_left = df
+
+
+    #print(df_only_left.columns.tolist())
 
 
     
@@ -74,16 +84,19 @@ def run():
         
         land_record = {key: None if pd.isna(record.get(value)) else record.get(value)
                            for key, value in land_mapper.items()}
-
-        land_records_unique.append(land_record)
+        land_record['street_type_id'] = None if  land_record['street_type_id']=='-' else land_record['street_type_id']
+        
+        land_record['resolution_type'] = '1' if record['PARTIDA'] else None 
 
         longitude = land_record.get('longitude')
         latitude = land_record.get('latitude')
         land_record.update({
                 
-                'source': 'carga_masiva',
+                'source': 'registro_predios' if record['NOM_PC'] == 'PLATAFORMA' else 'mantenimiento_carto' if  record['NOM_PC'] == 'PCF' else 'carga_masiva' ,
                 'status': int(1 if longitude and latitude else 0)
             })
+        
+        land_records_unique.append(Land(**land_record))
 
         if len(land_records_unique) == batch_size : 
             Land.objects.bulk_create(land_records_unique)
