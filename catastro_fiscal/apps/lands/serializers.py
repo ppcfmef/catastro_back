@@ -166,11 +166,9 @@ class LandOwnerDetailSRTMSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        #print('validated_data>>',validated_data)
         if self.exists_detail(data=validated_data):
             landOwnerDetails=LandOwnerDetail.objects.filter(owner=validated_data.get('owner'), land=validated_data.get('land'),ubigeo =validated_data.get('ubigeo'))
-            landOwnerDetails.update(estado=0)
-            #raise serializers.ValidationError({'message':'Ya existe esta relacion entre predio y contribuyente'})
+            landOwnerDetails.update(estado_dj=3)
 
         detail = LandOwnerDetail.objects.create(**validated_data)
 
@@ -245,28 +243,60 @@ class LandOwnerSRTMSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def create(self, validated_data):
         #print('validated_data>>',validated_data)
+        print('validated_data>>',validated_data)
+        print(self.exists_owner(data=validated_data))
         if self.exists_owner(data=validated_data) :
-            raise serializers.ValidationError({'message':'Ya existe el contribuyente en este distrito','status':False}  )
+            #print('existe')
+            owner = LandOwner.objects.filter(ubigeo=validated_data.get('ubigeo'), code=validated_data.get('code'))[0]
+            #validated_data['id']= owner.id
+            #land.save(**validated_data)
+            #LandOwner.objects.update(**validated_data)
 
 
-        domicilios =validated_data.pop('domicilios')   if validated_data.get('domicilios') else []
-        contactos =validated_data.pop('contactos')   if validated_data.get('contactos') else []
-        owner = LandOwner.objects.create(**validated_data)
+            Domicilio.objects.filter(contribuyente_id = owner.id).delete()
+            Contacto.objects.filter(contribuyente_id = owner.id).delete()
 
-        for domicilio in domicilios:
-            domicilio.update({"contribuyente": owner})
-            Domicilio.objects.create(**domicilio)
-        
-        for contacto in contactos:
-            contacto.update({"contribuyente": owner})
-            Contacto.objects.create(**contacto)
+            domicilios =validated_data.pop('domicilios')   if validated_data.get('domicilios') else []
+            contactos =validated_data.pop('contactos')   if validated_data.get('contactos') else []
 
-        # if validated_data.get('domicilios'):
-        #     domicilios = validated_data.pop('domicilios')
-        #     print('domicilios>>',domicilios)
 
-                
-        return owner
+            for domicilio in domicilios:
+                domicilio.update({"contribuyente": owner})
+                Domicilio.objects.create(**domicilio)
+            
+            for contacto in contactos:
+                contacto.update({"contribuyente": owner})
+                Contacto.objects.create(**contacto)
+
+            return owner
+            #raise owner
+
+
+            #raise serializers.va({'message':'Ya existe el contribuyente en este distrito','status':False}  )
+
+            #raise serializers.ValidationError({'message':'Ya existe el contribuyente en este distrito','status':False}  )
+
+
+        else:
+            #print('no existe')
+            domicilios =validated_data.pop('domicilios')   if validated_data.get('domicilios') else []
+            contactos =validated_data.pop('contactos')   if validated_data.get('contactos') else []
+            owner = LandOwner.objects.create(**validated_data)
+
+            for domicilio in domicilios:
+                domicilio.update({"contribuyente": owner})
+                Domicilio.objects.create(**domicilio)
+            
+            for contacto in contactos:
+                contacto.update({"contribuyente": owner})
+                Contacto.objects.create(**contacto)
+
+            # if validated_data.get('domicilios'):
+            #     domicilios = validated_data.pop('domicilios')
+            #     print('domicilios>>',domicilios)
+
+                    
+            return owner
 
 
 

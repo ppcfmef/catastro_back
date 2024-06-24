@@ -7,7 +7,8 @@ from os import path
 
 def contribuyente_map():
     return {
-    'ubigeo_id': 'UBIGEO' ,
+        'sec_ejec':'CODIGO_MUNICIPALIDAD',
+    'ubigeo_id': 'UBIGEO_REGISTRO' ,
     'code': 'CODIGO_CONTRIBUYENTE'	,
     'tipo_contribuyente_id': 'CODIGO_TIPO_DE_CONTRIBUYENTE',
     'document_type_id':'CODIGO_TIPO_DOCUMENTO_IDENTIDAD' ,
@@ -16,8 +17,8 @@ def contribuyente_map():
     'paternal_surname':'APELLIDO_PATERNO',
     'maternal_surname': 'APELLIDO_MATERNO',
     'description_owner':'RAZON_SOCIAL',
-    'email':	'CORREO',
-    'phone':	'TELEFONO',
+    # 'email':	'CORREO',
+    # 'phone':	'TELEFONO',
 
 
     }
@@ -89,17 +90,24 @@ def run():
             owner_records_unique = []
             
     LandOwner.objects.bulk_create(owner_records_unique)
-
+    
+    #Domicilio.objects.filter(ubigeo__in=['040403', '040502', '040509', '040510', '040513', '040604', '040607', '040811', '150401', '061005', '250201', '100704', '110404', '021510']).values('id','ubigeo_id','code')
+    
     queryset_domicilios = LandOwner.objects.filter(ubigeo__in=['040403', '040502', '040509', '040510', '040513', '040604', '040607', '040811', '150401', '061005', '250201', '100704', '110404', '021510']).values('id','ubigeo_id','code')
     
     df_django_domicilios = pd.DataFrame(list(queryset_domicilios))
     
     df_merged_cont_domicilio = pd.merge(df, df_django_domicilios,left_on=['UBIGEO','CODIGO_CONTRIBUYENTE'] ,right_on=['ubigeo_id','code'] , indicator=True)
     
+    
     df_merged_contribuyente_domicilio = df_merged_cont_domicilio.drop(columns=['_merge']+['ubigeo_id','code'])
     
 
     domicilio_records= []
+    
+    domicilios  = Domicilio.objects.filter(contribuyente_id = list(queryset_domicilios.values_list(id,flat=True)))
+    domicilios.delete()
+
     
     for index, record in df_merged_contribuyente_domicilio.iterrows():
         domicilio_record = {key: None if pd.isna(record.get(value)) else record.get(value)
