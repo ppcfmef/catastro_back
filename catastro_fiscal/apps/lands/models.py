@@ -295,10 +295,12 @@ class Land(LandBase):
 
 
 class LandOwnerDetail(models.Model):
+    
     land = models.ForeignKey(Land, on_delete=models.CASCADE, db_column='id_predio',related_name='predio_contribuyente')
     owner = models.ForeignKey(LandOwner, on_delete=models.CASCADE, db_column='id_propietario',related_name='contribuyentes')
     cpm = models.CharField(max_length=50, db_column='cod_cpm', blank=True, null=True)
     cup = models.CharField(max_length=20, db_column='cod_cpu', blank=True, null=True)
+    code = models.CharField(max_length=50, db_column='cod_contr', blank=True, null=True)
     area_terreno =  models.FloatField( blank=True, null=True)
     area_tot_terr_comun =  models.FloatField( blank=True, null=True)
     area_construida = models.FloatField( blank=True, null=True)
