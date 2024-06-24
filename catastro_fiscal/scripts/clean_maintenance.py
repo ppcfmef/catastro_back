@@ -2,8 +2,8 @@ from apps.maintenance.models import *
 
 
 def run():
-    ApplicationObservationDetail.objects.filter(application__ubigeo='100704').delete()
-    ApplicationLandDetail.objects.filter(application__ubigeo='100704').delete()
-    ApplicationResultDetail.objects.filter(application__ubigeo='100704').delete()
-    Result.objects.filter(ubigeo='100704').delete()
-    Application.objects.filter(ubigeo='100704').delete()
+    ApplicationObservationDetail.objects.filter(application__ubigeo__in=['040403', '040502', '040509', '040510', '040513', '040604', '040607', '040811', '150401', '061005', '250201', '100704', '110404', '021510']).delete()
+    ApplicationLandDetail.objects.filter(application__ubigeo__in=['040403', '040502', '040509', '040510', '040513', '040604', '040607', '040811', '150401', '061005', '250201', '100704', '110404', '021510']).delete()
+    ApplicationResultDetail.objects.filter(application__ubigeo__in=['040403', '040502', '040509', '040510', '040513', '040604', '040607', '040811', '150401', '061005', '250201', '100704', '110404', '021510']).delete()
+    Result.objects.filter(ubigeo__in=['040403', '040502', '040509', '040510', '040513', '040604', '040607', '040811', '150401', '061005', '250201', '100704', '110404', '021510']).delete()
+    Application.objects.filter(ubigeo__in=['040403', '040502', '040509', '040510', '040513', '040604', '040607', '040811', '150401', '061005', '250201', '100704', '110404', '021510']).delete()
