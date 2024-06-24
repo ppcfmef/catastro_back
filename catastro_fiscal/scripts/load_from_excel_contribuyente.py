@@ -7,8 +7,12 @@ from os import path
 
 def contribuyente_map():
     return {
+<<<<<<< HEAD
         'sec_ejec':'CODIGO_MUNICIPALIDAD',
     'ubigeo_id': 'UBIGEO_REGISTRO' ,
+=======
+    'ubigeo_id': 'UBIGEO' ,
+>>>>>>> 31fff1833d6d80d6c83a8bbe1535f32e50298d43
     'code': 'CODIGO_CONTRIBUYENTE'	,
     'tipo_contribuyente_id': 'CODIGO_TIPO_DE_CONTRIBUYENTE',
     'document_type_id':'CODIGO_TIPO_DOCUMENTO_IDENTIDAD' ,
@@ -17,8 +21,13 @@ def contribuyente_map():
     'paternal_surname':'APELLIDO_PATERNO',
     'maternal_surname': 'APELLIDO_MATERNO',
     'description_owner':'RAZON_SOCIAL',
+<<<<<<< HEAD
     # 'email':	'CORREO',
     # 'phone':	'TELEFONO',
+=======
+    'email':	'CORREO',
+    'phone':	'TELEFONO',
+>>>>>>> 31fff1833d6d80d6c83a8bbe1535f32e50298d43
 
 
     }
@@ -90,15 +99,22 @@ def run():
             owner_records_unique = []
             
     LandOwner.objects.bulk_create(owner_records_unique)
+<<<<<<< HEAD
     
     #Domicilio.objects.filter(ubigeo__in=['040403', '040502', '040509', '040510', '040513', '040604', '040607', '040811', '150401', '061005', '250201', '100704', '110404', '021510']).values('id','ubigeo_id','code')
     
+=======
+
+>>>>>>> 31fff1833d6d80d6c83a8bbe1535f32e50298d43
     queryset_domicilios = LandOwner.objects.filter(ubigeo__in=['040403', '040502', '040509', '040510', '040513', '040604', '040607', '040811', '150401', '061005', '250201', '100704', '110404', '021510']).values('id','ubigeo_id','code')
     
     df_django_domicilios = pd.DataFrame(list(queryset_domicilios))
     
     df_merged_cont_domicilio = pd.merge(df, df_django_domicilios,left_on=['UBIGEO','CODIGO_CONTRIBUYENTE'] ,right_on=['ubigeo_id','code'] , indicator=True)
+<<<<<<< HEAD
     
+=======
+>>>>>>> 31fff1833d6d80d6c83a8bbe1535f32e50298d43
     
     df_merged_contribuyente_domicilio = df_merged_cont_domicilio.drop(columns=['_merge']+['ubigeo_id','code'])
     
