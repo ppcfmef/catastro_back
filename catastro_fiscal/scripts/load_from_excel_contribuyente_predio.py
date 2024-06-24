@@ -5,14 +5,8 @@ from apps.lands.models import Land, LandOwner, LandOwnerDetail, UploadHistory, D
 from os import path
 
 
-<<<<<<< HEAD
-def predio_contribuyente_predio_map():
-    return {
-   
-=======
 def predio_contribuyente_map():
     return {
->>>>>>> 31fff1833d6d80d6c83a8bbe1535f32e50298d43
         'cup': 'COD_CPU' ,
         'cpm': 'COD_CPM' ,
         'code':'COD_CONTRIBUYENTE',
@@ -26,31 +20,17 @@ def predio_contribuyente_map():
         'area_tot_cons_comun':'AREA_TOT_CONS_COMUN',
         'por_propiedad':'POR_PROPIEDAD',
         'tip_transferencia_id':'TIP_TRANSFERENCIA_ID',
-<<<<<<< HEAD
-        'tip_uso_predio_id':'TIP_USO_PREDIO_ID',
-        'tip_propiedad_id':'TIP_PROPIEDAD_ID',
-        'fec_transferencia':'FECHA_TRANSFERENCIA',
-=======
          'tip_uso_predio_id':'TIP_USO_PREDIO_ID',
           'tip_propiedad_id':'TIP_PROPIEDAD_ID',
           'fec_transferencia':'FECHA_TRANSFERENCIA',
->>>>>>> 31fff1833d6d80d6c83a8bbe1535f32e50298d43
         'longitud_frente':'LONGITUD_FRENTE',
         'cantidad_habitantes':'CANTIDAD_HABITANTES',
         'pre_inhabitable':'PRE_INHABITABLE',
         'par_registral':'PAR_REGISTRAL',
         'numero_dj':'NUMERO_DJ',
-<<<<<<< HEAD
-        'fecha_dj':'FECHA_DJ',
-        'usuario_creacion':'USUARIO_REGISTRADOR',
-        'fecha_adquisicion':'FECHA_ADQUISICION',
-        'anio_determinacion':'ANIO_DETERMINACION',
-
-=======
     'fecha_dj':'FECHA_DJ',
     'usuario_creacion':'USUARIO_REGISTRADOR',
     #'anio':'ANIO_DETERMINACION',
->>>>>>> 31fff1833d6d80d6c83a8bbe1535f32e50298d43
     
     }
 
@@ -66,11 +46,7 @@ def run():
 
     df['FECHA_TRANSFERENCIA'] = pd.to_datetime(df['FECHA_TRANSFERENCIA'])
     df['FECHA_DJ'] = pd.to_datetime(df['FECHA_DJ'])
-<<<<<<< HEAD
-    df['FECHA_ADQUISICION'] =pd.to_datetime(df['FECHA_ADQUISICION'])
-=======
     
->>>>>>> 31fff1833d6d80d6c83a8bbe1535f32e50298d43
     queryset_land_owner = LandOwnerDetail.objects.filter(ubigeo__in=['040403', '040502', '040509', '040510', '040513', '040604', '040607', '040811', '150401', '061005', '250201', '100704', '110404', '021510']).values('id','cup','ubigeo_id','code')
 
     queryset_land = Land.objects.filter(ubigeo__in=['040403', '040502', '040509', '040510', '040513', '040604', '040607', '040811', '150401', '061005', '250201', '100704', '110404', '021510']).values('id','cup','ubigeo_id')
@@ -81,21 +57,12 @@ def run():
     df_django_land = pd.DataFrame(list(queryset_land))
     df_django_owner = pd.DataFrame(list(queryset_owner))
     df_django_land_owner = pd.DataFrame(list(queryset_land_owner))
-<<<<<<< HEAD
-    predio_cont_map = predio_contribuyente_predio_map()
-=======
     predio_cont_map = predio_contribuyente_map()
->>>>>>> 31fff1833d6d80d6c83a8bbe1535f32e50298d43
 
     batch_size =100
 
     if len(df_django_land_owner)>0:
-<<<<<<< HEAD
-        print('df_django_land_owner',df_django_land_owner)
-        df_merged_diff =  pd.merge(df, df_django_land_owner, how='left',left_on=['UBIGEO','COD_CONTRIBUYENTE','COD_CPU'] ,right_on=['ubigeo_id','code','cup'] , indicator=True)
-=======
         df_merged_diff =  pd.merge(df, df_django_land_owner, how='left',left_on=['UBIGEO','CODIGO_CONTRIBUYENTE','COD_CPU'] ,right_on=['ubigeo_id','code','cup'] , indicator=True)
->>>>>>> 31fff1833d6d80d6c83a8bbe1535f32e50298d43
         df_merged_diff = df_merged_diff[df_merged_diff['_merge'] == 'left_only']
 
             # Eliminar la columna '_merge'

@@ -243,8 +243,8 @@ class LandOwnerSRTMSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def create(self, validated_data):
         #print('validated_data>>',validated_data)
-        print('validated_data>>',validated_data)
-        print(self.exists_owner(data=validated_data))
+        #print('validated_data>>',validated_data)
+        #print(self.exists_owner(data=validated_data))
         if self.exists_owner(data=validated_data) :
             #print('existe')
             owner = LandOwner.objects.filter(ubigeo=validated_data.get('ubigeo'), code=validated_data.get('code'))[0]
