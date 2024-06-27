@@ -7,7 +7,8 @@ from os import path
 
 def land_map():
     return {
-        'id_lote_puerta':'ID_LOTE_P',
+        'id_lote_puerta' : 'id_lote_sirv',
+        'id_lote_p':'ID_LOTE_P',
         'ubigeo_id': 'UBIGEO',
         'cpm': 'COD_PRE',
         'cup': 'COD_CPU',
