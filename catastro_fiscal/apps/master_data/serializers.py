@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import (
-    Institution, MasterTypeUrbanUnit, MasterSide, MasterCodeStreet, MasterPropertyType, MasterResolutionType
+    Institution, MasterTypeUrbanUnit, MasterSide, MasterCodeStreet, MasterPropertyType, MasterResolutionType,ResolutionTypeDistrito
 )
 
 
@@ -39,6 +39,32 @@ class MasterResolutionTypeSerializer(serializers.ModelSerializer):
         model = MasterResolutionType
         fields = '__all__'
 
+
+class ResolutionTypeDistritoSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = ResolutionTypeDistrito
+        fields = '__all__'
+
+
+class ResolutionTypeDistritoSerializer(serializers.ModelSerializer):
+    
+    id = serializers.CharField(source='resolucion.id')
+
+    class Meta:
+        model = ResolutionTypeDistrito
+        fields = '__all__'
+
+
+
+# class ResolutionTypeDistritoSerializerList(serializers.ModelSerializer):
+#     id_resolucion = serializers.CharField(source='resolucion.id')
+#     name = serializers.CharField(source='resolucion.name')
+#     description = serializers.CharField(source='resolucion.description')
+#     short_name = serializers.CharField(source='resolucion.short_name')
+#     class Meta:
+#         model = ResolutionTypeDistrito
+#         fields = ('id','id_resolucion','name','description','short_name','estado_registro','estado_mantenimiento')
 
 class MasterDomainSerilizer(serializers.Serializer):
     uu_type = MasterTypeUrbanUnitSerializer(many=True)

@@ -10,7 +10,7 @@ def predio_contribuyente_map():
         'sec_ejec':'SEC_EJEC',
         'cup': 'COD_CPU' ,
         'cpm': 'COD_CPM' ,
-        'code':'CONTRIBUYENTE_NUMERO',
+        'code':'COD_CONTRIBUYENTE',
         'ubigeo_id':'UBIGEO',
         'land_id':'land_id',
         'owner_id':'owner_id',
@@ -43,9 +43,9 @@ def predio_contribuyente_map():
 
 def run():
   
-    excel_file = path.join(settings.MEDIA_ROOT , 'contribuyente_predio.xls')
+    excel_file = path.join(settings.MEDIA_ROOT , 'contribuyente_predio.xlsx')
 
-    df = pd.read_excel(excel_file, dtype={'UBIGEO':str ,'CONTRIBUYENTE_NUMERO':str})
+    df = pd.read_excel(excel_file, dtype={'UBIGEO':str ,'COD_CONTRIBUYENTE':str})
 
     df['FECHA_TRANSFERENCIA'] = pd.to_datetime(df['FECHA_TRANSFERENCIA'])
     df['FECHA_DJ'] = pd.to_datetime(df['FECHA_DJ'])
@@ -65,7 +65,7 @@ def run():
     batch_size =100
 
     if len(df_django_land_owner)>0:
-        df_merged_diff =  pd.merge(df, df_django_land_owner, how='left',left_on=['UBIGEO','CONTRIBUYENTE_NUMERO','COD_CPU'] ,right_on=['ubigeo_id','code','cup'] , indicator=True)
+        df_merged_diff =  pd.merge(df, df_django_land_owner, how='left',left_on=['UBIGEO','COD_CONTRIBUYENTE','COD_CPU'] ,right_on=['ubigeo_id','code','cup'] , indicator=True)
         df_merged_diff = df_merged_diff[df_merged_diff['_merge'] == 'left_only']
 
             # Eliminar la columna '_merge'
@@ -81,7 +81,7 @@ def run():
     df_merged = df_merged.rename(columns={'id':'land_id'})
 
 
-    df_merged = pd.merge(df_merged, df_django_owner,left_on=['UBIGEO','CONTRIBUYENTE_NUMERO'] ,right_on=['ubigeo_id','code'] , indicator=True)
+    df_merged = pd.merge(df_merged, df_django_owner,left_on=['UBIGEO','COD_CONTRIBUYENTE'] ,right_on=['ubigeo_id','code'] , indicator=True)
     df_merged = df_merged.drop(columns=['_merge','ubigeo_id','code'])    
 
     df_merged = df_merged.rename(columns={'id':'owner_id'})
@@ -99,7 +99,7 @@ def run():
         
         
 
-        record_unique['estado_dj']= 1 if record['ESTADO_REGISTRO_DJ'] =='ACTIVO' else 0 
+        record_unique['estado_dj']= 1 if record['ESTADO_REGISTRO'] =='ACTIVO' else 0 
         #print('record_unique>>',record_unique)
         records_unique.append( LandOwnerDetail(**record_unique))
 
