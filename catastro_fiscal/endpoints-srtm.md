@@ -32,28 +32,31 @@ https://vmd120205.contaboserver.net
 *17 => usuario de creacion
 *18 => estado
 **/
-{ 
-"ubigeo":"040501", 
-"codigoContribuyente":"100000011", 
-"codigoPredioUnico":"30151040-0001-9",
-"area_terreno":100.00,
+[{ 
+"ubigeoPredio":"100105", 
+"municipalidadId":1,
+"contribuyenteNumero":"1000000002", 
+"codigoPredioUnico":"43465339-0001-1",
+"areaTerreno":100.00,
 "areaTotTerrComun": 50.00,
 "areaConstruida": 50.00,
 "areaTotConsComun": 50.00,
 "porPropiedad": 50.00,
-"tipTransferencia": 1,
-"tipUsoPredio": 1,
-"tipPropiedad": 1,
-"fec_transferencia": "2024-06-14",
+"tipTransferenciaId": 1,
+"tipUsoPredioId": 1,
+"tipPropiedadId": 1,
+"fecTransferencia": "2024-06-14",
 "longitudFrente": 100.00,
 "cantidad_habitantes": 10,
 "preInhabitable": 0,
 "parRegistral": "2000-59-6",
-"numero_dj": "200000",
-"fecha_dj": "2024-06-14",
-"usuarioCreacion": "TEST",
-"estado": 1
-}
+"numeroDj": "200000",
+"fechaDj": "2024-06-14",
+"usuarioAuditoria": "TEST",
+"estadoDjId": 1,
+"motivoDjId": 1
+           
+}]
 ```
 
  
@@ -70,34 +73,6 @@ status 201
 }
 ``` 
 
-##### response:
-
-```json
-/**
-status 400
-**/
-{
-   "success" : false,
-   "message" : "Contribuyente no existe",
-  
-}
-```
-
-```json
-{
-   "success" : false,
-   "message" : "Distrito no existe",
-  
-}
-```
-
-```json
-{
-   "success" : false,
-   "message" : "Predio no existe",
-  
-}
-```
 
 
 
@@ -145,17 +120,22 @@ contactos=>array
    *2 => es principal (1 si es principal , 0 si no lo es)
    *3 => tipo de medio de contacto
 **/
+
 {
-"ubigeo":"040501", 
-"codigoContribuyente":"100000011", 
+"ubigeoRegistro":"100105", 
+"municipalidadId":3,
+"contribuyenteNumero":"1000000002", 
 "docIdentidadId":1, 
+"tipContribuyenteId":1, 
 "numDocIdentidad":"45257503", 
 "nombres":"frank", 
 "apePaterno":"soto", 
-"apeMaterno":"peña", 
+"apeMaterno":"peña",
+"razonSocial":"", 
 "domicilios":[
 {
-"ubigeo":"040501",
+"ubigeoDomicilio":"040501",
+"tipoDomicilio":1, 
 "desDomicilio":"ejemplo 1",
 "latitud":0,
 "longitud":0,
@@ -195,17 +175,3 @@ status 201
 }
 ```
 
-
-
-###### response:
-
-```json
-/**
-status 400
-**/
-{
-   "success" : false,
-   "message" : "Ya existe el contribuyente en este distrito",
-  
-}
-```

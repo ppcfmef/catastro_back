@@ -7,12 +7,13 @@ from os import path
 
 def land_map():
     return {
-        'id_lote_puerta':'ID_LOTE_P',
+        'id_lote_puerta' : 'id_lote_sirv',
+        'id_lote_p':'ID_LOTE_P',
         'ubigeo_id': 'UBIGEO',
         'cpm': 'COD_PRE',
         'cup': 'COD_CPU',
         'resolution_document':'PARTIDA',
-
+        'id_land_cartographic': 'ID_PRE',
         'sec_ejec': 'SEC_EJEC',
         'id_plot': 'ID_LOTE',
         'cod_sect': 'COD_SECT',
@@ -32,7 +33,6 @@ def land_map():
         'indoor': 'INTERIOR',
         'floor': 'PISO',
         'km': 'KM',
-
         'landmark': 'REFERENCIA',
         'municipal_address': 'DIR_MUN',
         'urban_address': 'DIR_URB',
@@ -41,8 +41,6 @@ def land_map():
         'id_aranc': 'ID_ARANC',
         'land_area': 'Area_terreno',
        
-
-
     }
 
 
@@ -51,7 +49,7 @@ def land_map():
 
 
 def run():
-    excel_file = path.join(settings.MEDIA_ROOT , 'predio.xlsx')
+    excel_file = path.join(settings.MEDIA_ROOT , 'predio.xls')
 
     df = pd.read_excel(excel_file, dtype={'UBIGEO':str,'COD_SECT': str,'COD_MZN':str,'COD_UU':str,'COD_LOTE':str,'TIPO_UU':str,'TIP_VIA':str,'SEC_EJEC':str})
 

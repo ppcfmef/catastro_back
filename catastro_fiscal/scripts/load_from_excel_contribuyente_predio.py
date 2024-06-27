@@ -7,6 +7,7 @@ from os import path
 
 def predio_contribuyente_map():
     return {
+        'sec_ejec':'SEC_EJEC',
         'cup': 'COD_CPU' ,
         'cpm': 'COD_CPM' ,
         'code':'COD_CONTRIBUYENTE',
@@ -29,7 +30,9 @@ def predio_contribuyente_map():
         'par_registral':'PAR_REGISTRAL',
         'numero_dj':'NUMERO_DJ',
     'fecha_dj':'FECHA_DJ',
-    'usuario_creacion':'USUARIO_REGISTRADOR',
+    'usuario_auditoria':'USUARIO_REGISTRADOR',
+
+
     #'anio':'ANIO_DETERMINACION',
     
     }
@@ -62,7 +65,7 @@ def run():
     batch_size =100
 
     if len(df_django_land_owner)>0:
-        df_merged_diff =  pd.merge(df, df_django_land_owner, how='left',left_on=['UBIGEO','CODIGO_CONTRIBUYENTE','COD_CPU'] ,right_on=['ubigeo_id','code','cup'] , indicator=True)
+        df_merged_diff =  pd.merge(df, df_django_land_owner, how='left',left_on=['UBIGEO','COD_CONTRIBUYENTE','COD_CPU'] ,right_on=['ubigeo_id','code','cup'] , indicator=True)
         df_merged_diff = df_merged_diff[df_merged_diff['_merge'] == 'left_only']
 
             # Eliminar la columna '_merge'
@@ -96,7 +99,7 @@ def run():
         
         
 
-        record_unique['estado']= 1 if record['ESTADO_REGISTRO'] =='ACTIVO' else 0 
+        record_unique['estado_dj']= 1 if record['ESTADO_REGISTRO'] =='ACTIVO' else 0 
         #print('record_unique>>',record_unique)
         records_unique.append( LandOwnerDetail(**record_unique))
 

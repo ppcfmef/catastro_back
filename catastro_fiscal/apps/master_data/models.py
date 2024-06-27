@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-
+from apps.places.models import District
 
 class Institution(models.Model):
     name = models.CharField(_('name'), max_length=150)
@@ -56,10 +56,26 @@ class MasterPropertyType(MasterDomain):
 
 
 class MasterResolutionType(MasterDomain):
+    tipo =  models.IntegerField(blank=True, null=True, default=1)
+    estado_registro  =  models.IntegerField(blank=True, null=True, default=1)
+    estado_mantenimiento=  models.IntegerField(blank=True, null=True, default=1)
+
+
     class Meta:
         db_table = 'M_TDOC_RES'
         verbose_name = _('resolution type')
         verbose_name_plural = _('resolution types')
+
+class ResolutionTypeDistrito(models.Model):
+    id  = models.AutoField(primary_key=True,)
+    ubigeo = models.ForeignKey(District, on_delete=models.DO_NOTHING, related_name='distrito',blank=True, null=True)
+    resolucion = models.ForeignKey(MasterResolutionType, on_delete=models.DO_NOTHING, related_name='resolucion',blank=True, null=True)
+    estado = models.IntegerField(blank=True, null=True, default=1)
+    class Meta:
+        db_table = 'TDOC_RES_DISTRITO'
+        verbose_name = _('tipo de resolucion distrito')
+        verbose_name_plural = _('tipos de resolucion distrito')
+
 
 class MasterTipoDocumentoIdentidad(MasterDomain):
     class Meta:
