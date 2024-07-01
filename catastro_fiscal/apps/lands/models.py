@@ -101,11 +101,13 @@ class TemploralUploadRecord(models.Model):
 class LandOwner(AbstractAudit):
     id = models.AutoField(primary_key=True)
     ubigeo = models.ForeignKey(District, on_delete=models.CASCADE, db_column='ubigeo')
+    
     code = models.CharField(max_length=50, db_column='cod_contr')
     document_type = models.ForeignKey(MasterTipoDocumentoIdentidad, on_delete=models.DO_NOTHING,blank=True, null=True, db_column='tip_doc')
     tipo_contribuyente = models.ForeignKey(MasterTipoContribuyente, on_delete=models.DO_NOTHING,blank=True, null=True)
     dni = models.CharField(max_length=20, blank=True, null=True, db_column='doc_iden')  # ToDo: Change for document
     name = models.CharField(max_length=150, blank=True, null=True, db_column='nombre')
+    sec_ejec =  models.IntegerField( blank=True, null=True)
     paternal_surname = models.CharField(max_length=150, blank=True, null=True, db_column='ap_pat')
     maternal_surname = models.CharField(max_length=150, blank=True, null=True, db_column='ap_mat')
     description_owner = models.CharField(max_length=150, blank=True, null=True, db_column='contribuyente')
@@ -156,7 +158,7 @@ class TipoMedioContacto(models.Model):
 class Contacto(models.Model):
     id= models.AutoField(primary_key=True)
     contribuyente = models.ForeignKey(LandOwner, models.DO_NOTHING, related_name='contacto', blank=True, null=True)
-    decripcion = models.CharField(max_length=100, blank=True, null=True)
+    descripcion = models.CharField(max_length=100, blank=True, null=True)
     principal  = models.IntegerField(blank=True, null=True)
     tipo_med_contacto  = models.ForeignKey(TipoMedioContacto, models.DO_NOTHING,blank=True, null=True)
 
