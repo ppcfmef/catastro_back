@@ -5,8 +5,10 @@ from apps.maintenance.models import ApplicationLandDetail , Application
 from .tasks import process_upload_tenporal, process_upload_land
 from .services.upload_temporal import UploadTemporalService
 from .services.upload_land import UploadLandService
-
+from rest_framework.response import Response
 from apps.maintenance.serializers import ApplicationSerializer,ApplicationListSerializer
+from rest_framework import  status
+import json
 
 class UploadHistoryListSerializer(serializers.ModelSerializer):
     class Meta:
@@ -154,28 +156,125 @@ class LandOwnerDetailSerializer(serializers.ModelSerializer):
         model = LandOwner
         fields = '__all__'
         
-        
-class LandOwnerDetailSRTMSerializer(serializers.ModelSerializer):
 
+
+
+
+class LandDetailSRTMSerializer(serializers.Serializer):
+
+    ubigeo_predio =  serializers.CharField()
+    municipalidad_id =  serializers.IntegerField(allow_null=True)
+    
+    codigo_predio_unico =  serializers.CharField()
+    area_terreno = serializers.FloatField(allow_null=True)
+    area_tot_terr_comun = serializers.FloatField(allow_null=True)
+    area_construida = serializers.FloatField(allow_null=True)
+    area_tot_cons_comun = serializers.FloatField(allow_null=True)
+    por_propiedad = serializers.FloatField(allow_null=True)
+    tip_transferencia_id = serializers.IntegerField(allow_null=True)
+    tip_uso_predio_id= serializers.IntegerField(allow_null=True)
+    tip_propiedad_id = serializers.IntegerField(allow_null=True)
+    fec_transferencia = serializers.CharField(allow_null=True)
+    longitud_frente = serializers.FloatField(allow_null=True)
+    cantidad_habitantes = serializers.IntegerField(allow_null=True)
+    pre_inhabitable = serializers.IntegerField(allow_null=True)
+    par_registral  =  serializers.CharField(allow_null=True)
+    numero_dj  =  serializers.CharField(allow_null=True)
+    fecha_dj = serializers.CharField(allow_null=True)
+    usuario_auditoria =  serializers.CharField(allow_null=True)
+    estado_dj_id = serializers.IntegerField(allow_null=True)
+    motivo_dj_id = serializers.IntegerField(allow_null=True)
+    anio_determinacion = serializers.IntegerField(allow_null=True,required= False)
+    longitud_frente =  serializers.FloatField(allow_null=True,required= False)
     class Meta:
-        model = LandOwnerDetail
+        #model = LandOwnerDetail
         fields = '__all__'
         
+
+
+    
+class LandOwnerDetailSRTMSerializer(serializers.Serializer):
+    contribuyente_numero =  serializers.CharField()
+    predios = LandDetailSRTMSerializer(many=True,)
+    class Meta:
+        
+        fields = '__all__'
     def exists_detail(self, data):
         return LandOwnerDetail.objects.filter(owner=data.get('owner'), land=data.get('land'),ubigeo =data.get('ubigeo')).exists()
+    
+    def create_detail(self, record):
+        code_owner = record.get('contribuyente_numero',None)
+        cpu = record.get('codigo_predio_unico',None)
+        cpm = record.get('codigo_predio_municipal',None)
+        ubigeo = record.get('ubigeo_predio')
+       
+        data = {
+                'sec_ejec' :record.get('municipalidad_id',None),
 
-    @transaction.atomic
-    def create(self, validated_data):
-        if self.exists_detail(data=validated_data):
-            landOwnerDetails=LandOwnerDetail.objects.filter(owner=validated_data.get('owner'), land=validated_data.get('land'),ubigeo =validated_data.get('ubigeo'))
+                'cup' : record.get('codigo_predio_unico',None),
+                'cpm' : record.get('codigo_predio_municipal',None),
+                'ubigeo_id' : record.get('ubigeo_predio',None),
+                'area_terreno':record.get('area_terreno',None),
+                'area_tot_terr_comun': record.get('area_tot_terr_comun',None),
+                'area_construida': record.get('area_construida',None),
+                'area_tot_cons_comun': record.get('area_tot_cons_comun',None),
+                'por_propiedad': record.get('por_propiedad',None),
+                'tip_transferencia_id': record.get('tip_transferencia_id',None),
+                'tip_uso_predio_id': record.get('tip_uso_predio_id',None),
+                'tip_propiedad_id': record.get('tip_propiedad_id',None),
+                'fec_transferencia': record.get('fec_transferencia',None),
+                'longitud_frente': record.get('longitud_frente',None),
+                'cantidad_habitantes': record.get('cantidad_habitantes',None),
+                'pre_inhabitable': record.get('pre_inhabitable',None),
+                'par_registral': record.get('par_registral',None),
+                'numero_dj': record.get('numero_dj',None),
+                'fecha_dj': record.get('fecha_dj',None),
+                'usuario_auditoria': record.get('usuario_auditoria',None),
+                'estado_dj': record.get('estado_dj_id',None),
+                'motivo_dj': record.get('motivo_dj_id',None),
+                'anio_determinacion':record.get('anio_determinacion',None),
+               
+            }
+        
+        
+        owners=LandOwner.objects.filter(code =code_owner,ubigeo = ubigeo)
+        lands=Land.objects.filter(cup =cpu,ubigeo = ubigeo)    
+
+        if len(owners)==0:
+            raise serializers.ValidationError({'message':'No existe el contribuyente','status':False})
+        
+        if len(lands)==0:
+            raise serializers.ValidationError({'message':'No existe el predio','status':False})
+        
+        owner = owners[0]
+        land = lands[0]
+
+
+        
+        data.update({'land_id':land.id,'owner_id': owner.id})
+       
+            
+        if self.exists_detail(data=data):
+            landOwnerDetails=LandOwnerDetail.objects.filter(owner=data.get('owner'), land=data.get('land'),ubigeo =data.get('ubigeo'))
             landOwnerDetails.update(estado_dj=3)
-
-        detail = LandOwnerDetail.objects.create(**validated_data)
-
-
-                
+        detail = LandOwnerDetail.objects.create(**data)
         return detail
     
+
+    @transaction.atomic
+    def create(self, validate_data):
+        predios=validate_data.pop('predios')
+        for predio in predios:
+
+
+            json_data = json.loads(json.dumps(predio))
+            
+
+            json_data['contribuyente_numero']=validate_data.get('contribuyente_numero')
+
+            serializer_predio=self.create_detail(json_data)
+
+        return True
 
 
 class LandOwnerSaveSerializer(serializers.ModelSerializer):
@@ -219,39 +318,67 @@ class LandOwnerSaveSerializer(serializers.ModelSerializer):
 class ContactoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contacto
-        fields = '__all__'
+        fields = ('descripcion','principal','tipo_med_contacto')
 
 class DomicilioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Domicilio
-        fields = '__all__'
+        fields = ('ubigeo_domicilio','tipo_domicilio','des_domicilio','latitud','longitud','referencia')
 
+class MessageSerializer(serializers.Serializer):
+    message=serializers.CharField()
+    status = serializers.BooleanField()
 
-
-
-class LandOwnerSRTMSerializer(serializers.ModelSerializer):
+class LandOwnerSRTMSerializer(serializers.Serializer):
+    ubigeo_registro=serializers.CharField()
+    municipalidad_id  = serializers.IntegerField()
+    contribuyente_numero  = serializers.CharField()
+    doc_identidad_id  = serializers.IntegerField()
+    tip_contribuyente_id = serializers.IntegerField()
+    num_doc_identidad = serializers.CharField()
+    nombres = serializers.CharField(allow_null=True,allow_blank=True)
+    ape_paterno = serializers.CharField(required=False,allow_null=True,allow_blank=True)
+    ape_materno = serializers.CharField(required=False,allow_null=True,allow_blank=True)
+    razon_social = serializers.CharField(required=False,allow_null=True,allow_blank=True)
     domicilios = DomicilioSerializer(many = True,allow_null=True)
     contactos = ContactoSerializer(many = True,allow_null=True)
+
     class Meta:
-        model = LandOwner
+        #model = LandOwner
         fields = '__all__'
 
 
     def exists_owner(self, data):
-        return LandOwner.objects.filter(ubigeo=data.get('ubigeo'), code=data.get('code')).exists()
+        return LandOwner.objects.filter(ubigeo=data.get('ubigeo_registro'), code=data.get('contribuyente_numero')).exists()
 
     @transaction.atomic
     def create(self, validated_data):
-        #print('validated_data>>',validated_data)
-        #print('validated_data>>',validated_data)
-        #print(self.exists_owner(data=validated_data))
-        if self.exists_owner(data=validated_data) :
-            #print('existe')
-            owner = LandOwner.objects.filter(ubigeo=validated_data.get('ubigeo'), code=validated_data.get('code'))[0]
-            #validated_data['id']= owner.id
-            #land.save(**validated_data)
-            #LandOwner.objects.update(**validated_data)
+        document_type= validated_data.get('doc_identidad_id',None)
+        document_type = '01' if document_type ==1 else '06' if document_type ==2 else   document_type 
 
+        data = {
+            'sec_ejec':validated_data.get('municipalidad_id',None), 
+            'code' : validated_data.get('contribuyente_numero',None),
+            'ubigeo_id' : validated_data.get('ubigeo_registro',None),
+            'tipo_contribuyente_id':  validated_data.get('tip_contribuyente_id',None),
+            'document_type_id' : document_type,
+            'dni':validated_data.get('num_doc_identidad',None),
+            'name': validated_data.get('nombres',None) if document_type == '01' else validated_data.get('razon_social',None)    ,
+            'paternal_surname': validated_data.get('ape_paterno',None),
+            'maternal_surname': validated_data.get('ape_materno',None),
+            #'domicilios': validated_data.get('domicilios',[]),
+            #'contactos': validated_data.get('contactos',[]),
+        }
+
+
+        if self.exists_owner(data=validated_data) :
+            print('existe')
+            owner = LandOwner.objects.filter(ubigeo=data.get('ubigeo_id'), code=data.get('code'))[0]
+            
+
+            for key, value in data.items():
+                setattr(owner, key, value)
+            owner.save()
 
             Domicilio.objects.filter(contribuyente_id = owner.id).delete()
             Contacto.objects.filter(contribuyente_id = owner.id).delete()
@@ -269,6 +396,11 @@ class LandOwnerSRTMSerializer(serializers.ModelSerializer):
                 Contacto.objects.create(**contacto)
 
             return owner
+
+            #print('contribuyente creado')
+            #raise serializers.ValidationError({'message':'Contribuyente actualizado','status':True})
+
+            #return Response({'message':'Contribuyente actualizado','status':True}, status=status.HTTP_200_OK  )
             #raise owner
 
 
@@ -281,7 +413,7 @@ class LandOwnerSRTMSerializer(serializers.ModelSerializer):
             #print('no existe')
             domicilios =validated_data.pop('domicilios')   if validated_data.get('domicilios') else []
             contactos =validated_data.pop('contactos')   if validated_data.get('contactos') else []
-            owner = LandOwner.objects.create(**validated_data)
+            owner = LandOwner.objects.create(**data)
 
             for domicilio in domicilios:
                 domicilio.update({"contribuyente": owner})
