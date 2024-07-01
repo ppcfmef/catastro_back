@@ -8,9 +8,9 @@ from os import path
 def contribuyente_map():
     return {
     'ubigeo_id': 'UBIGEO_REGISTRO' ,
-    'code': 'CODIGO_CONTRIBUYENTE'	,
+    'code': 'CONTRIBUYENTE_NUMERO'	,
     'tipo_contribuyente_id': 'CODIGO_TIPO_DE_CONTRIBUYENTE',
-    'document_type_id':'CODIGO_TIPO_DOCUMENTO_IDENTIDAD' ,
+    'document_type_id':'DOC_IDENTIDAD_ID' ,
     'dni':'NUM_DOC_IDENTIDAD' ,
     'name':'NOMBRES',
     'paternal_surname':'APELLIDO_PATERNO',
@@ -28,8 +28,9 @@ def domicilio_map():
 
     return  {
         'contribuyente_id':'id',
-        'ubigeo' : 'UBIGEO_DOM_FISCAL',
+        'ubigeo_domicilio' : 'UBIGEO_DOMICILIO_FISCAL',
         'des_domicilio':'DESCRIPCION_DE_DOMICILIO_FISCAL',
+'tipo_domicilio':'TIP_PREDIO_ID',
 
         'referencia' : 'REFERENCIA'
     }  
@@ -38,9 +39,9 @@ def domicilio_map():
 
 def run():
     equivalencia_tipo_documento_identidad = {1: '01', 2: '06', 7: '00'}
-    excel_file = path.join(settings.MEDIA_ROOT , 'contribuyente.xlsx')
+    excel_file = path.join(settings.MEDIA_ROOT , 'contribuyente.xls')
 
-    df = pd.read_excel(excel_file, dtype={'UBIGEO_REGISTRO':str,'NUM_DOC_IDENTIDAD': str,'TELEFONO':str,'CODIGO_CONTRIBUYENTE':str})
+    df = pd.read_excel(excel_file, dtype={'UBIGEO_REGISTRO':str,'NUM_DOC_IDENTIDAD': str,'TELEFONO':str,'CONTRIBUYENTE_NUMERO':str})
 
     queryset = LandOwner.objects.filter(ubigeo__in=['040403', '040502', '040509', '040510', '040513', '040604', '040607', '040811', '150401', '061005', '250201', '100704', '110404', '021510']).values()
     
@@ -54,7 +55,7 @@ def run():
     owner_records_unique =[]
 
     if len(queryset)>0:
-        df_merged = pd.merge(df, df_django, how='left',left_on=['UBIGEO_REGISTRO','CODIGO_CONTRIBUYENTE'] ,right_on=['ubigeo_id','code'] , indicator=True)
+        df_merged = pd.merge(df, df_django, how='left',left_on=['UBIGEO_REGISTRO','CONTRIBUYENTE_NUMERO'] ,right_on=['ubigeo_id','code'] , indicator=True)
         # Filtrar los registros que no tienen correspondencia en el DataFrame derecho
         df_only_left = df_merged[df_merged['_merge'] == 'left_only']
 
@@ -93,14 +94,14 @@ def run():
     
     df_django_domicilios = pd.DataFrame(list(queryset_domicilios))
     
-    df_merged_cont_domicilio = pd.merge(df, df_django_domicilios,left_on=['UBIGEO_REGISTRO','CODIGO_CONTRIBUYENTE'] ,right_on=['ubigeo_id','code'] , indicator=True)
+    df_merged_cont_domicilio = pd.merge(df, df_django_domicilios,left_on=['UBIGEO_REGISTRO','CONTRIBUYENTE_NUMERO'] ,right_on=['ubigeo_id','code'] , indicator=True)
     
     df_merged_contribuyente_domicilio = df_merged_cont_domicilio.drop(columns=['_merge']+['ubigeo_id','code'])
-    
+    print('df_merged_contribuyente_domicilio>>',df_merged_contribuyente_domicilio)
 
     domicilio_records= []
     
-    domicilios  = Domicilio.objects.filter(contribuyente_id = list(queryset_domicilios.values_list('id',flat=True)))
+    domicilios  = Domicilio.objects.filter(contribuyente_id__in = list(queryset_domicilios.values_list('id',flat=True)))
     domicilios.delete()
 
     
@@ -124,7 +125,7 @@ def run():
 # def contribuyente_map():
 #     return {
 #         'UBIGEO': 'ubigeo',
-#         'CODIGO_CONTRIBUYENTE':	'cod_contr',
+#         'CONTRIBUYENTE_NUMERO':	'cod_contr',
 #         'CODIGO_TIPO_DE_CONTRIBUYENTE':	'tipo_contribuyente_id',
 #         'CODIGO_TIPO_DOCUMENTO_DE_IDENTIDAD': 'tip_doc',
 #         'NUM_DOC_IDENTIDAD': 'doc_iden',
@@ -142,7 +143,7 @@ def run():
 # def domicilio_map():
 #     return  {
 #     'UBIGEO': 'ubigeo',
-#     'CODIGO_CONTRIBUYENTE':	'cod_contr',
+#     'CONTRIBUYENTE_NUMERO':	'cod_contr',
 #     'CODIGO_TIPO_DE_CONTRIBUYENTE':	'tipo_contribuyente_id',
 #     'CODIGO_TIPO_DOCUMENTO_DE_IDENTIDAD': 'tip_doc',
 #     'NUM_DOC_IDENTIDAD': 'doc_iden',
