@@ -164,8 +164,9 @@ class LandDetailSRTMSerializer(serializers.Serializer):
 
     ubigeo_predio =  serializers.CharField()
     municipalidad_id =  serializers.IntegerField(allow_null=True)
-    
+    contribuyente_numero =  serializers.CharField()
     codigo_predio_unico =  serializers.CharField()
+    predio_codigo =  serializers.IntegerField(allow_null=True)
     area_terreno = serializers.FloatField(allow_null=True)
     area_tot_terr_comun = serializers.FloatField(allow_null=True)
     area_construida = serializers.FloatField(allow_null=True)
@@ -175,10 +176,10 @@ class LandDetailSRTMSerializer(serializers.Serializer):
     tip_uso_predio_id= serializers.IntegerField(allow_null=True)
     tip_propiedad_id = serializers.IntegerField(allow_null=True)
     fec_transferencia = serializers.CharField(allow_null=True)
-    longitud_frente = serializers.FloatField(allow_null=True)
     cantidad_habitantes = serializers.IntegerField(allow_null=True)
     pre_inhabitable = serializers.IntegerField(allow_null=True)
     par_registral  =  serializers.CharField(allow_null=True)
+    predial_numero  = serializers.IntegerField(allow_null=True)
     numero_dj  =  serializers.CharField(allow_null=True)
     fecha_dj = serializers.CharField(allow_null=True)
     usuario_auditoria =  serializers.CharField(allow_null=True)
@@ -186,6 +187,7 @@ class LandDetailSRTMSerializer(serializers.Serializer):
     motivo_dj_id = serializers.IntegerField(allow_null=True)
     anio_determinacion = serializers.IntegerField(allow_null=True,required= False)
     longitud_frente =  serializers.FloatField(allow_null=True,required= False)
+    
     class Meta:
         #model = LandOwnerDetail
         fields = '__all__'
@@ -194,7 +196,7 @@ class LandDetailSRTMSerializer(serializers.Serializer):
 
     
 class LandOwnerDetailSRTMSerializer(serializers.Serializer):
-    contribuyente_numero =  serializers.CharField()
+    #contribuyente_numero =  serializers.CharField()
     predios = LandDetailSRTMSerializer(many=True,)
     class Meta:
         
@@ -233,7 +235,7 @@ class LandOwnerDetailSRTMSerializer(serializers.Serializer):
                 'estado_dj': record.get('estado_dj_id',None),
                 'motivo_dj': record.get('motivo_dj_id',None),
                 'anio_determinacion':record.get('anio_determinacion',None),
-               
+                'predio_codigo' :record.get('predio_codigo',None),
             }
         
         
@@ -270,7 +272,7 @@ class LandOwnerDetailSRTMSerializer(serializers.Serializer):
             json_data = json.loads(json.dumps(predio))
             
 
-            json_data['contribuyente_numero']=validate_data.get('contribuyente_numero')
+            #json_data['contribuyente_numero']=validate_data.get('contribuyente_numero')
 
             serializer_predio=self.create_detail(json_data)
 
@@ -316,20 +318,26 @@ class LandOwnerSaveSerializer(serializers.ModelSerializer):
     
 
 class ContactoSerializer(serializers.ModelSerializer):
+    # tipo_med_contacto_id = serializers.IntegerField(source='tipo_med_contacto.id')
+    #tipo_med_contacto_id = serializers.IntegerField(source='tipo_med_contacto.id')
     class Meta:
         model = Contacto
-        fields = ('descripcion','principal','tipo_med_contacto')
+        fields = ('descripcion','principal','tipo_med_contacto_id')
 
 class DomicilioSerializer(serializers.ModelSerializer):
+    # tipo_domicilio_id = serializers.IntegerField(source='tipo_domicilio')
+    tipo_domicilio_id = serializers.IntegerField(source='tipo_domicilio')
+    ubigeo_domicilio_id  = serializers.IntegerField(source='ubigeo_domicilio')
     class Meta:
         model = Domicilio
-        fields = ('ubigeo_domicilio','tipo_domicilio','des_domicilio','latitud','longitud','referencia')
+        fields = ('ubigeo_domicilio_id','tipo_domicilio_id','des_domicilio','latitud','longitud','referencia')
 
 class MessageSerializer(serializers.Serializer):
     message=serializers.CharField()
     status = serializers.BooleanField()
 
-class LandOwnerSRTMSerializer(serializers.Serializer):
+
+class OwnerSerializer(serializers.Serializer):
     ubigeo_registro=serializers.CharField()
     municipalidad_id  = serializers.IntegerField()
     contribuyente_numero  = serializers.CharField()
@@ -340,6 +348,9 @@ class LandOwnerSRTMSerializer(serializers.Serializer):
     ape_paterno = serializers.CharField(required=False,allow_null=True,allow_blank=True)
     ape_materno = serializers.CharField(required=False,allow_null=True,allow_blank=True)
     razon_social = serializers.CharField(required=False,allow_null=True,allow_blank=True)
+
+class LandOwnerSRTMSerializer(serializers.Serializer):
+    contribuyente = OwnerSerializer(many= False)
     domicilios = DomicilioSerializer(many = True,allow_null=True)
     contactos = ContactoSerializer(many = True,allow_null=True)
 
@@ -353,27 +364,28 @@ class LandOwnerSRTMSerializer(serializers.Serializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        document_type= validated_data.get('doc_identidad_id',None)
+        contribuyente=validated_data.pop('contribuyente')
+
+        document_type= contribuyente.get('doc_identidad_id',None)
         document_type = '01' if document_type ==1 else '06' if document_type ==2 else   document_type 
 
         data = {
-            'sec_ejec':validated_data.get('municipalidad_id',None), 
-            'code' : validated_data.get('contribuyente_numero',None),
-            'ubigeo_id' : validated_data.get('ubigeo_registro',None),
-            'tipo_contribuyente_id':  validated_data.get('tip_contribuyente_id',None),
+            'sec_ejec':contribuyente.get('municipalidad_id',None), 
+            'code' : contribuyente.get('contribuyente_numero',None),
+            'ubigeo_id' : contribuyente.get('ubigeo_registro',None),
+            'tipo_contribuyente_id':  contribuyente.get('tip_contribuyente_id',None),
             'document_type_id' : document_type,
-            'dni':validated_data.get('num_doc_identidad',None),
-            'name': validated_data.get('nombres',None) if document_type == '01' else validated_data.get('razon_social',None)    ,
-            'paternal_surname': validated_data.get('ape_paterno',None),
-            'maternal_surname': validated_data.get('ape_materno',None),
-            #'domicilios': validated_data.get('domicilios',[]),
-            #'contactos': validated_data.get('contactos',[]),
+            'dni':contribuyente.get('num_doc_identidad',None),
+            'name': contribuyente.get('nombres',None) if document_type == '01' else contribuyente.get('razon_social',None)    ,
+            'paternal_surname': contribuyente.get('ape_paterno',None),
+            'maternal_surname': contribuyente.get('ape_materno',None),
+
         }
 
 
         if self.exists_owner(data=validated_data) :
-            print('existe')
-            owner = LandOwner.objects.filter(ubigeo=data.get('ubigeo_id'), code=data.get('code'))[0]
+            
+            owner = LandOwner.objects.filter(ubigeo=contribuyente.get('ubigeo_registro'), code=contribuyente.get('contribuyente_numero'))[0]
             
 
             for key, value in data.items():
@@ -388,44 +400,42 @@ class LandOwnerSRTMSerializer(serializers.Serializer):
 
 
             for domicilio in domicilios:
-                domicilio.update({"contribuyente": owner})
-                Domicilio.objects.create(**domicilio)
+                #domicilio.update({"contribuyente": owner.id})
+                
+                d=Domicilio.objects.create(**domicilio)
+                d.contribuyente = owner
+                d.save()
             
             for contacto in contactos:
-                contacto.update({"contribuyente": owner})
-                Contacto.objects.create(**contacto)
-
+                #contacto.update({"contribuyente": owner.id})
+                c=Contacto.objects.create(**contacto)
+                c.contribuyente = owner
+                c.save()
             return owner
 
-            #print('contribuyente creado')
-            #raise serializers.ValidationError({'message':'Contribuyente actualizado','status':True})
-
-            #return Response({'message':'Contribuyente actualizado','status':True}, status=status.HTTP_200_OK  )
-            #raise owner
-
-
-            #raise serializers.va({'message':'Ya existe el contribuyente en este distrito','status':False}  )
-
-            #raise serializers.ValidationError({'message':'Ya existe el contribuyente en este distrito','status':False}  )
 
 
         else:
-            #print('no existe')
+            
             domicilios =validated_data.pop('domicilios')   if validated_data.get('domicilios') else []
             contactos =validated_data.pop('contactos')   if validated_data.get('contactos') else []
             owner = LandOwner.objects.create(**data)
 
             for domicilio in domicilios:
-                domicilio.update({"contribuyente": owner})
-                Domicilio.objects.create(**domicilio)
+                #domicilio.update({"contribuyente": owner})
+                #print('domicilio',domicilio)
+                d=Domicilio.objects.create(**domicilio)
+                d.contribuyente = owner
+                d.save()
             
             for contacto in contactos:
-                contacto.update({"contribuyente": owner})
-                Contacto.objects.create(**contacto)
+                #contacto.update({"contribuyente": owner})
+                #print('contacto',contacto)
+                c=Contacto.objects.create(**contacto)
+                c.contribuyente = owner
+                c.save()
 
-            # if validated_data.get('domicilios'):
-            #     domicilios = validated_data.pop('domicilios')
-            #     print('domicilios>>',domicilios)
+
 
                     
             return owner
