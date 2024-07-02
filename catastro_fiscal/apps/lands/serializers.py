@@ -187,7 +187,7 @@ class LandDetailSRTMSerializer(serializers.Serializer):
     motivo_dj_id = serializers.IntegerField(allow_null=True)
     anio_determinacion = serializers.IntegerField(allow_null=True,required= False)
     longitud_frente =  serializers.FloatField(allow_null=True,required= False)
-    
+    fecha_adquisicion = serializers.CharField(allow_null=True,required= False)
     class Meta:
         #model = LandOwnerDetail
         fields = '__all__'
@@ -236,6 +236,8 @@ class LandOwnerDetailSRTMSerializer(serializers.Serializer):
                 'motivo_dj': record.get('motivo_dj_id',None),
                 'anio_determinacion':record.get('anio_determinacion',None),
                 'predio_codigo' :record.get('predio_codigo',None),
+                'predial_numero':record.get('predial_numero',None),
+                'fecha_adquisicion':record.get('fecha_adquisicion',None),
             }
         
         
