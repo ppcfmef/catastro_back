@@ -212,7 +212,7 @@ class LandOwnerDetailSRTMSerializer(serializers.Serializer):
        
         data = {
                 'sec_ejec' :record.get('municipalidad_id',None),
-
+                'code': code_owner,
                 'cup' : record.get('codigo_predio_unico',None),
                 'cpm' : record.get('codigo_predio_municipal',None),
                 'ubigeo_id' : record.get('ubigeo_predio',None),
