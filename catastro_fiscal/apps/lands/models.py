@@ -326,6 +326,7 @@ class LandOwnerDetail(models.Model):
     fecha =  models.DateField( blank=True, null=True, auto_now=True)
     anio_determinacion  =  models.IntegerField( blank=True, null=True,)
     fecha_adquisicion = models.DateField(blank=True, null=True)
+    predial_numero =  models.IntegerField( blank=True, null=True,)
     class Meta:
         db_table = 'PREDIO_PROPIETARIO'
         verbose_name = _('land Owner Detail')
@@ -354,7 +355,7 @@ class LandNivelConstruccion(models.Model):
     categoria_bano = models.CharField(max_length=10, blank=True, null=True)
     categoria_inst_electrica_sanita = models.CharField(max_length=10, blank=True, null=True)
     estado = models.IntegerField( blank=True, null=True)
-
+     
     class Meta:
         db_table = 'PREDIO_NIVEL_CONSTRUCCION'
         verbose_name = _('nivel de construccion')
