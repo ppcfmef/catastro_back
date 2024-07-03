@@ -238,15 +238,15 @@ class SRTMViewSet(GenericViewSet):
             if serializer.exists_owner(data = request.data):
                 a = serializer.save()
             
-                return Response({'message':'Contribuyente actualizado','status':True}, status=status.HTTP_200_OK)
+                return Response({'mensaje':'Contribuyente actualizado','status':True}, status=status.HTTP_200_OK)
             else:
                 a = serializer.save()
-                return Response({'message':'Contribuyente creado','status':True}, status=status.HTTP_200_OK)
+                return Response({'mensaje':'Contribuyente creado','status':True}, status=status.HTTP_200_OK)
         errors=json.dumps(serializer.errors)
-        return Response({'message': errors} ,status=status.HTTP_400_BAD_REQUEST)
+        return Response({'mensaje': errors} ,status=status.HTTP_400_BAD_REQUEST)
     
 
-    
+
     @swagger_auto_schema(request_body=LandOwnerDetailSRTMSerializer,responses={200: MessageSerializer()})
     @action(methods=['POST'], detail=False, url_path='guardar-predio-contribuyente',url_name='guardar-predio-contribuyente')
     def save_land_owner(self, request, *args, **kwargs):
@@ -254,9 +254,9 @@ class SRTMViewSet(GenericViewSet):
         serializer = LandOwnerDetailSRTMSerializer(data=records)
         if serializer.is_valid():
             serializer.save()
-            return Response({'message':'Registros guardados' ,'status':True }, status=status.HTTP_201_CREATED)
+            return Response({'mensaje':'Registros guardados' ,'status':True }, status=status.HTTP_201_CREATED)
         errors=json.dumps(serializer.errors)
-        return Response({'message': errors} ,status=status.HTTP_400_BAD_REQUEST)
+        return Response({'mensaje': errors} ,status=status.HTTP_400_BAD_REQUEST)
         # serializer.is_valid(raise_exception=True)
         # serializer.save()
 

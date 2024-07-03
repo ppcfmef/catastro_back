@@ -245,10 +245,10 @@ class LandOwnerDetailSRTMSerializer(serializers.Serializer):
         lands=Land.objects.filter(cup =cpu,ubigeo = ubigeo)    
 
         if len(owners)==0:
-            raise serializers.ValidationError({'message':'No existe el contribuyente','status':False})
+            raise serializers.ValidationError({'mensaje':'No existe el contribuyente','status':False})
         
         if len(lands)==0:
-            raise serializers.ValidationError({'message':'No existe el predio','status':False})
+            raise serializers.ValidationError({'mensaje':'No existe el predio','status':False})
         
         owner = owners[0]
         land = lands[0]
@@ -297,7 +297,7 @@ class LandOwnerSaveSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def create(self, validated_data):
         if self.exists_owner(data=validated_data) :
-            raise serializers.ValidationError({'message':'Ya existe el contribuyente con el documento ingresado'})
+            raise serializers.ValidationError({'mensaje':'Ya existe el contribuyente con el documento ingresado'})
         
         address = validated_data.pop('address')
         owner = LandOwner.objects.create(**validated_data)
@@ -341,8 +341,8 @@ class DomicilioSerializer(serializers.ModelSerializer):
         model = Domicilio
         fields = ('ubigeo_domicilio','tip_domicilio_id','des_domicilio','latitud','longitud','referencia')
 
-class MessageSerializer(serializers.Serializer):
-    message=serializers.CharField()
+class mensajeSerializer(serializers.Serializer):
+    mensaje=serializers.CharField()
     status = serializers.BooleanField()
 
 
@@ -498,7 +498,7 @@ class LandNivelConstruccionSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def create(self, validated_data):
         if self.exists_nivel(data=validated_data) :
-            raise serializers.ValidationError({'message':'Ya existe este nivel para el predio','status':False})
+            raise serializers.ValidationError({'mensaje':'Ya existe este nivel para el predio','status':False})
         
         detail = LandNivelConstruccion.objects.create(**validated_data)
         return detail
@@ -516,7 +516,7 @@ class OwnerDeudaSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def create(self, validated_data):
         if self.exists_deuda(data=validated_data) :
-            raise serializers.ValidationError({'message':'Ya existe esta deuda para este contribuyente y con este año','status':False})
+            raise serializers.ValidationError({'mensaje':'Ya existe esta deuda para este contribuyente y con este año','status':False})
         
         detail = OwnerDeuda.objects.create(**validated_data)
         return detail
