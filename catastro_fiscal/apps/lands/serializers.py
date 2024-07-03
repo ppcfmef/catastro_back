@@ -327,15 +327,16 @@ class TipoMedioContactoSerializer(serializers.ModelSerializer):
 
 class ContactoSerializer(serializers.ModelSerializer):
 
-    tipo_med_contacto_id = serializers.IntegerField(write_only=True)
+    tip_med_contacto_id = serializers.IntegerField(write_only=True)
+    
     class Meta:
         model = Contacto
-        fields = ('descripcion','principal','tipo_med_contacto_id')
+        fields = ('descripcion','principal','tip_med_contacto_id')
 
 class DomicilioSerializer(serializers.ModelSerializer):
     # tipo_domicilio_id = serializers.IntegerField(source='tipo_domicilio')
-    tipo_domicilio_id = serializers.IntegerField(source='tipo_domicilio')
-    ubigeo_domicilio_id  = serializers.IntegerField(source='ubigeo_domicilio')
+    tip_domicilio_id = serializers.IntegerField(source='tipo_domicilio')
+    #ubigeo_domicilio  = serializers.IntegerField(source='ubigeo_domicilio')
     class Meta:
         model = Domicilio
         fields = ('ubigeo_domicilio_id','tipo_domicilio_id','des_domicilio','latitud','longitud','referencia')
