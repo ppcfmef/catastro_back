@@ -341,7 +341,7 @@ class DomicilioSerializer(serializers.ModelSerializer):
         model = Domicilio
         fields = ('ubigeo_domicilio','tip_domicilio_id','des_domicilio','latitud','longitud','referencia')
 
-class mensajeSerializer(serializers.Serializer):
+class MessageSerializer(serializers.Serializer):
     mensaje=serializers.CharField()
     status = serializers.BooleanField()
 
