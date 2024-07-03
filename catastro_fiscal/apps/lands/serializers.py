@@ -1,6 +1,6 @@
 from django.db import transaction
 from rest_framework import serializers
-from .models import UploadHistory, Land, LandOwner, OwnerAddress, LandAudit, LandOwnerDetail , Domicilio, Contacto , LandNivelConstruccion,OwnerDeuda
+from .models import UploadHistory, Land, LandOwner, OwnerAddress, LandAudit, LandOwnerDetail , Domicilio, Contacto , LandNivelConstruccion,OwnerDeuda, TipoMedioContacto
 from apps.maintenance.models import ApplicationLandDetail , Application
 from .tasks import process_upload_tenporal, process_upload_land
 from .services.upload_temporal import UploadTemporalService
@@ -317,11 +317,17 @@ class LandOwnerSaveSerializer(serializers.ModelSerializer):
         instance = super(LandOwnerSaveSerializer, self).update(instance, validated_data)
         OwnerAddress.objects.filter(owner=instance).update(**address)
         return instance
-    
+
+
+class TipoMedioContactoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TipoMedioContacto
+        fields = '__all__'
+
 
 class ContactoSerializer(serializers.ModelSerializer):
-    # tipo_med_contacto_id = serializers.IntegerField(source='tipo_med_contacto.id')
-    #tipo_med_contacto_id = serializers.IntegerField(source='tipo_med_contacto.id')
+
+    tipo_med_contacto_id = serializers.IntegerField(write_only=True)
     class Meta:
         model = Contacto
         fields = ('descripcion','principal','tipo_med_contacto_id')
