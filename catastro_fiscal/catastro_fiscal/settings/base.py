@@ -161,6 +161,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
+    #'EXCEPTION_HANDLER': 'catastro_fiscal.core.utils.custom_exception_handler'
 }
 
 JWT_AUTH = {
