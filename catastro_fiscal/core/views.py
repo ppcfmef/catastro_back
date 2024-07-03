@@ -1,6 +1,7 @@
 from rest_framework.response import Response
 
 
+
 class CustomListMixin:
     def custom_list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
@@ -20,3 +21,7 @@ class CustomSerializerMixin:
         if serializer_action_class:
             return serializer_action_class
         return super(CustomSerializerMixin, self).get_serializer_class()
+
+
+
+
