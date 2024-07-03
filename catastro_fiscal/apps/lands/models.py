@@ -160,7 +160,7 @@ class Contacto(models.Model):
     contribuyente = models.ForeignKey(LandOwner, models.DO_NOTHING, related_name='contacto', blank=True, null=True)
     descripcion = models.CharField(max_length=100, blank=True, null=True)
     principal  = models.IntegerField(blank=True, null=True)
-    tipo_med_contacto  = models.ForeignKey(TipoMedioContacto, models.DO_NOTHING,blank=True, null=True)
+    tip_med_contacto  = models.ForeignKey(TipoMedioContacto, models.DO_NOTHING,blank=True, null=True)
 
     class Meta:
         db_table = 'CONTACTO'
