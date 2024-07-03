@@ -339,7 +339,7 @@ class DomicilioSerializer(serializers.ModelSerializer):
     #ubigeo_domicilio  = serializers.IntegerField(source='ubigeo_domicilio')
     class Meta:
         model = Domicilio
-        fields = ('ubigeo_domicilio_id','tip_domicilio_id','des_domicilio','latitud','longitud','referencia')
+        fields = ('ubigeo_domicilio','tip_domicilio_id','des_domicilio','latitud','longitud','referencia')
 
 class MessageSerializer(serializers.Serializer):
     message=serializers.CharField()
