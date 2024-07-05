@@ -40,7 +40,8 @@ def land_map():
         'latitude': 'COORD_Y',
         'id_aranc': 'ID_ARANC',
         'land_area': 'Area_terreno',
-       
+       # 'front_length': 'L_FRENTE',
+         
     }
 
 
