@@ -7,30 +7,18 @@ https://vmd120205.contaboserver.net
 [POST]  <hostname>/api/v1/lands/external/guardar-predio-contribuyente
 
 #### request:
+
+###### headers:
+    Content-Type: application/json
+    Authorization: Bearer Token [token]
+
+
+
 ###### body: 
 
 ```json
 /**
 
-*1 => ubigeo
-*2 => codigo de contribuyente
-*3 => codigo de predio municipal(cpu)
-*4 => area del terreno
-*5 => area total del terreno comun
-*6 => area construida
-*7 => area total construida comun
-*8 => porcentaje de propiedad
-*9 => tipo de Uso del Predio
-*10 => tipo de Propiedad
-*11 => fecha de transferencia
-*12 => longitud de Frente
-*13 => cantidad de habitantes
-*14 => predio inhabitable(0 falso, 1  verdadero)
-*14 => partida registral
-*15 => numero de declaracion jurada
-*16 => fecha de declaracion jurada
-*17 => usuario de creacion
-*18 => estado
 **/
 [{ 
 "ubigeoPredio":"100105", 
@@ -81,7 +69,10 @@ status 201
 
 [POST] <hostname>/api/v1/lands/external/crear-contribuyente
 
- 
+ ###### headers:
+    Content-Type: application/json
+    Authorization: Bearer Token [token]
+
 
 #### request:
 
@@ -90,73 +81,40 @@ status 201
 
 ```json
 
-/**
-
-*1 => ubigeo
-*2 => codigo de contribuyente
-*3 => tipo de documento
-*4 => numero de documento(dni o ruc)
-*5 => nombre 
-*6 => apellido paterno 
-*7 => apellido materno
-*8 => domicilios
-*9 => contactos
-
-
-domicilios=>array 
-   *1 => ubigeo del domicilio 
-   *2 => decripcion de domicilio
-   *3 => latitud
-   *4 => longitud
-   *5  => referencia adicional
-   *6  => piso
-   *7  => manzana
-   *8  => lote
-   *9  => kilometro
-
-
-contactos=>array 
-   *1 => descripcion 
-   *2 => es principal (1 si es principal , 0 si no lo es)
-   *3 => tipo de medio de contacto
-**/
 
 {
-"ubigeoRegistro":"100105", 
-"municipalidadId":3,
-"contribuyenteNumero":"1000000002", 
-"docIdentidadId":1, 
-"tipContribuyenteId":1, 
-"numDocIdentidad":"45257503", 
-"nombres":"frank", 
-"apePaterno":"soto", 
-"apeMaterno":"peña",
-"razonSocial":"", 
-"domicilios":[
-{
-"ubigeoDomicilio":"040501",
-"tipoDomicilio":1, 
-"desDomicilio":"ejemplo 1",
-"latitud":0,
-"longitud":0,
-"referencia":"ejemplo referencia"
-}
-
-], 
-"contactos":[
+    "contribuyente": {
+    "municipalidadId": 301807,
+    "contribuyenteNumero": "1166",
+    "ubigeoRegistro": "240104",
+    "tipContribuyenteId": 1,
+    "docIdentidadId": 1,
+    "numDocIdentidad": "40393939",
+    "nombres": "EDITH ROXANA",
+    "apePaterno": "AQUINO",
+    "apeMaterno": "HUAYTA",
+    "razonSocial": null
+  },
+  "domicilios": [
     {
-        "descripcion":"965193248",
-        "principal":1,
-        "tipoMedContacto":2
-    },
-       {
-        "descripcion":"frank@gmail.com",
-        "principal":0,
-        "tipoMedContacto":3
+      "tipDomicilioId": 1,
+      "ubigeoDomicilio": "240104",
+      "desDomicilio": "N° 123, AGRUPACION 123, TUMBES-TUMBES-PAMPAS DE HOSPITAL ",
+      "latitud": -3.6953866,
+      "longitud": -80.4368245,
+      "referencia": null
     }
-
-]
+  ],
+  "contactos": [
+  
+    {
+      "tipMedContactoId": 3,
+      "descripcion": "CORREG@GMAIL.COM",
+      "principal": 1
+    }    
+  ]
 }
+
 ```
 
 
@@ -166,7 +124,7 @@ contactos=>array
 
 ```json
 /**
-status 201
+status 201s
 **/
 {
    "success" : true,
@@ -175,3 +133,33 @@ status 201
 }
 ```
 
+
+
+---
+
+[POST] <hostname>/external/iniciar-sesion
+
+ 
+
+#### request:
+
+###### body: 
+
+
+```json
+
+{
+   "username" : "usuario",
+   "password" : "password",
+  
+}
+```
+
+###### response:
+
+```json
+{
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxODcsInVzZXJuYW1lIjoiU1JUTSIsImV4cCI6MTcyMDYxOTgzMCwiZW1haWwiOiIiLCJvcmlnX2lhdCI6MTcyMDQ0NzAzMH0.z7zz3JNo4YX_2ygMDIceSTqNs0OJ7FGzSmpugdA87qM"
+
+}
+```

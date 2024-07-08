@@ -19,4 +19,5 @@ urlpatterns = [
     path('gap-analisys/', include('apps.gap_analisys.urls', namespace='api_gap_analisys')),
     path('inspection/', include('apps.land_inspections.urls', namespace='land_inspections')),
     path('valorization/', include('apps.valorization.urls', namespace='valorization')),
+   
 ]
