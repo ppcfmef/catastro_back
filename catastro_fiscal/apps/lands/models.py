@@ -295,7 +295,7 @@ class Land(LandBase):
 
 
 class LandOwnerDetail(models.Model):
-    
+    id = models.AutoField(primary_key=True)
     land = models.ForeignKey(Land, on_delete=models.CASCADE, db_column='id_predio',related_name='predio_contribuyente')
     owner = models.ForeignKey(LandOwner, on_delete=models.CASCADE, db_column='id_propietario',related_name='contribuyentes')
     
@@ -355,7 +355,7 @@ class LandNivelConstruccion(models.Model):
     categoria_bano = models.CharField(max_length=10, blank=True, null=True)
     categoria_inst_electrica_sanita = models.CharField(max_length=10, blank=True, null=True)
     estado = models.IntegerField( blank=True, null=True)
-     
+
     class Meta:
         db_table = 'PREDIO_NIVEL_CONSTRUCCION'
         verbose_name = _('nivel de construccion')

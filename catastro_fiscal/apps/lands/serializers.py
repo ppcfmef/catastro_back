@@ -157,7 +157,17 @@ class LandOwnerDetailSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
 
-
+class LandNivelConstruccionCreateSerializer(serializers.ModelSerializer):
+    tip_nivel_id = serializers.IntegerField( write_only=True)
+    tip_material_id = serializers.IntegerField(write_only=True)
+    est_conservacion_id = serializers.IntegerField(write_only=True)
+    
+    class Meta:
+        model = LandNivelConstruccion
+        fields = ('tip_nivel_id','num_piso','tip_material_id','est_conservacion_id','anio_construccion','mes_construccion',
+                  'area_construida','area_construida_comun','por_area_construida_comun','categoria_muro_columna','categoria_puerta_ventana',
+                  'categoria_revestimiento','categoria_bano','categoria_inst_electrica_sanita','estado'
+                  )
 
 
 class LandDetailSRTMSerializer(serializers.Serializer):
@@ -188,15 +198,16 @@ class LandDetailSRTMSerializer(serializers.Serializer):
     anio_determinacion = serializers.IntegerField(allow_null=True,required= False)
     longitud_frente =  serializers.FloatField(allow_null=True,required= False)
     fecha_adquisicion = serializers.CharField(allow_null=True,required= False)
+    niveles_construccion = LandNivelConstruccionCreateSerializer(allow_null=True,many= True,required= False)
     class Meta:
-        #model = LandOwnerDetail
+        
         fields = '__all__'
         
 
 
     
 class LandOwnerDetailSRTMSerializer(serializers.Serializer):
-    #contribuyente_numero =  serializers.CharField()
+    
     predios = LandDetailSRTMSerializer(many=True,)
     class Meta:
         
@@ -209,7 +220,7 @@ class LandOwnerDetailSRTMSerializer(serializers.Serializer):
         cpu = record.get('codigo_predio_unico',None)
         cpm = record.get('codigo_predio_municipal',None)
         ubigeo = record.get('ubigeo_predio')
-       
+        niveles_construccion =record.pop('niveles_construccion')   if record.get('niveles_construccion') else []
         data = {
                 'sec_ejec' :record.get('municipalidad_id',None),
                 'code': code_owner,
@@ -256,12 +267,19 @@ class LandOwnerDetailSRTMSerializer(serializers.Serializer):
 
         
         data.update({'land_id':land.id,'owner_id': owner.id})
-       
+
             
         if self.exists_detail(data=data):
             landOwnerDetails=LandOwnerDetail.objects.filter(owner=data.get('owner'), land=data.get('land'),ubigeo =data.get('ubigeo'))
             landOwnerDetails.update(estado_dj=3)
         detail = LandOwnerDetail.objects.create(**data)
+
+        for nivel in niveles_construccion:
+            nivel['land_owner_detail_id']= detail.id
+            nivel['ubigeo_id']= record.get('ubigeo_predio',None)
+            landNivel =LandNivelConstruccion.objects.create(**nivel)
+            
+
         return detail
     
 
@@ -276,7 +294,9 @@ class LandOwnerDetailSRTMSerializer(serializers.Serializer):
 
             #json_data['contribuyente_numero']=validate_data.get('contribuyente_numero')
 
-            serializer_predio=self.create_detail(json_data)
+            created_predio=self.create_detail(json_data)
+            created_predio.id 
+
 
         return True
 
@@ -341,6 +361,11 @@ class DomicilioSerializer(serializers.ModelSerializer):
         model = Domicilio
         fields = ('ubigeo_domicilio','tip_domicilio_id','des_domicilio','latitud','longitud','referencia')
 
+
+
+
+
+
 class MessageSerializer(serializers.Serializer):
     mensaje=serializers.CharField()
     status = serializers.BooleanField()
@@ -358,11 +383,14 @@ class OwnerSerializer(serializers.Serializer):
     ape_materno = serializers.CharField(required=False,allow_null=True,allow_blank=True)
     razon_social = serializers.CharField(required=False,allow_null=True,allow_blank=True)
 
+
+
+
 class LandOwnerSRTMSerializer(serializers.Serializer):
     contribuyente = OwnerSerializer(many= False)
     domicilios = DomicilioSerializer(many = True,allow_null=True)
     contactos = ContactoSerializer(many = True,allow_null=True)
-
+    
     class Meta:
         #model = LandOwner
         fields = '__all__'
@@ -438,12 +466,12 @@ class LandOwnerSRTMSerializer(serializers.Serializer):
                 d.save()
             
             for contacto in contactos:
-                #contacto.update({"contribuyente": owner})
-                #print('contacto',contacto)
+
                 c=Contacto.objects.create(**contacto)
                 c.contribuyente = owner
                 c.save()
 
+            
 
 
                     

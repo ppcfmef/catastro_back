@@ -139,3 +139,5 @@ class MasterTipoEstadoConservacion(MasterType):
         db_table = 'M_TIPO_ESTADO_CONSERVACION'
         verbose_name = _('tipo de estado de conservacion')
         verbose_name_plural = _('tipos de estado de conservacion')
+
+
