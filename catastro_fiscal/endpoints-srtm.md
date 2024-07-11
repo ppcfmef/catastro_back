@@ -20,10 +20,12 @@ https://vmd120205.contaboserver.net
 /**
 
 **/
+{
+    "predios":
 [{ 
 "ubigeoPredio":"100105", 
 "municipalidadId":1,
-"contribuyenteNumero":"1000000002", 
+"contribuyenteNumero":"1000003", 
 "codigoPredioUnico":"43465339-0001-1",
 "areaTerreno":100.00,
 "areaTotTerrComun": 50.00,
@@ -35,16 +37,38 @@ https://vmd120205.contaboserver.net
 "tipPropiedadId": 1,
 "fecTransferencia": "2024-06-14",
 "longitudFrente": 100.00,
-"cantidad_habitantes": 10,
+"cantidadHabitantes": 10,
 "preInhabitable": 0,
 "parRegistral": "2000-59-6",
 "numeroDj": "200000",
 "fechaDj": "2024-06-14",
 "usuarioAuditoria": "TEST",
 "estadoDjId": 1,
-"motivoDjId": 1
-           
+"motivoDjId": 1,
+"anioDeterminacion":2024,
+"predioCodigo":5,
+"predialNumero":1,
+"fechaAdquisicion":"2024-06-14",
+"nivelesConstruccion":[
+    {   "tipNivelId": 1,
+        "numPiso":1,
+        "tipMaterialId":1,
+        "estConservacionId":2,
+        "anioConstruccion":2024,
+        "mesConstruccion":2,
+        "areaConstruida":100,
+        "areaConstruidaComun":100,
+        "porAreaConstruidaComun":100,
+        "categoriaMuroColumna":"A",
+        "categoriaPuertaVentana":"A",
+        "categoriaRevestimiento":"A",
+        "categoriaIntElectricaSanita":"A",
+        "estado":1
+     }
+
+]
 }]
+}
 ```
 
  
@@ -57,7 +81,7 @@ status 201
 **/
 {
    "success"  : true,
-   "message" : "Registro guardado"
+   "mensaje" : "Registro guardado"
 }
 ``` 
 
@@ -128,7 +152,7 @@ status 201s
 **/
 {
    "success" : true,
-   "message" : "Contribuyente creado",
+   "mensaje" : "Contribuyente creado",
   
 }
 ```
