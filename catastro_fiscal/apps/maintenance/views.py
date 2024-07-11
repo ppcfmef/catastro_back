@@ -193,6 +193,12 @@ class ApplicationViewSet( ModelViewSet):
                             'status':1,
                             'source':'mantenimiento_pre',
                             'id_lote_p':result.get('id_lote_p', None),
+                            'id_lote_puerta': result.get('id_lote_puerta', None),
+                            'longitude_puerta': result.get('longitude_puerta', None),
+                            'latitude_puerta':  result.get('latitude_puerta', None),
+                            'lote_urbano_puerta': result.get('lote_urbano_puerta', None),
+                            'manzana_urbana_puerta': result.get('manzana_urbana_puerta', None),
+
                         }
 
                         id=result.get('id', None)
