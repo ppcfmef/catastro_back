@@ -113,9 +113,19 @@ class LandSaveSerializer(serializers.ModelSerializer):
         model = Land
         fields = '__all__'
 
+    def exists_partida(self, data):
+        return Land.objects.filter(ubigeo=data.get('ubigeo'), resolution_document=data.get('resolution_document')).exclude(cup=data.get('cup')).exists()
+
     def create(self, validated_data):
         owner = validated_data.get('owner')
         ubigeo = validated_data.get('ubigeo')
+        tdoc_res=validated_data.get('resolution_type')
+ 
+        if tdoc_res =='1':
+            if self.exists_partida(data=validated_data):
+                raise serializers.ValidationError({'mensaje':'Ya existe un predio registrado con esta partida registral','status':False})
+
+
         instance = super(LandSaveSerializer, self).create(validated_data)
         LandOwnerDetail.objects.create(owner=owner, land=instance, ubigeo=ubigeo)
         instance.owner.number_lands = LandOwnerDetail.objects.filter(owner=owner).count()
