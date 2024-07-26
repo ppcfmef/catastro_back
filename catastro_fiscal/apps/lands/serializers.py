@@ -176,7 +176,7 @@ class LandNivelConstruccionCreateSerializer(serializers.ModelSerializer):
         model = LandNivelConstruccion
         fields = ('tip_nivel_id','num_piso','tip_material_id','est_conservacion_id','anio_construccion','mes_construccion',
                   'area_construida','area_construida_comun','por_area_construida_comun','categoria_muro_columna','categoria_puerta_ventana',
-                  'categoria_revestimiento','categoria_bano','categoria_inst_electrica_sanita','estado'
+                  'categoria_revestimiento','categoria_bano','categoria_inst_electrica_sanita'
                   )
 
 
