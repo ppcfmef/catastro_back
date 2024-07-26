@@ -354,7 +354,7 @@ class LandNivelConstruccion(models.Model):
     categoria_revestimiento = models.CharField(max_length=10, blank=True, null=True)
     categoria_bano = models.CharField(max_length=10, blank=True, null=True)
     categoria_inst_electrica_sanita = models.CharField(max_length=10, blank=True, null=True)
-    estado = models.IntegerField( blank=True, null=True)
+    estado = models.IntegerField( blank=True, null=True,default=1)
 
     class Meta:
         db_table = 'PREDIO_NIVEL_CONSTRUCCION'
