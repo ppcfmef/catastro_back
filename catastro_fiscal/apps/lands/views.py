@@ -1,7 +1,7 @@
 from rest_framework import mixins, status
 from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.viewsets import GenericViewSet , ModelViewSet
 from rest_framework.decorators import action
 from drf_yasg.utils import swagger_auto_schema
 from djangorestframework_camel_case.parser import CamelCaseMultiPartParser
@@ -12,9 +12,9 @@ from core.views import CustomSerializerMixin
 from .models import UploadHistory, Land, LandOwner, LandOwnerDetail
 from .serializers import (
     UploadHistorySerializer, UploadHistoryListSerializer, LandSerializer, LandOwnerSerializer,
-    LandOwnerDetailSerializer, LandOwnerSaveSerializer, LandDetailSerializer, LandSaveSerializer,
+    LandOwnerRetriveSerializer, LandOwnerSaveSerializer, LandDetailSerializer, LandSaveSerializer,
     SummaryRecordSerializer, TemporalUploadSummarySerializer, UploadStatusSerializer,LandOwnerSRTMSerializer,LandOwnerDetailSRTMSerializer, OwnerDeudaSerializer,LandNivelConstruccionSerializer, 
-    MessageSerializer
+    MessageSerializer, LandOwnerDetailSerializer
 )
 from .services.upload_temporal import UploadTemporalService
 from apps.historical.models import HistoricalRecord
@@ -150,22 +150,46 @@ class LandOwnerViewSet(mixins.ListModelMixin, GenericViewSet):
         return Response(serializer.data)
 
 
-class LandOwnerDetailViewSet(mixins.RetrieveModelMixin, GenericViewSet):
+class LandOwnerRetriveViewSet(mixins.RetrieveModelMixin, GenericViewSet):
     """
     Get Owner filter by id
     """
     queryset = LandOwner.objects.all()
-    serializer_class = LandOwnerDetailSerializer
+    serializer_class = LandOwnerRetriveSerializer
 
-# @authentication_classes([])
-# @permission_classes([])
+
+@authentication_classes([])
+@permission_classes([])
+
+class LandOwnerDetailViewSet(ModelViewSet):
+
+    queryset = LandOwnerDetail.objects.all()
+    serializer_class = LandOwnerDetailSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter, CamelCaseOrderFilter]
+    filterset_fields = ['land_id', 'owner_id']
+
+
+    @action(methods=['GET'], detail=False, url_path='detalle/(?P<land_id>[0-9]+)/(?P<owner_id>[0-9]+)')
+    def detalle(self, request, *args, **kwargs):
+        owner_id = kwargs.get('owner_id')
+        land_id  = kwargs.get('land_id')
+        queryset = LandOwnerDetail.objects.filter(land_id=land_id,owner_id=owner_id)
+        
+
+        for el in queryset:
+            print(el)
+        if len(queryset)>0:
+            serializer = LandOwnerDetailSerializer(queryset, many=True)
+            return Response(serializer.data[0])
+        else:
+            return Response({"mensaje": "sin datos"})
 
 class OwnerSearchByDocumentViewset(mixins.ListModelMixin, GenericViewSet):
     """
     Get Owner filter by document (dni, ruc)
     """
     queryset = LandOwner.objects.all()
-    serializer_class = LandOwnerDetailSerializer
+    serializer_class = LandOwnerRetriveSerializer
     #lookup_field = 'dni'
     filter_backends = [DjangoFilterBackend,SearchFilter]
     filterset_fields = ['dni', 'ubigeo','code' ]

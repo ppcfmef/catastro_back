@@ -72,8 +72,8 @@ def run():
         owner_record = {key: None if pd.isna(record.get(value)) else record.get(value)
                            for key, value in land_mapper.items()}
         
-        owner_record['tipo_contribuyente_id'] =1 if record['TIPO_DE_CONTRIBUYENTE'] =='PERSONA NATURAL' else 2 if record['TIPO_DE_CONTRIBUYENTE'] =='PERSONA JURIDICA' else 3
-        owner_record['name'] = record['RAZON_SOCIAL']   if owner_record['tipo_contribuyente_id'] == 3 else  owner_record['name']
+        owner_record['tipo_contribuyente_id'] =1 if record['DOC_IDENTIDAD_ID'] ==1 else 2 if record['DOC_IDENTIDAD_ID'] ==2 else 3
+        owner_record['name'] = record['RAZON_SOCIAL']   if owner_record['tipo_contribuyente_id'] == 3 else  record['NOMBRES']
             
         if owner_record['document_type_id'] is not None:
             owner_record['document_type_id'] =equivalencia_tipo_documento_identidad.get(owner_record['document_type_id'],None)

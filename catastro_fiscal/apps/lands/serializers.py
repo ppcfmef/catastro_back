@@ -66,8 +66,8 @@ class LandNivelConstruccionSerializer(serializers.ModelSerializer):
 
 
 
-class LandOwnerDetailSerializer2(serializers.ModelSerializer):
-    niveles_construccion = LandNivelConstruccionSerializer(many = True)
+class LandOwnerDetailSerializer(serializers.ModelSerializer):
+    niveles_construccion = LandNivelConstruccionSerializer(many = True, read_only=True)
     class Meta:
         model = LandOwnerDetail
         fields = '__all__'
@@ -80,7 +80,7 @@ class LandSerializer(serializers.ModelSerializer):
     #has_lands_affected_applications = serializers.SerializerMethodField(read_only=True)
     applications = serializers.SerializerMethodField()
     #lands_affected_applications = serializers.SerializerMethodField(read_only=True)
-    caracteristicas =  LandOwnerDetailSerializer2()
+    #caracteristicas =  LandOwnerDetailSerializer2()
     
     class Meta:
         model = Land
@@ -187,7 +187,7 @@ class OwnerAddressSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class LandOwnerDetailSerializer(serializers.ModelSerializer):
+class LandOwnerRetriveSerializer(serializers.ModelSerializer):
     address = OwnerAddressSerializer(allow_null=True)
 
     class Meta:
@@ -544,7 +544,7 @@ class TemporalUploadSummarySerializer(serializers.Serializer):
 
 class LandDetailSerializer(serializers.ModelSerializer):
 
-    owner = LandOwnerDetailSerializer()
+    owner = LandOwnerRetriveSerializer()
 
     class Meta:
         model = Land
