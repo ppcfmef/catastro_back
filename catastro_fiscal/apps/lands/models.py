@@ -339,7 +339,7 @@ class LandNivelConstruccion(models.Model):
 
     id = models.AutoField(primary_key=True)
     ubigeo = models.ForeignKey(District, on_delete=models.DO_NOTHING, db_column='ubigeo', related_name='nivel_ubigeo')
-    land_owner_detail= models.ForeignKey(LandOwnerDetail, on_delete=models.DO_NOTHING, related_name='nivel_land_owner_detail')
+    land_owner_detail= models.ForeignKey(LandOwnerDetail, on_delete=models.DO_NOTHING, related_name='niveles_construccion')
     tip_nivel = models.ForeignKey(MasterTipoNivel, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='nivel_tipo_nivel')
     num_piso = models.IntegerField(blank=True, null=True)
     tip_material = models.ForeignKey(MasterTipoMaterial, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='nivel_tipo_material')
