@@ -46,14 +46,42 @@ class UploadStatusSerializer(serializers.ModelSerializer):
 
         return instance
 
+class LandNivelConstruccionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LandNivelConstruccion
+        fields = '__all__'
 
+    def exists_nivel(self, data):
+        return LandNivelConstruccion.objects.filter(land_owner_detail=data.get('land_owner_detail'), num_piso=data.get('num_piso')).exists()
+        #return False
+        #return LandOwner.objects.filter(document_type=data.get('document_type'), dni=data.get('dni')).exists()
+
+    @transaction.atomic
+    def create(self, validated_data):
+        if self.exists_nivel(data=validated_data) :
+            raise serializers.ValidationError({'mensaje':'Ya existe este nivel para el predio','status':False})
+        
+        detail = LandNivelConstruccion.objects.create(**validated_data)
+        return detail
+
+
+
+class LandOwnerDetailSerializer2(serializers.ModelSerializer):
+    niveles_construccion = LandNivelConstruccionSerializer(many = True)
+    class Meta:
+        model = LandOwnerDetail
+        fields = '__all__'
+        
+        
+        
 class LandSerializer(serializers.ModelSerializer):
     has_owners = serializers.SerializerMethodField(read_only=True)
     has_applications  = serializers.SerializerMethodField()
     #has_lands_affected_applications = serializers.SerializerMethodField(read_only=True)
     applications = serializers.SerializerMethodField()
     #lands_affected_applications = serializers.SerializerMethodField(read_only=True)
-
+    caracteristicas =  LandOwnerDetailSerializer2()
+    
     class Meta:
         model = Land
         fields = '__all__'  # ToDo: estandarizar listado de predios
@@ -523,23 +551,6 @@ class LandDetailSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class LandNivelConstruccionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = LandNivelConstruccion
-        fields = '__all__'
-
-    def exists_nivel(self, data):
-        return LandNivelConstruccion.objects.filter(land_owner_detail=data.get('land_owner_detail'), num_piso=data.get('num_piso')).exists()
-        #return False
-        #return LandOwner.objects.filter(document_type=data.get('document_type'), dni=data.get('dni')).exists()
-
-    @transaction.atomic
-    def create(self, validated_data):
-        if self.exists_nivel(data=validated_data) :
-            raise serializers.ValidationError({'mensaje':'Ya existe este nivel para el predio','status':False})
-        
-        detail = LandNivelConstruccion.objects.create(**validated_data)
-        return detail
 
     
 

@@ -182,4 +182,5 @@ LOCALE_PATHS = [BASE_DIR / 'locale']
 
 FIXTURE_DIRS = [BASE_DIR / 'fixtures']
 
+
 AUTH_URL_ARCGIS = 'https://ws.mineco.gob.pe/portaldf/sharing/generateToken'
