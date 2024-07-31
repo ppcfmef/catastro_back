@@ -224,7 +224,7 @@ class LandCharacteristic(models.Model):
     categoria_muro_columna = models.CharField(max_length=100, blank=True, null=True)
     catergoria_puerta_ventana = models.CharField(max_length=100, blank=True, null=True)
     arancel = models.FloatField(blank=True, null=True)
-    material_pred = models.IntegerField(max_length=100, blank=True, null=True)
+    material_pred = models.IntegerField(  null=True)
     categoria_revestimiento = models.CharField(max_length=100, blank=True, null=True)
     area_terreno = models.FloatField(blank=True, null=True)
     clasificacion_pred = models.CharField(max_length=100, blank=True, null=True)

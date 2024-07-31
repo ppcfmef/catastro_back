@@ -47,7 +47,7 @@ class LandInspectionSerializer(serializers.Serializer):
     cod_cpu = serializers.CharField(allow_blank=True, allow_null=True)
     piso = serializers.CharField(allow_blank=True, allow_null=True)
     num_sumi_agua = serializers.CharField(allow_blank=True, allow_null=True)
-    cod_tipo_predio = serializers.IntegerField(allow_blank=True, allow_null=True)
+    cod_tipo_predio = serializers.IntegerField( allow_null=True)
     num_sumi_luz = serializers.CharField(allow_blank=True, allow_null=True)
     #uso_especifico = serializers.CharField(allow_blank=True, allow_null=True)
     interior = serializers.CharField(allow_blank=True, allow_null=True)
