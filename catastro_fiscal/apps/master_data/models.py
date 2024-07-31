@@ -48,11 +48,7 @@ class MasterCodeStreet(MasterDomain):
         verbose_name_plural = _('street codes')
 
 
-class MasterPropertyType(MasterDomain):
-    class Meta:
-        db_table = 'M_TIPO_PREDIO'
-        verbose_name = _('tipo de predio')
-        verbose_name_plural = _('tipos de predio')
+
 
 
 class MasterResolutionType(MasterDomain):
@@ -116,11 +112,7 @@ class MasterTipoTransferencia(MasterType):
         verbose_name_plural = _('tipos de transferencia')
 
 
-class MasterTipoUsoPredio(MasterType):
-    class Meta:
-        db_table = 'M_TIPO_USO_PREDIO'
-        verbose_name = _('tipo uso de predio')
-        verbose_name_plural = _('tipos uso de predio')
+
 
 class MasterTipoNivel(MasterType):
     class Meta:
@@ -141,3 +133,36 @@ class MasterTipoEstadoConservacion(MasterType):
         verbose_name_plural = _('tipos de estado de conservacion')
 
 
+
+
+
+class MasterClaseUso(MasterType):
+    class Meta:
+        db_table = 'M_CLASE_USO'
+        verbose_name = _('clase de uso')
+        verbose_name_plural = _('clases de uso')
+
+
+class MasterSubClaseUso(MasterType):
+    class Meta:
+        db_table = 'M_SUBCLASE_USO'
+        verbose_name = _('subclase de uso')
+        verbose_name_plural = _('subclases de uso')
+
+class MasterPropertyType(MasterType):
+
+    class Meta:
+        db_table = 'M_TIPO_PREDIO'
+        verbose_name = _('tipo de predio')
+        verbose_name_plural = _('tipos de predio')
+
+
+
+class MasterTipoUsoPredio(MasterType):
+    codigo_clase_uso = models.ForeignKey(MasterClaseUso,blank=True, null=True, on_delete=models.DO_NOTHING)
+    codigo_subclase_uso = models.ForeignKey(MasterSubClaseUso,blank=True, null=True, on_delete=models.DO_NOTHING)
+    codigo_tipo_uso =  models.IntegerField(blank=True, null=True)
+    class Meta:
+        db_table = 'M_TIPO_USO_PREDIO'
+        verbose_name = _('tipo uso de predio')
+        verbose_name_plural = _('tipos uso de predio')
