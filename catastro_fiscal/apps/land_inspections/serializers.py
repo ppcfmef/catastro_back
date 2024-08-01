@@ -55,7 +55,7 @@ class LandInspectionSerializer(serializers.Serializer):
     num_dpto = serializers.CharField(allow_blank=True, allow_null=True)
     codigo_uso = serializers.CharField(allow_blank=True, allow_null=True)
     codigo_clase_uso  = serializers.CharField(allow_blank=True, allow_null=True)
-    codigo_subclase_uso = serializers.CharField(allow_blank=True, allow_null=True)
+    codigo_sub_clase_uso = serializers.CharField(allow_blank=True, allow_null=True)
     #estado = serializers.CharField(allow_blank=True, allow_null=True)
     block = serializers.CharField(allow_blank=True, allow_null=True)
     num_sumi_gas = serializers.CharField(allow_blank=True, allow_null=True)
@@ -427,7 +427,7 @@ class MobileLandInspectionSerializer(serializers.Serializer):
             num_dpto=tb_land_inspection.get('num_dpto', None),
             codigo_uso=tb_land_inspection.get('codigo_uso', None),
             codigo_clase_uso =tb_land_inspection.get('codigo_clase_uso',  None),
-            codigo_subclase_uso=tb_land_inspection.get('codigo_subclase_uso',  None),
+            codigo_sub_clase_uso=tb_land_inspection.get('codigo_sub_clase_uso',  None),
             #estado=tb_land_inspection.get('estado', None),
             block=tb_land_inspection.get('block', None),
             num_sumi_gas=tb_land_inspection.get('num_sumi_gas', None),
