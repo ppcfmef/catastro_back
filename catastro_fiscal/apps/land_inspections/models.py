@@ -108,7 +108,7 @@ class Location(models.Model):
         
     )
     """Ubicacion"""
-    cod_ubicacion = models.CharField(max_length=20, primary_key=True)
+    cod_ubicacion = models.CharField(max_length=30, primary_key=True)
     cod_ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, db_column="cod_ticket", related_name='ubicaciones')
     cod_tip_via = models.CharField(max_length=10, blank=True, null=True)  # ToDo: ver FK
     cod_via = models.CharField(max_length=255, blank=True, null=True)  # ToDo: ver FK
@@ -192,7 +192,7 @@ class RecordOwnerShip(models.Model):
         (98, 'observado'),
     )
     """Registro Titularidad"""
-    cod_tit = models.CharField(max_length=20, primary_key=True)
+    cod_tit = models.CharField(max_length=30, primary_key=True)
     ubigeo = models.CharField(max_length=6, blank=True, null=True, default=None)
     cod_tipo_tit = models.ForeignKey(
         OwnerShipType, blank=True, null=True, on_delete=models.SET_NULL, db_column="cod_tipo_tit"
@@ -257,7 +257,7 @@ class FacilityType(models.Model):
 
 class LandFacility(models.Model):
     """Instalaciones"""
-    cod_inst = models.CharField(max_length=20, primary_key=True)
+    cod_inst = models.CharField(max_length=30, primary_key=True)
     cod_tit = models.ForeignKey(RecordOwnerShip, on_delete=models.CASCADE, db_column="cod_tit",related_name='instalaciones')
     cod_tipo_inst = models.ForeignKey(
         FacilityType, blank=True, null=True, on_delete=models.SET_NULL, db_column="cod_tipo_inst"
@@ -296,7 +296,7 @@ class LandSupply(models.Model):
     cod_tipo_sumi = models.ForeignKey(
         SupplyType, blank=True, null=True, on_delete=models.SET_NULL, db_column="cod_tipo_sumi"
     )
-    num_sumis = models.CharField(max_length=20, blank=True, null=True)
+    num_sumis = models.CharField(max_length=30, blank=True, null=True)
     obs_sumis = models.CharField(max_length=100, blank=True, null=True)
     #cod_contr_inspec = models.ForeignKey(LandOwnerInspection, on_delete=models.CASCADE, db_column="cod_contr_inspec",related_name='contribuyentes')
     cod_contr = models.ForeignKey(
@@ -349,7 +349,7 @@ class LandInspection(models.Model):
     num_dpto = models.CharField(max_length=100, blank=True, null=True)
     codigo_uso = models.CharField(max_length=100, blank=True, null=True)
     codigo_clase_uso = models.CharField(max_length=100, blank=True, null=True)
-    codigo_subclase_uso = models.CharField(max_length=100, blank=True, null=True)
+    codigo_sub_clase_uso = models.CharField(max_length=100, blank=True, null=True)
 
     #estado = models.CharField(max_length=100, blank=True, null=True)
     block = models.CharField(max_length=100, blank=True, null=True)
