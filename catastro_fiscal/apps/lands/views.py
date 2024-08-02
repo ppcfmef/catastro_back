@@ -176,8 +176,6 @@ class LandOwnerDetailViewSet(ModelViewSet):
         queryset = LandOwnerDetail.objects.filter(land_id=land_id,owner_id=owner_id)
         
 
-        for el in queryset:
-            print(el)
         if len(queryset)>0:
             serializer = LandOwnerDetailSerializer(queryset, many=True)
             return Response(serializer.data[0])
