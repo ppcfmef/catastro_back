@@ -307,9 +307,9 @@ class LandOwnerDetailSRTMSerializer(serializers.Serializer):
         data.update({'land_id':land.id,'owner_id': owner.id})
 
             
-        if self.exists_detail(data=data):
-            landOwnerDetails=LandOwnerDetail.objects.filter(owner=data.get('owner'), land=data.get('land'),ubigeo =data.get('ubigeo'))
-            landOwnerDetails.update(estado_dj=3)
+        # if self.exists_detail(data=data):
+        #     landOwnerDetails=LandOwnerDetail.objects.filter(owner=data.get('owner'), land=data.get('land'),ubigeo =data.get('ubigeo'))
+        #     landOwnerDetails.update(estado_dj=3)
         detail = LandOwnerDetail.objects.create(**data)
 
         for nivel in niveles_construccion:
@@ -457,8 +457,7 @@ class LandOwnerSRTMSerializer(serializers.Serializer):
 
         }
 
-
-        if self.exists_owner(data=validated_data) :
+        if self.exists_owner(data=contribuyente) :
             
             owner = LandOwner.objects.filter(ubigeo=contribuyente.get('ubigeo_registro'), code=contribuyente.get('contribuyente_numero'))[0]
             
