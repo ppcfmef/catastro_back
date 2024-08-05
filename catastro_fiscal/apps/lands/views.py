@@ -1,8 +1,9 @@
 from rest_framework import mixins, status
 from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.viewsets import GenericViewSet , ModelViewSet
 from rest_framework.decorators import action
+from drf_yasg.utils import swagger_auto_schema
 from djangorestframework_camel_case.parser import CamelCaseMultiPartParser
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
@@ -11,14 +12,17 @@ from core.views import CustomSerializerMixin
 from .models import UploadHistory, Land, LandOwner, LandOwnerDetail
 from .serializers import (
     UploadHistorySerializer, UploadHistoryListSerializer, LandSerializer, LandOwnerSerializer,
-    LandOwnerDetailSerializer, LandOwnerSaveSerializer, LandDetailSerializer, LandSaveSerializer,
-    SummaryRecordSerializer, TemporalUploadSummarySerializer, UploadStatusSerializer,LandOwnerSRTMSerializer,LandOwnerDetailSRTMSerializer, OwnerDeudaSerializer,LandNivelConstruccionSerializer
+    LandOwnerRetriveSerializer, LandOwnerSaveSerializer, LandDetailSerializer, LandSaveSerializer,
+    SummaryRecordSerializer, TemporalUploadSummarySerializer, UploadStatusSerializer,LandOwnerSRTMSerializer,LandOwnerDetailSRTMSerializer, OwnerDeudaSerializer,LandNivelConstruccionSerializer, 
+    MessageSerializer, LandOwnerDetailSerializer
 )
 from .services.upload_temporal import UploadTemporalService
 from apps.historical.models import HistoricalRecord
 from .filters import LandOwnerFilter
 from rest_framework.decorators import authentication_classes ,permission_classes
 from apps.places.models import District
+import json
+
 class UploadHistoryViewset(CustomSerializerMixin, mixins.ListModelMixin, mixins.CreateModelMixin, GenericViewSet):
     queryset = UploadHistory.objects.all().order_by('-id')
     serializer_class = UploadHistoryListSerializer
@@ -71,7 +75,7 @@ class LandViewSet(mixins.ListModelMixin, GenericViewSet):
     serializer_class = LandSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, CamelCaseOrderFilter]
     search_fields = ['cup', 'cpm', 'id_cartographic_img', 'id_plot', 'street_name']
-    filterset_fields = ['owner', 'status', 'id', 'ubigeo','cpm','cup']
+    filterset_fields = ['owner', 'status', 'id', 'ubigeo','cpm','cup','street_name','urban_mza','urban_lot_number','municipal_number']
     ordering_fields = ['ubigeo', 'cup', 'cpm', 'id_plot', 'id_cartographic_img', 'habilitacion_name', 'street_name',
                        'creation_date']
     ordering = ['-creation_date']
@@ -146,22 +150,44 @@ class LandOwnerViewSet(mixins.ListModelMixin, GenericViewSet):
         return Response(serializer.data)
 
 
-class LandOwnerDetailViewSet(mixins.RetrieveModelMixin, GenericViewSet):
+class LandOwnerRetriveViewSet(mixins.RetrieveModelMixin, GenericViewSet):
     """
     Get Owner filter by id
     """
     queryset = LandOwner.objects.all()
-    serializer_class = LandOwnerDetailSerializer
+    serializer_class = LandOwnerRetriveSerializer
 
-# @authentication_classes([])
-# @permission_classes([])
+
+@authentication_classes([])
+@permission_classes([])
+
+class LandOwnerDetailViewSet(ModelViewSet):
+
+    queryset = LandOwnerDetail.objects.all()
+    serializer_class = LandOwnerDetailSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter, CamelCaseOrderFilter]
+    filterset_fields = ['land_id', 'owner_id']
+
+
+    @action(methods=['GET'], detail=False, url_path='detalle/(?P<land_id>[0-9]+)/(?P<owner_id>[0-9]+)')
+    def detalle(self, request, *args, **kwargs):
+        owner_id = kwargs.get('owner_id')
+        land_id  = kwargs.get('land_id')
+        queryset = LandOwnerDetail.objects.filter(land_id=land_id,owner_id=owner_id)
+        
+
+        if len(queryset)>0:
+            serializer = LandOwnerDetailSerializer(queryset, many=True)
+            return Response(serializer.data[0])
+        else:
+            return Response({"mensaje": "sin datos"})
 
 class OwnerSearchByDocumentViewset(mixins.ListModelMixin, GenericViewSet):
     """
     Get Owner filter by document (dni, ruc)
     """
     queryset = LandOwner.objects.all()
-    serializer_class = LandOwnerDetailSerializer
+    serializer_class = LandOwnerRetriveSerializer
     #lookup_field = 'dni'
     filter_backends = [DjangoFilterBackend,SearchFilter]
     filterset_fields = ['dni', 'ubigeo','code' ]
@@ -215,110 +241,49 @@ class SummaryRecord(GenericAPIView):
         }
 
 
-@authentication_classes([])
-@permission_classes([])
+# @authentication_classes([])
+# @permission_classes([])
 class SRTMViewSet(GenericViewSet):
     queryset = Land.objects.all()
     serializer_class = LandSerializer
     
 
-
+    @swagger_auto_schema(request_body=LandOwnerSRTMSerializer,responses={200: MessageSerializer()})
     @action(methods=['POST'], detail=False, url_path='crear-contribuyente')
     def create_owner(self, request, *args, **kwargs):
-        document_type= request.data.get('doc_identidad_id',None)
-        document_type = '01' if document_type ==1 else '06' if document_type ==2 else   document_type
-
-        data = {
-            'code' : request.data.get('codigo_contribuyente',None),
-            'ubigeo' : request.data.get('ubigeo',None),
-            'document_type' : document_type,
-            'dni':request.data.get('num_doc_identidad',None),
-            'name': request.data.get('nombres',None),
-            'paternal_surname': request.data.get('ape_paterno',None),
-            'maternal_surname': request.data.get('ape_materno',None),
-            'domicilios': request.data.get('domicilios',[]),
-            'contactos': request.data.get('contactos',[]),
-        }
-
-        
-        serializer = LandOwnerSRTMSerializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        a = serializer.save()
-        return Response({'message':'Contribuyente creado','status':True}, status=status.HTTP_201_CREATED)
     
+        serializer = LandOwnerSRTMSerializer(data=request.data)
+        #serializer.is_valid(raise_exception=True)
+
+        if  serializer.is_valid():
+            
+            if serializer.exists_owner(data = request.data):
+                a = serializer.save()
+            
+                return Response({'mensaje':'Contribuyente actualizado','status':True}, status=status.HTTP_200_OK)
+            else:
+                a = serializer.save()
+                return Response({'mensaje':'Contribuyente creado','status':True}, status=status.HTTP_200_OK)
+        errors=json.dumps(serializer.errors)
+        return Response({'mensaje': errors} ,status=status.HTTP_400_BAD_REQUEST)
     
+
+
+    @swagger_auto_schema(request_body=LandOwnerDetailSRTMSerializer,responses={200: MessageSerializer()})
     @action(methods=['POST'], detail=False, url_path='guardar-predio-contribuyente',url_name='guardar-predio-contribuyente')
     def save_land_owner(self, request, *args, **kwargs):
-        code_owner = request.data.get('codigo_contribuyente',None)
-        cpu = request.data.get('codigo_predio_unico',None)
-        cpm = request.data.get('codigo_predio_municipal',None)
-        ubigeo = request.data.get('ubigeo')
-
-
-        data = {
-            'cpu' : request.data.get('codigo_predio_unico',None),
-            'cpm' : request.data.get('codigo_predio_municipal',None),
-            'ubigeo' : request.data.get('ubigeo',None),
-            'area_terreno':request.data.get('area_terreno',None),
-            'area_tot_terr_comun': request.data.get('area_tot_terr_comun',None),
-            'area_construida': request.data.get('area_construida',None),
-            'area_tot_cons_comun': request.data.get('area_tot_cons_comun',None),
-            'por_propiedad': request.data.get('por_propiedad',None),
-            'tip_transferencia': request.data.get('tip_transferencia',None),
-            'tip_uso_predio': request.data.get('tip_uso_predio',None),
-            'tip_propiedad': request.data.get('tip_propiedad',None),
-            'fec_transferencia': request.data.get('fec_transferencia',None),
-            'longitud_frente': request.data.get('longitud_frente',None),
-            'cantidad_habitantes': request.data.get('cantidad_habitantes',None),
-            'pre_inhabitable': request.data.get('pre_inhabitable',None),
-            'par_registral': request.data.get('par_registral',None),
-            'numero_dj': request.data.get('numero_dj',None),
-            'fecha_dj': request.data.get('fecha_dj',None),
-            'usuario_creacion': request.data.get('usuario_creacion',None),
-            'estado': request.data.get('estado',1),
-           
-        }
-
+        records=request.data    
+        serializer = LandOwnerDetailSRTMSerializer(data=records)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'mensaje':'Registros guardados' ,'status':True }, status=status.HTTP_201_CREATED)
+        errors=json.dumps(serializer.errors)
+        return Response({'mensaje': errors} ,status=status.HTTP_400_BAD_REQUEST)
+        # serializer.is_valid(raise_exception=True)
+        # serializer.save()
 
 
         
-        
-        owners=LandOwner.objects.filter(code =code_owner,ubigeo = ubigeo)
-        districts=District.objects.filter( code=ubigeo)
-        
-        lands=[]
-        if cpu is not None:
-            lands=Land.objects.filter(cup =cpu,ubigeo = ubigeo)
-        
-        elif cpm is not None:
-            lands=Land.objects.filter(cpm =cpm,ubigeo = ubigeo)
-        
-        
-        if len(owners)==0:
-            return Response({'message':'Contribuyente no existe','status':False}, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            owner = owners[0]
-        
-
-        if len(lands)==0:
-            return Response({'message':'Predio no existe','status':False}, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            land = lands[0]
-        
-        if len(districts)==0:
-            return Response({'message':'Distrito no existe' ,'status':False }, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            district = districts[0]
-        
-        
-        data['land']= land.id
-        data['ubigeo']=district.code
-        data['owner']=owner.id
-        #dataSerializer=LandOwnerDetail(owner=owner, land=land, ubigeo=district)
-        serializer = LandOwnerDetailSRTMSerializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response({'message':'Registro guardado' ,'status':True }, status=status.HTTP_201_CREATED)
     
         
     @action(methods=['POST'], detail=False, url_path='guardar-nivel-construccion',url_name='guardar-nivel-construccion')

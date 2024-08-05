@@ -68,6 +68,7 @@ LOCAL_APPS = [
     'apps.gap_analisys.apps.GapAnalisysConfig',
     'apps.land_inspections.apps.LandInspectionsConfig',
     'apps.valorization.apps.ValorizationConfig',
+    'apps.external.apps.ExternalConfig'
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -161,6 +162,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
+    #'EXCEPTION_HANDLER': 'catastro_fiscal.core.utils.custom_exception_handler'
 }
 
 JWT_AUTH = {
@@ -179,5 +181,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 LOCALE_PATHS = [BASE_DIR / 'locale']
 
 FIXTURE_DIRS = [BASE_DIR / 'fixtures']
+
 
 AUTH_URL_ARCGIS = 'https://ws.mineco.gob.pe/portaldf/sharing/generateToken'

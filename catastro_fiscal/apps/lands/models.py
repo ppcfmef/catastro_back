@@ -101,11 +101,13 @@ class TemploralUploadRecord(models.Model):
 class LandOwner(AbstractAudit):
     id = models.AutoField(primary_key=True)
     ubigeo = models.ForeignKey(District, on_delete=models.CASCADE, db_column='ubigeo')
+    
     code = models.CharField(max_length=50, db_column='cod_contr')
     document_type = models.ForeignKey(MasterTipoDocumentoIdentidad, on_delete=models.DO_NOTHING,blank=True, null=True, db_column='tip_doc')
     tipo_contribuyente = models.ForeignKey(MasterTipoContribuyente, on_delete=models.DO_NOTHING,blank=True, null=True)
     dni = models.CharField(max_length=20, blank=True, null=True, db_column='doc_iden')  # ToDo: Change for document
     name = models.CharField(max_length=150, blank=True, null=True, db_column='nombre')
+    sec_ejec =  models.IntegerField( blank=True, null=True)
     paternal_surname = models.CharField(max_length=150, blank=True, null=True, db_column='ap_pat')
     maternal_surname = models.CharField(max_length=150, blank=True, null=True, db_column='ap_mat')
     description_owner = models.CharField(max_length=150, blank=True, null=True, db_column='contribuyente')
@@ -120,7 +122,7 @@ class LandOwner(AbstractAudit):
     
     class Meta:
         db_table = 'PROPIETARIO'
-        unique_together = ["ubigeo", "code"]
+        #unique_together = ["ubigeo", "code"]
         verbose_name = _('land owner')
         verbose_name_plural = _('land owners')
 
@@ -156,9 +158,9 @@ class TipoMedioContacto(models.Model):
 class Contacto(models.Model):
     id= models.AutoField(primary_key=True)
     contribuyente = models.ForeignKey(LandOwner, models.DO_NOTHING, related_name='contacto', blank=True, null=True)
-    decripcion = models.CharField(max_length=100, blank=True, null=True)
+    descripcion = models.CharField(max_length=100, blank=True, null=True)
     principal  = models.IntegerField(blank=True, null=True)
-    tipo_med_contacto  = models.ForeignKey(TipoMedioContacto, models.DO_NOTHING,blank=True, null=True)
+    tip_med_contacto  = models.ForeignKey(TipoMedioContacto, models.DO_NOTHING,blank=True, null=True)
 
     class Meta:
         db_table = 'CONTACTO'
@@ -167,16 +169,14 @@ class Contacto(models.Model):
 
 class Domicilio(models.Model):
     id= models.AutoField(primary_key=True)
+    tipo_domicilio = models.IntegerField(blank=True, null=True)
     contribuyente = models.ForeignKey(LandOwner, models.DO_NOTHING, related_name='domicilio', blank=True, null=True)
-    ubigeo = models.CharField(max_length=10, blank=True, null=True)
+    ubigeo_domicilio = models.CharField(max_length=10, blank=True, null=True)
     des_domicilio= models.CharField(max_length=500, blank=True, null=True)
     longitud = models.FloatField(blank=True, null=True)
     latitud = models.FloatField(blank=True, null=True)
-    # block = models.CharField(max_length=6, blank=True, null=True)
-    # puerta = models.CharField(max_length=5, blank=True, null=True)
-    # piso = models.CharField(max_length=2, blank=True, null=True)
-    # kilometro = models.CharField(max_length=4, blank=True, null=True)
-    # referencia = models.CharField(max_length=200, blank=True, null=True)
+    referencia = models.CharField(max_length=200, blank=True, null=True)
+
     class Meta:
         db_table = 'DOMICILIO'
         verbose_name = _('direccion')
@@ -295,10 +295,15 @@ class Land(LandBase):
 
 
 class LandOwnerDetail(models.Model):
+    id = models.AutoField(primary_key=True)
     land = models.ForeignKey(Land, on_delete=models.CASCADE, db_column='id_predio',related_name='predio_contribuyente')
     owner = models.ForeignKey(LandOwner, on_delete=models.CASCADE, db_column='id_propietario',related_name='contribuyentes')
+    
+    sec_ejec = models.CharField(max_length=6, blank=True, null=True, db_column='sec_ejec')
+    predio_codigo = models.IntegerField( blank=True, null=True) 
     cpm = models.CharField(max_length=50, db_column='cod_cpm', blank=True, null=True)
     cup = models.CharField(max_length=20, db_column='cod_cpu', blank=True, null=True)
+    code = models.CharField(max_length=50, db_column='cod_contr', blank=True, null=True)
     area_terreno =  models.FloatField( blank=True, null=True)
     area_tot_terr_comun =  models.FloatField( blank=True, null=True)
     area_construida = models.FloatField( blank=True, null=True)
@@ -314,11 +319,14 @@ class LandOwnerDetail(models.Model):
     par_registral = models.CharField( max_length=30,blank=True, null=True)
     numero_dj = models.CharField( max_length=30,blank=True, null=True)
     fecha_dj = models.DateField(blank=True, null=True)
-    usuario_creacion = models.CharField( max_length=30,blank=True, null=True)
+    usuario_auditoria = models.CharField( max_length=30,blank=True, null=True)
     ubigeo = models.ForeignKey(District, on_delete=models.SET_NULL, blank=True, null=True)
-    estado = models.IntegerField( blank=True, null=True, default=1) 
+    estado_dj = models.IntegerField( blank=True, null=True) 
+    motivo_dj = models.IntegerField( blank=True, null=True) 
     fecha =  models.DateField( blank=True, null=True, auto_now=True)
-
+    anio_determinacion  =  models.IntegerField( blank=True, null=True,)
+    fecha_adquisicion = models.DateField(blank=True, null=True)
+    predial_numero =  models.IntegerField( blank=True, null=True,)
     class Meta:
         db_table = 'PREDIO_PROPIETARIO'
         verbose_name = _('land Owner Detail')
@@ -331,7 +339,7 @@ class LandNivelConstruccion(models.Model):
 
     id = models.AutoField(primary_key=True)
     ubigeo = models.ForeignKey(District, on_delete=models.DO_NOTHING, db_column='ubigeo', related_name='nivel_ubigeo')
-    land_owner_detail= models.ForeignKey(LandOwnerDetail, on_delete=models.DO_NOTHING, related_name='nivel_land_owner_detail')
+    land_owner_detail= models.ForeignKey(LandOwnerDetail, on_delete=models.DO_NOTHING, related_name='niveles_construccion')
     tip_nivel = models.ForeignKey(MasterTipoNivel, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='nivel_tipo_nivel')
     num_piso = models.IntegerField(blank=True, null=True)
     tip_material = models.ForeignKey(MasterTipoMaterial, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='nivel_tipo_material')
@@ -346,7 +354,7 @@ class LandNivelConstruccion(models.Model):
     categoria_revestimiento = models.CharField(max_length=10, blank=True, null=True)
     categoria_bano = models.CharField(max_length=10, blank=True, null=True)
     categoria_inst_electrica_sanita = models.CharField(max_length=10, blank=True, null=True)
-    estado = models.IntegerField( blank=True, null=True)
+    estado = models.IntegerField( blank=True, null=True,default=1)
 
     class Meta:
         db_table = 'PREDIO_NIVEL_CONSTRUCCION'

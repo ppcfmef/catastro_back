@@ -6,7 +6,7 @@ from rest_framework import serializers
 #,AplicationType,
 
 from apps.lands.models import Land,LandOwner
-from apps.lands.serializers import LandOwnerDetailSerializer
+from apps.lands.serializers import LandOwnerRetriveSerializer
 from apps.master_data.models import MasterCodeStreet
 import django_filters
 from django import forms

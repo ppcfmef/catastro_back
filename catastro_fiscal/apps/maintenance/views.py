@@ -193,6 +193,12 @@ class ApplicationViewSet( ModelViewSet):
                             'status':1,
                             'source':'mantenimiento_pre',
                             'id_lote_p':result.get('id_lote_p', None),
+                            'id_lote_puerta': result.get('id_lote_puerta', None),
+                            'longitude_puerta': result.get('longitude_puerta', None),
+                            'latitude_puerta':  result.get('latitude_puerta', None),
+                            'lote_urbano_puerta': result.get('lote_urbano_puerta', None),
+                            'manzana_urbana_puerta': result.get('manzana_urbana_puerta', None),
+
                         }
 
                         id=result.get('id', None)
@@ -259,10 +265,10 @@ class LandViewSet(ModelViewSet):
     @action(methods=['GET'], detail=False, url_path='lands-by-application/(?P<application_id>[0-9]+)')
     def get_lands_by_application(self, request, *args, **kwargs):
         application_id = kwargs.get('application_id')
-        
+        application=Application.objects.get(id =application_id )
         lands_id = ApplicationLandDetail.objects.filter(application_id=application_id).values_list('land_id', flat=True)
         
-        lands = self.get_queryset().filter(id__in=list(lands_id))
+        lands = self.get_queryset().filter(id__in=list(lands_id), ubigeo =application.ubigeo)
         queryset = self.filter_queryset(lands)
         page = self.paginate_queryset(queryset)
         
@@ -277,6 +283,9 @@ class LandViewSet(ModelViewSet):
     def get_lands_affected_by_application(self, request, *args, **kwargs):
 
         application_id = kwargs.get('application_id')
+
+        application=Application.objects.get(id =application_id )
+        #print(application.ubigeo)
         
         lands_id = ApplicationLandDetail.objects.filter(application_id=application_id).values_list('land_id', flat=True)
         #ApplicationLandDetail.objects.filter(application_id=application_id).values_list('land_id', flat=True)
@@ -284,8 +293,12 @@ class LandViewSet(ModelViewSet):
         #print('lands_id>>',lands_id)
         
         id_lotes=Land.objects.filter(id__in=lands_id).exclude(id_lote_p__isnull= True).values_list('id_lote_p', flat=True)
-        #print('id_lote_p>>',id_lotes)
-        lands_affected=Land.objects.filter(id_lote_p__in=list(id_lotes)).filter(status=1).exclude(id__in= lands_id)
+
+
+        #print('id_lote_p>>',list(id_lotes))
+        #print('lands_id>>',list(lands_id))
+         #list(lands_id)
+        lands_affected=Land.objects.filter(id_lote_p__in=list(id_lotes), ubigeo =application.ubigeo).filter(status=1).exclude(id__in= list(lands_id))
         
         #lands = self.get_queryset().filter(id__in=list(lands_id))
         

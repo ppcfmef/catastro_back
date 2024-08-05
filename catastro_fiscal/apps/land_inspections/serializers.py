@@ -47,14 +47,16 @@ class LandInspectionSerializer(serializers.Serializer):
     cod_cpu = serializers.CharField(allow_blank=True, allow_null=True)
     piso = serializers.CharField(allow_blank=True, allow_null=True)
     num_sumi_agua = serializers.CharField(allow_blank=True, allow_null=True)
-    cod_tipo_predio = serializers.CharField(allow_blank=True, allow_null=True)
+    cod_tipo_predio = serializers.IntegerField( allow_null=True)
     num_sumi_luz = serializers.CharField(allow_blank=True, allow_null=True)
-    uso_especifico = serializers.CharField(allow_blank=True, allow_null=True)
+    #uso_especifico = serializers.CharField(allow_blank=True, allow_null=True)
     interior = serializers.CharField(allow_blank=True, allow_null=True)
     obs_predio = serializers.CharField(allow_blank=True, allow_null=True)
     num_dpto = serializers.CharField(allow_blank=True, allow_null=True)
     codigo_uso = serializers.CharField(allow_blank=True, allow_null=True)
-    estado = serializers.CharField(allow_blank=True, allow_null=True)
+    codigo_clase_uso  = serializers.CharField(allow_blank=True, allow_null=True)
+    codigo_sub_clase_uso = serializers.CharField(allow_blank=True, allow_null=True)
+    #estado = serializers.CharField(allow_blank=True, allow_null=True)
     block = serializers.CharField(allow_blank=True, allow_null=True)
     num_sumi_gas = serializers.CharField(allow_blank=True, allow_null=True)
     tb_predio_contribuyente = LandOwnerDetailInspectionSerializer(many=True)
@@ -419,12 +421,14 @@ class MobileLandInspectionSerializer(serializers.Serializer):
             piso=tb_land_inspection.get('piso', None),
             num_sumi_agua=tb_land_inspection.get('num_sumi_agua', None),
             num_sumi_luz=tb_land_inspection.get('num_sumi_luz', None),
-            uso_especifico=tb_land_inspection.get('uso_especifico', None),
+            #uso_especifico=tb_land_inspection.get('uso_especifico', None),
             interior=tb_land_inspection.get('interior', None),
             obs_predio=tb_land_inspection.get('obs_predio', None),
             num_dpto=tb_land_inspection.get('num_dpto', None),
             codigo_uso=tb_land_inspection.get('codigo_uso', None),
-            estado=tb_land_inspection.get('estado', None),
+            codigo_clase_uso =tb_land_inspection.get('codigo_clase_uso',  None),
+            codigo_sub_clase_uso=tb_land_inspection.get('codigo_sub_clase_uso',  None),
+            #estado=tb_land_inspection.get('estado', None),
             block=tb_land_inspection.get('block', None),
             num_sumi_gas=tb_land_inspection.get('num_sumi_gas', None),
         )
