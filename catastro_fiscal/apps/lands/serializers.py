@@ -457,7 +457,7 @@ class LandOwnerSRTMSerializer(serializers.Serializer):
 
         }
 
-        if self.exists_owner(data=contribuyente) :
+        if self.exists_owner(data=contribuyente)  :
             
             owner = LandOwner.objects.filter(ubigeo=contribuyente.get('ubigeo_registro'), code=contribuyente.get('contribuyente_numero'))[0]
             
