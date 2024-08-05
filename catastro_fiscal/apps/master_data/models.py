@@ -144,6 +144,7 @@ class MasterClaseUso(MasterType):
 
 
 class MasterSubClaseUso(MasterType):
+    codigo_clase_uso = models.ForeignKey(MasterClaseUso,blank=True, null=True, on_delete=models.DO_NOTHING)
     class Meta:
         db_table = 'M_SUBCLASE_USO'
         verbose_name = _('subclase de uso')
@@ -159,7 +160,6 @@ class MasterPropertyType(MasterType):
 
 
 class MasterTipoUsoPredio(MasterType):
-    codigo_clase_uso = models.ForeignKey(MasterClaseUso,blank=True, null=True, on_delete=models.DO_NOTHING)
     codigo_subclase_uso = models.ForeignKey(MasterSubClaseUso,blank=True, null=True, on_delete=models.DO_NOTHING)
     codigo_tipo_uso =  models.IntegerField(blank=True, null=True)
     class Meta:
