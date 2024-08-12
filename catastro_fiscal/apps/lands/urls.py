@@ -24,11 +24,12 @@ router.register('owners-search', OwnerSearchByDocumentViewset, basename='owners_
 router.register('land-owner-detail', LandOwnerDetailViewSet, basename='land-owner-detail')
 
 
-router2 = SimpleRouter(trailing_slash=False)
+#router2 = SimpleRouter(trailing_slash=False)
 
 #router2.register('external', SRTMViewSet, basename='external')
 
-urlpatterns = router.urls + router2.urls +[
+urlpatterns = router.urls +[
     path('summary/', SummaryRecord.as_view()),
     path('exports/', include('apps.lands.exports.urls', namespace='lands_exports')),
 ]
+# + router2.urls 
