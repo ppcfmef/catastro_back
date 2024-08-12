@@ -31,5 +31,4 @@ router2.register('external', SRTMViewSet, basename='external')
 urlpatterns = router.urls +[
     path('summary/', SummaryRecord.as_view()),
     path('exports/', include('apps.lands.exports.urls', namespace='lands_exports')),
-]
-+ router2.urls 
+] + router2.urls 
