@@ -26,7 +26,7 @@ router.register('land-owner-detail', LandOwnerDetailViewSet, basename='land-owne
 
 router2 = SimpleRouter(trailing_slash=False)
 
-router2.register('external', SRTMViewSet, basename='external')
+#router2.register('external', SRTMViewSet, basename='external')
 
 urlpatterns = router.urls + router2.urls +[
     path('summary/', SummaryRecord.as_view()),
