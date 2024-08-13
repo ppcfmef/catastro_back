@@ -171,10 +171,11 @@ def jwt_response_payload_handler(token, user=None, request=None):
     }
 
                     # Realiza la solicitud POST para obtener el token
-    response = requests.post(settings.AUTH_URL_ARCGIS, data=params)
+
 
                     #Verifica si la solicitud fue exitosa
     try:
+        response = requests.post(settings.AUTH_URL_ARCGIS, data=params)
         print('response>>',response.text)
         print('response>>',response.status_code)
         
