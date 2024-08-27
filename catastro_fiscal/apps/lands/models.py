@@ -349,6 +349,8 @@ class LandNivelConstruccion(models.Model):
     area_construida = models.FloatField( blank=True, null=True)
     area_construida_comun =models.FloatField( blank=True, null=True)
     por_area_construida_comun =models.FloatField( blank=True, null=True)
+    categoria_techo = models.CharField(max_length=10, blank=True, null=True)
+    categoria_piso = models.CharField(max_length=10, blank=True, null=True)
     categoria_muro_columna = models.CharField(max_length=10, blank=True, null=True)
     categoria_puerta_ventana = models.CharField(max_length=10, blank=True, null=True)
     categoria_revestimiento = models.CharField(max_length=10, blank=True, null=True)
