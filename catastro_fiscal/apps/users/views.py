@@ -161,35 +161,36 @@ def jwt_response_payload_handler(token, user=None, request=None):
     
 
 
-    params = {
-            'username': 'daguado',
-                        'password': 'D@n1gu4d0',
-                        'f': 'json',  # Formato de respuesta JSON
-                        'client':'referer',
-                        'referer':settings.HOST_REFERER,
-                        'expiration':5000,
-    }
+    # params = {
+    #         'username': 'daguado',
+    #                     'password': 'D@n1gu4d0',
+    #                     'f': 'json',  # Formato de respuesta JSON
+    #                     'client':'referer',
+    #                     'referer':settings.HOST_REFERER,
+    #                     'expiration':5000,
+    # }
 
                     # Realiza la solicitud POST para obtener el token
 
 
                     #Verifica si la solicitud fue exitosa
-    try:
-        response = requests.post(settings.AUTH_URL_ARCGIS, data=params)
-        print('response>>',response.text)
-        print('response>>',response.status_code)
+    # try:
+    #     response = requests.post(settings.AUTH_URL_ARCGIS, data=params)
+    #     print('response>>',response.text)
+    #     print('response>>',response.status_code)
         
-        if response.status_code == 200:
-                            #l token se encuentra en la respuesta JSON
-            tokenArcGis = response.json()['token']
+    #     if response.status_code == 200:
+    #                         #l token se encuentra en la respuesta JSON
+    #         tokenArcGis = response.json()['token']
             
             
-        else:
+    #     else:
                         
 
-            tokenArcGis=''
-    except:
-        tokenArcGis=''
+    #         tokenArcGis=''
+    # except:
+    
+    tokenArcGis=''
     return {
             'token': token,
             'tokenArcGis': tokenArcGis
