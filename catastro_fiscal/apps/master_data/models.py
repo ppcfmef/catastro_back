@@ -150,7 +150,7 @@ class MasterSubClaseUso(MasterType):
         verbose_name = _('subclase de uso')
         verbose_name_plural = _('subclases de uso')
 
-class MasterPropertyType(MasterType):
+class MasterTipoPredio(MasterType):
 
     class Meta:
         db_table = 'M_TIPO_PREDIO'
@@ -166,3 +166,18 @@ class MasterTipoUsoPredio(MasterType):
         db_table = 'M_TIPO_USO_PREDIO'
         verbose_name = _('tipo uso de predio')
         verbose_name_plural = _('tipos uso de predio')
+
+# class MasterEstadoConserva(MasterDomain):
+#     class Meta:
+#         db_table = 'M_ESTADO_CONSERVA'
+#         verbose_name = _('estado conserva')
+#         verbose_name_plural = _('estados conserva')
+
+
+
+
+# class MasterMaterial(MasterDomain):
+#     class Meta:
+#         db_table = 'M_MATERIAL'
+#         verbose_name = _('material')
+#         verbose_name_plural = _('materiales')

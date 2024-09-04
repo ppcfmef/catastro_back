@@ -52,6 +52,8 @@ class LandOwnerDetailInspectionSerializer(serializers.ModelSerializer):
 
 class LandInspectionSerializer(serializers.ModelSerializer):
     predio_contribuyente = LandOwnerDetailInspectionSerializer(many=True, read_only=True)
+    
+    tipo_predio = serializers.CharField(source='cod_tipo_predio.name')
     #contribuyente= serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = LandInspection
@@ -80,6 +82,8 @@ class LandFacilitySerializer(serializers.ModelSerializer):
 
 
 class LandCharacteristicSerializer(serializers.ModelSerializer):
+    estado_conserva_nombre =  serializers.CharField(source='estado_conserva.name')
+    material_pred_nombre = serializers.CharField(source='material_pred.name')
     class Meta:
         model = LandCharacteristic
         fields = '__all__'
@@ -115,7 +119,7 @@ class RecordOwnerShipRetriveSerializer(serializers.ModelSerializer):
     instalaciones  = LandFacilitySerializer(many=True,read_only=True)
     suministro = LandSupplyRetriveSerializer(many=False,read_only=True)
     predio_inspeccion = LandInspectionSerializer(many=False,read_only=True)
-    tipoTit = serializers.CharField(source='cod_tipo_tit.desc_tipo_tit')
+    tipo_tit = serializers.CharField(source='cod_tipo_tit.desc_tipo_tit')
     predio_padron = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = RecordOwnerShip

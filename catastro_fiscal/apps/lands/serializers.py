@@ -68,6 +68,11 @@ class LandNivelConstruccionSerializer(serializers.ModelSerializer):
 
 class LandOwnerDetailSerializer(serializers.ModelSerializer):
     niveles_construccion = LandNivelConstruccionSerializer(many = True, read_only=True)
+    tip_uso_predio_nombre  =  serializers.CharField(source='tip_uso_predio.name')
+    subclase_uso_nombre  =  serializers.CharField(source='tip_uso_predio.codigo_subclase_uso.name')
+    clase_uso_nombre  =  serializers.IntegerField(source='tip_uso_predio.codigo_subclase_uso.codigo_clase_uso')
+    tip_propiedad_nombre = serializers.CharField(source='tip_propiedad.name')
+    tip_transferencia_nombre = serializers.CharField(source='tip_transferencia.name')
     class Meta:
         model = LandOwnerDetail
         fields = '__all__'
@@ -203,7 +208,7 @@ class LandNivelConstruccionCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = LandNivelConstruccion
         fields = ('tip_nivel_id','num_piso','tip_material_id','est_conservacion_id','anio_construccion','mes_construccion',
-                  'area_construida','area_construida_comun','por_area_construida_comun','categoria_muro_columna','categoria_puerta_ventana',
+                  'area_construida','area_construida_comun','por_area_construida_comun','categoria_techo','categoria_piso','categoria_muro_columna','categoria_puerta_ventana',
                   'categoria_revestimiento','categoria_bano','categoria_inst_electrica_sanita'
                   )
 

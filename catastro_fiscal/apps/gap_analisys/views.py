@@ -54,7 +54,8 @@ class LandGapAnalisysViewSet(ModelViewSet):
 
 
  
-
+@authentication_classes([])
+@permission_classes([])
 class DistrictViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericViewSet):
     queryset = District.objects.all()
     serializer_class = DistrictAnalisysSerializer

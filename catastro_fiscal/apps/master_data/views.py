@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 from .serializers import InstitutionSerializer, MasterDomainSerilizer,MasterResolutionTypeSerializer
 from .models import (
-    Institution, MasterTypeUrbanUnit, MasterSide, MasterCodeStreet, MasterPropertyType, MasterResolutionType, ResolutionTypeDistrito
+    Institution, MasterTypeUrbanUnit, MasterSide, MasterCodeStreet, MasterTipoPredio, MasterResolutionType, ResolutionTypeDistrito
 )
 
 from rest_framework.filters import SearchFilter
@@ -24,7 +24,7 @@ class MasterDomainView(APIView):
         data = {
             "uu_type": MasterTypeUrbanUnit.objects.all(),
             "cod_street": MasterCodeStreet.objects.all(),
-            "property_type": MasterPropertyType.objects.all(),
+            "property_type": MasterTipoPredio.objects.all(),
             "cod_side": MasterSide.objects.all(),
             'resolution_type': MasterResolutionType.objects.all(),
         }

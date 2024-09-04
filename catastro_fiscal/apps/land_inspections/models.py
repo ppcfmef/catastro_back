@@ -2,7 +2,7 @@ from django.db import models
 from apps.users.models import User
 from django.utils.translation import gettext_lazy as _
 from apps.lands.models import LandOwner
-from apps.master_data.models import MasterPropertyType
+from apps.master_data.models import MasterTipoPredio ,MasterTipoEstadoConservacion,MasterTipoMaterial
 # Create your models here.
 from apps.master_data.models import MasterTypeUrbanUnit
 
@@ -217,14 +217,14 @@ class LandCharacteristic(models.Model):
     cod_tit = models.OneToOneField(RecordOwnerShip, on_delete=models.CASCADE, db_column="cod_tit", related_name='caracteristicas')
     categoria_electrica = models.CharField(max_length=100, blank=True, null=True)
     piso = models.CharField(max_length=100, blank=True, null=True)
-    estado_conserva = models.IntegerField( blank=True, null=True)
+    estado_conserva = models.ForeignKey(MasterTipoEstadoConservacion,  on_delete=models.SET_NULL,blank=True, null=True)
     anio_construccion = models.CharField(max_length=100, blank=True, null=True)
     catergoria_techo = models.CharField(max_length=100, blank=True, null=True)
     longitud_frente = models.FloatField(blank=True, null=True)
     categoria_muro_columna = models.CharField(max_length=100, blank=True, null=True)
     catergoria_puerta_ventana = models.CharField(max_length=100, blank=True, null=True)
     arancel = models.FloatField(blank=True, null=True)
-    material_pred = models.IntegerField(  null=True)
+    material_pred = models.ForeignKey( MasterTipoMaterial, on_delete=models.SET_NULL ,null=True)
     categoria_revestimiento = models.CharField(max_length=100, blank=True, null=True)
     area_terreno = models.FloatField(blank=True, null=True)
     clasificacion_pred = models.CharField(max_length=100, blank=True, null=True)
@@ -335,7 +335,7 @@ class LandInspection(models.Model):
     ubigeo = models.CharField(max_length=6)
     cod_cpu = models.CharField(max_length=50, blank=True, null=True)
     cod_pre = models.CharField(max_length=50, blank=True, null=True)
-    cod_tipo_predio = models.ForeignKey(MasterPropertyType, on_delete=models.SET_NULL, db_column="cod_tipo_predio", blank=True, null=True)
+    cod_tipo_predio = models.ForeignKey(MasterTipoPredio, on_delete=models.SET_NULL, db_column="cod_tipo_predio", blank=True, null=True)
 
     # cod_tipo_predio = models.ForeignKey(
     #     LandInspectionType, blank=True, null=True, on_delete=models.SET_NULL, db_column="cod_tipo_predio"
