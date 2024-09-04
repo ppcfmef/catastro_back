@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import (
-    Institution, MasterTypeUrbanUnit, MasterSide, MasterCodeStreet, MasterPropertyType, MasterResolutionType,ResolutionTypeDistrito
+    Institution, MasterTypeUrbanUnit, MasterSide, MasterCodeStreet, MasterTipoPredio, MasterResolutionType,ResolutionTypeDistrito
 )
 
 
@@ -24,7 +24,7 @@ class MasterCodeStreetSerializer(serializers.ModelSerializer):
 
 class MasterPropertyTypeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = MasterPropertyType
+        model = MasterTipoPredio
         fields = '__all__'
 
 
@@ -80,7 +80,7 @@ class MasterDomainSerilizer(serializers.Serializer):
         return MasterCodeStreet.objects.all()
 
     def get_property_type(self, obj):
-        return MasterPropertyType.objects.all()
+        return MasterTipoPredio.objects.all()
 
     def get_cod_side(self, obj):
         return MasterSide.objects.all()

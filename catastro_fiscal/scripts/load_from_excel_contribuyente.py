@@ -15,7 +15,7 @@ def contribuyente_map():
     'name':'NOMBRES',
     'paternal_surname':'APELLIDO_PATERNO',
     'maternal_surname': 'APELLIDO_MATERNO',
-    'description_owner':'RAZON_SOCIAL',
+    #'description_owner':'RAZON_SOCIAL',
     'email':	'CORREO',
     'phone':	'TELEFONO',
 
@@ -73,7 +73,7 @@ def run():
                            for key, value in land_mapper.items()}
         
         owner_record['tipo_contribuyente_id'] =1 if record['DOC_IDENTIDAD_ID'] ==1 else 2 if record['DOC_IDENTIDAD_ID'] ==2 else 3
-        owner_record['name'] = record['RAZON_SOCIAL']   if owner_record['tipo_contribuyente_id'] == 3 else  record['NOMBRES']
+        owner_record['name'] = record['RAZON_SOCIAL']   if record['DOC_IDENTIDAD_ID'] == 2 else  record['NOMBRES']
             
         if owner_record['document_type_id'] is not None:
             owner_record['document_type_id'] =equivalencia_tipo_documento_identidad.get(owner_record['document_type_id'],None)

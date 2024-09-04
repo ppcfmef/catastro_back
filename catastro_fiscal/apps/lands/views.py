@@ -167,7 +167,7 @@ class LandOwnerDetailViewSet(ModelViewSet):
     serializer_class = LandOwnerDetailSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, CamelCaseOrderFilter]
     filterset_fields = ['land_id', 'owner_id']
-
+    pagination_class = None
 
     @action(methods=['GET'], detail=False, url_path='detalle/(?P<land_id>[0-9]+)/(?P<owner_id>[0-9]+)')
     def detalle(self, request, *args, **kwargs):

@@ -1,7 +1,7 @@
 from django.contrib import admin  # noqa: F401
 from import_export.admin import ImportExportModelAdmin
 from .models import (
-    MasterTypeUrbanUnit, MasterSide, MasterCodeStreet, MasterPropertyType, MasterResolutionType, Institution,MasterTipoDocumentoIdentidad,MasterTipoContribuyente,
+    MasterTypeUrbanUnit, MasterSide, MasterCodeStreet, MasterTipoPredio, MasterResolutionType, Institution,MasterTipoDocumentoIdentidad,MasterTipoContribuyente,
     MasterTipoPropiedad,MasterTipoTransferencia,MasterTipoNivel, MasterTipoMaterial,MasterTipoEstadoConservacion, MasterClaseUso, MasterSubClaseUso,MasterTipoUsoPredio
 )
 
@@ -25,7 +25,7 @@ class MasterCodeStreetAdmin(MasterAdminMixin, ImportExportModelAdmin):
     pass
 
 
-@admin.register(MasterPropertyType)
+@admin.register(MasterTipoPredio)
 class MasterPropertyTypeAdmin(MasterAdminMixin, ImportExportModelAdmin):
     pass
 
