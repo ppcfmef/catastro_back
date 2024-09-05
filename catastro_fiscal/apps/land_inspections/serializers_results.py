@@ -53,7 +53,12 @@ class LandOwnerDetailInspectionSerializer(serializers.ModelSerializer):
 class LandInspectionSerializer(serializers.ModelSerializer):
     predio_contribuyente = LandOwnerDetailInspectionSerializer(many=True, read_only=True)
     
-    tipo_predio = serializers.CharField(source='cod_tipo_predio.name')
+    tipo_predio_nombre = serializers.CharField(source='cod_tipo_predio.name')
+
+    clase_uso_nombre  =  serializers.CharField(source='codigo_clase_uso.name')
+    subclase_uso_nombre = serializers.CharField(source='codigo_sub_clase_uso.name')
+    tipo_uso_nombre = serializers.CharField(source='codigo_uso.name')
+    
     #contribuyente= serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = LandInspection
@@ -105,6 +110,7 @@ class LandOwnerDetailSerializer(serializers.ModelSerializer):
 class LandPadronRetrieveSerializer(serializers.ModelSerializer):
     predio_contribuyente = LandOwnerDetailSerializer(many=True, read_only=True)
     address = serializers.SerializerMethodField()
+    tipo_predio_nombre = serializers.CharField(source='cod_tipo_predio.name')
     class Meta:
         model = Land
         fields = '__all__'
@@ -129,13 +135,14 @@ class RecordOwnerShipRetriveSerializer(serializers.ModelSerializer):
         lands=LandInspection.objects.filter(cod_tit=obj.cod_tit)
         if len(lands)>0:
             land=lands[0]
-            # print('land.cod_pre',land.cod_pre)
+            print('land.cod_cpu',land.cod_cpu)
+            print('land.cod_pre',land.cod_pre)
             # print('land.ubigeo',land.ubigeo)
 
-            if land.cod_pre =='' or land.cod_pre is None :
+            if land.cod_cpu =='' or land.cod_cpu is None   :
                 return None
             else:
-                landPadrons=Land.objects.filter(cpm=land.cod_pre, ubigeo =land.ubigeo)
+                landPadrons=Land.objects.filter(cup=land.cod_cpu, ubigeo =land.ubigeo)
                 if len(landPadrons)>0:
                 
                     return LandPadronRetrieveSerializer(landPadrons[0],many=False).data

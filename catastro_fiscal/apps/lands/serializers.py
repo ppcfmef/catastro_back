@@ -70,7 +70,7 @@ class LandOwnerDetailSerializer(serializers.ModelSerializer):
     niveles_construccion = LandNivelConstruccionSerializer(many = True, read_only=True)
     tip_uso_predio_nombre  =  serializers.CharField(source='tip_uso_predio.name')
     subclase_uso_nombre  =  serializers.CharField(source='tip_uso_predio.codigo_subclase_uso.name')
-    clase_uso_nombre  =  serializers.IntegerField(source='tip_uso_predio.codigo_subclase_uso.codigo_clase_uso')
+    clase_uso_nombre  =  serializers.CharField(source='tip_uso_predio.codigo_subclase_uso.codigo_clase_uso.name')
     tip_propiedad_nombre = serializers.CharField(source='tip_propiedad.name')
     tip_transferencia_nombre = serializers.CharField(source='tip_transferencia.name')
     class Meta:
@@ -86,7 +86,7 @@ class LandSerializer(serializers.ModelSerializer):
     applications = serializers.SerializerMethodField()
     #lands_affected_applications = serializers.SerializerMethodField(read_only=True)
     #caracteristicas =  LandOwnerDetailSerializer2()
-    
+    tipo_predio_nombre = serializers.CharField(source='cod_tipo_predio.name')
     class Meta:
         model = Land
         fields = '__all__'  # ToDo: estandarizar listado de predios

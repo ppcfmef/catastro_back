@@ -40,8 +40,15 @@ class LandOwnerDetailInspectionSerializer(serializers.Serializer):
         ref_name = 'mobile_owner_datail_serializer'
 
 
-class LandInspectionSerializer(serializers.Serializer):
+class LandInspectionSerializer(serializers.ModelSerializer):
     """tb_predio"""
+
+
+    
+    # class Meta:
+    #     model = LandInspection
+    #     fields = '__all__'
+    
     cod_tit = serializers.CharField()
     cod_pre = serializers.CharField(allow_blank=True, allow_null=True)
     cod_cpu = serializers.CharField(allow_blank=True, allow_null=True)
@@ -49,14 +56,15 @@ class LandInspectionSerializer(serializers.Serializer):
     num_sumi_agua = serializers.CharField(allow_blank=True, allow_null=True)
     cod_tipo_predio = serializers.IntegerField( allow_null=True)
     num_sumi_luz = serializers.CharField(allow_blank=True, allow_null=True)
-    #uso_especifico = serializers.CharField(allow_blank=True, allow_null=True)
+
     interior = serializers.CharField(allow_blank=True, allow_null=True)
     obs_predio = serializers.CharField(allow_blank=True, allow_null=True)
     num_dpto = serializers.CharField(allow_blank=True, allow_null=True)
-    codigo_uso = serializers.CharField(allow_blank=True, allow_null=True)
-    codigo_clase_uso  = serializers.CharField(allow_blank=True, allow_null=True)
-    codigo_sub_clase_uso = serializers.CharField(allow_blank=True, allow_null=True)
-    #estado = serializers.CharField(allow_blank=True, allow_null=True)
+    codigo_uso = serializers.IntegerField(allow_null=True)
+
+    codigo_clase_uso  = serializers.IntegerField(allow_null=True)
+    codigo_sub_clase_uso = serializers.IntegerField( allow_null=True)
+
     block = serializers.CharField(allow_blank=True, allow_null=True)
     num_sumi_gas = serializers.CharField(allow_blank=True, allow_null=True)
     tb_predio_contribuyente = LandOwnerDetailInspectionSerializer(many=True)
@@ -417,7 +425,7 @@ class MobileLandInspectionSerializer(serializers.Serializer):
             ubigeo=record.ubigeo,
             cod_cpu=tb_land_inspection.get('cod_cpu', None),
             cod_pre=tb_land_inspection.get('cod_pre', None),
-            cod_tipo_predio_id=self.blank_to_null(tb_land_inspection.get('cod_tipo_predio', None)),
+            cod_tipo_predio=self.blank_to_null(tb_land_inspection.get('cod_tipo_predio', None)),
             piso=tb_land_inspection.get('piso', None),
             num_sumi_agua=tb_land_inspection.get('num_sumi_agua', None),
             num_sumi_luz=tb_land_inspection.get('num_sumi_luz', None),
@@ -425,9 +433,9 @@ class MobileLandInspectionSerializer(serializers.Serializer):
             interior=tb_land_inspection.get('interior', None),
             obs_predio=tb_land_inspection.get('obs_predio', None),
             num_dpto=tb_land_inspection.get('num_dpto', None),
-            codigo_uso=tb_land_inspection.get('codigo_uso', None),
-            codigo_clase_uso =tb_land_inspection.get('codigo_clase_uso',  None),
-            codigo_sub_clase_uso=tb_land_inspection.get('codigo_sub_clase_uso',  None),
+            codigo_uso=None if tb_land_inspection.get('codigo_uso', None) is None else int(tb_land_inspection.get('codigo_uso',None)),
+            codigo_clase_uso =None if tb_land_inspection.get('codigo_clase_uso',  None) is None else  int(tb_land_inspection.get('codigo_clase_uso',  None)),
+            codigo_sub_clase_uso=None if tb_land_inspection.get('codigo_sub_clase_uso',  None) is None else   int(tb_land_inspection.get('codigo_sub_clase_uso',  None)),
             #estado=tb_land_inspection.get('estado', None),
             block=tb_land_inspection.get('block', None),
             num_sumi_gas=tb_land_inspection.get('num_sumi_gas', None),

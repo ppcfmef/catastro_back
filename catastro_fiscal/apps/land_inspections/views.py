@@ -40,7 +40,8 @@ class TicketViewSet(ModelViewSet):
         else:
             return TicketSerializer 
 
-
+@authentication_classes([])
+@permission_classes([])
 class LocationViewSet(ModelViewSet):
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
