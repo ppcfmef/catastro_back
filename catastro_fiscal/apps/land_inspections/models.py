@@ -2,7 +2,7 @@ from django.db import models
 from apps.users.models import User
 from django.utils.translation import gettext_lazy as _
 from apps.lands.models import LandOwner
-from apps.master_data.models import MasterTipoPredio ,MasterTipoEstadoConservacion,MasterTipoMaterial
+from apps.master_data.models import MasterClaseUso, MasterSubClaseUso, MasterTipoPredio ,MasterTipoEstadoConservacion,MasterTipoMaterial, MasterTipoUsoPredio
 # Create your models here.
 from apps.master_data.models import MasterTypeUrbanUnit
 
@@ -335,7 +335,7 @@ class LandInspection(models.Model):
     ubigeo = models.CharField(max_length=6)
     cod_cpu = models.CharField(max_length=50, blank=True, null=True)
     cod_pre = models.CharField(max_length=50, blank=True, null=True)
-    cod_tipo_predio = models.ForeignKey(MasterTipoPredio, on_delete=models.SET_NULL, db_column="cod_tipo_predio", blank=True, null=True)
+    cod_tipo_predio = models.ForeignKey(MasterTipoPredio, on_delete=models.DO_NOTHING, db_column="cod_tipo_predio", blank=True, null=True)
 
     # cod_tipo_predio = models.ForeignKey(
     #     LandInspectionType, blank=True, null=True, on_delete=models.SET_NULL, db_column="cod_tipo_predio"
@@ -347,10 +347,14 @@ class LandInspection(models.Model):
     interior = models.CharField(max_length=100, blank=True, null=True)
     obs_predio = models.CharField(max_length=100, blank=True, null=True)
     num_dpto = models.CharField(max_length=100, blank=True, null=True)
-    codigo_uso = models.CharField(max_length=100, blank=True, null=True)
-    codigo_clase_uso = models.CharField(max_length=100, blank=True, null=True)
-    codigo_sub_clase_uso = models.CharField(max_length=100, blank=True, null=True)
+    #codigo_uso = models.CharField(max_length=100, blank=True, null=True)
+    codigo_uso = models.ForeignKey(MasterTipoUsoPredio,blank=True, null=True, on_delete=models.DO_NOTHING, db_column="codigo_uso")
+    #codigo_clase_uso = models.CharField(max_length=100, blank=True, null=True)
 
+    #codigo_sub_clase_uso = models.CharField(max_length=100, blank=True, null=True)
+    codigo_sub_clase_uso = models.ForeignKey(MasterSubClaseUso,blank=True, null=True, on_delete=models.DO_NOTHING, db_column="codigo_sub_clase_uso")
+    
+    codigo_clase_uso  = models.ForeignKey(MasterClaseUso,blank=True, null=True, on_delete=models.DO_NOTHING, db_column="codigo_clase_uso")
     #estado = models.CharField(max_length=100, blank=True, null=True)
     block = models.CharField(max_length=100, blank=True, null=True)
     num_sumi_gas = models.CharField(max_length=100, blank=True, null=True)
