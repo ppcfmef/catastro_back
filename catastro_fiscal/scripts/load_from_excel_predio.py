@@ -40,6 +40,7 @@ def land_map():
         'latitude': 'COORD_Y',
         'id_aranc': 'ID_ARANC',
         'land_area': 'Area_terreno',
+       
        # 'front_length': 'L_FRENTE',
          
     }
@@ -92,7 +93,8 @@ def run():
         land_record.update({
                 
                 'source': 'registro_predios' if record['NOM_PC'] == 'PLATAFORMA' else 'mantenimiento_carto' if  record['NOM_PC'] == 'PCF' else 'carga_masiva' ,
-                'status': int(1 if longitude and latitude else 0)
+                'status': int(1 if longitude and latitude else 0),
+                'cod_tipo_predio_id':1
             })
         
         land_records_unique.append(Land(**land_record))
