@@ -260,7 +260,7 @@ class LandBase(AbstractAudit):
                                                 db_column='clasificacion_predio_desc')
     build_status_desc = models.CharField(max_length=120, blank=True, null=True, db_column='estado_construccion_desc')
     #property_type = models.CharField(max_length=20, blank=True, null=True, db_column='tipo_predio')
-    cod_tipo_predio = models.ForeignKey(MasterTipoPredio, on_delete=models.SET_NULL, db_column="cod_tipo_predio", blank=True, null=True)
+    cod_tipo_predio = models.ForeignKey(MasterTipoPredio, on_delete=models.SET_NULL, db_column="cod_tipo_predio", blank=True, null=True,default=1)
     self_assessment_total = models.FloatField(blank=True, null=True, db_column='autoavaluo_total')
     condominium = models.FloatField(blank=True, null=True, db_column='condominio')
     deduction = models.FloatField(blank=True, null=True, db_column='deduccion')

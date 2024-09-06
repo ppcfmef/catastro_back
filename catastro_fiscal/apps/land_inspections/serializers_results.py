@@ -2,6 +2,7 @@ from django.db import transaction
 from rest_framework import serializers
 from .models import Ticket, TicketSendStation, LandOwnerInspection, Location, LocationPhoto, LandFacility, SupplyType, LandSupply, LandFacility, LandInspectionType, RecordOwnerShip, LandCharacteristic, LandInspection,LocationPhoto,LandOwnerDetailInspection
 from apps.lands.models import Land, LandOwner,LandOwnerDetail,MasterCodeStreet
+from apps.lands.serializers import LandOwnerDetailSerializer
 
 
 class LandSupplyOwnerSerializer(serializers.ModelSerializer):
@@ -101,11 +102,11 @@ class LocationPhotoSerializer(serializers.ModelSerializer):
 
 
 
-class LandOwnerDetailSerializer(serializers.ModelSerializer):
-    contribuyente = LandOwnerSerializer(source='owner',many=False, read_only=True)
-    class Meta:
-        model = LandOwnerDetail
-        fields = '__all__'
+# class LandOwnerDetailSerializer(serializers.ModelSerializer):
+#     contribuyente = LandOwnerSerializer(source='owner',many=False, read_only=True)
+#     class Meta:
+#         model = LandOwnerDetail
+#         fields = '__all__'
 
 class LandPadronRetrieveSerializer(serializers.ModelSerializer):
     predio_contribuyente = LandOwnerDetailSerializer(many=True, read_only=True)
@@ -135,8 +136,8 @@ class RecordOwnerShipRetriveSerializer(serializers.ModelSerializer):
         lands=LandInspection.objects.filter(cod_tit=obj.cod_tit)
         if len(lands)>0:
             land=lands[0]
-            print('land.cod_cpu',land.cod_cpu)
-            print('land.cod_pre',land.cod_pre)
+            # print('land.cod_cpu',land.cod_cpu)
+            # print('land.cod_pre',land.cod_pre)
             # print('land.ubigeo',land.ubigeo)
 
             if land.cod_cpu =='' or land.cod_cpu is None   :
