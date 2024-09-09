@@ -132,6 +132,11 @@ class RecordOwnerShipRetriveSerializer(serializers.ModelSerializer):
         model = RecordOwnerShip
         fields = '__all__'
         
+    # def get_tipo_tit(self, obj):
+    #     owner_ship_type=OwnerShipType.objects.filter(cod_tipo_tit=obj.cod_tipo_tit)
+    #     if len(owner_ship_type)>0:
+    #         return owner_ship_type[0].desc_tipo_tit
+        
     def get_predio_padron(self, obj):
         lands=LandInspection.objects.filter(cod_tit=obj.cod_tit)
         if len(lands)>0:
