@@ -9,6 +9,8 @@ from rest_framework.response import Response
 from apps.maintenance.serializers import ApplicationSerializer,ApplicationListSerializer
 from rest_framework import  status
 import json
+from apps.master_data.models import MasterCodeStreet, MasterTipoPredio,MasterTipoUsoPredio,MasterTipoPropiedad,MasterTipoTransferencia
+
 
 class UploadHistoryListSerializer(serializers.ModelSerializer):
     class Meta:
@@ -68,16 +70,77 @@ class LandNivelConstruccionSerializer(serializers.ModelSerializer):
 
 class LandOwnerDetailSerializer(serializers.ModelSerializer):
     niveles_construccion = LandNivelConstruccionSerializer(many = True, read_only=True)
-    tip_uso_predio_nombre  =  serializers.CharField(source='tip_uso_predio.name')
-    subclase_uso_nombre  =  serializers.CharField(source='tip_uso_predio.codigo_subclase_uso.name')
-    clase_uso_nombre  =  serializers.CharField(source='tip_uso_predio.codigo_subclase_uso.codigo_clase_uso.name')
-    tip_propiedad_nombre = serializers.CharField(source='tip_propiedad.name')
-    tip_transferencia_nombre = serializers.CharField(source='tip_transferencia.name')
+    # tip_uso_predio_nombre  =  serializers.CharField(source='tip_uso_predio.name')
+    # subclase_uso_nombre  =  serializers.CharField(source='tip_uso_predio.codigo_subclase_uso.name')
+    # clase_uso_nombre  =  serializers.CharField(source='tip_uso_predio.codigo_subclase_uso.codigo_clase_uso.name')
+    # tip_propiedad_nombre = serializers.CharField(source='tip_propiedad.name')
+    # tip_transferencia_nombre = serializers.CharField(source='tip_transferencia.name')
+
+
+    tip_uso_predio_nombre  =  serializers.SerializerMethodField()
+    subclase_uso_nombre  =  serializers.SerializerMethodField()
+    clase_uso_nombre  =  serializers.SerializerMethodField()
+    tip_propiedad_nombre = serializers.SerializerMethodField()
+    tip_transferencia_nombre = serializers.SerializerMethodField()
+
+    
     class Meta:
         model = LandOwnerDetail
         fields = '__all__'
+
+    def get_tip_uso_predio_nombre(self, obj):
+
+        if obj.tip_uso_predio is None:
+            return None
+
+        tipos=MasterTipoUsoPredio.objects.filter(id=obj.tip_uso_predio.id)
+        if len(tipos):
+            return tipos[0].name
+        else:
+            return None
         
+    def get_subclase_uso_nombre(self, obj):
+
+        if obj.tip_uso_predio is None:
+            return None
+        tipos=MasterTipoUsoPredio.objects.filter(id=obj.tip_uso_predio.id)
+
+        if len(tipos):
+            return tipos[0].codigo_subclase_uso.name
+        else:
+            return None
+
+
+    def get_clase_uso_nombre(self, obj):
+        if obj.tip_uso_predio is None:
+            return None
+        tipos=MasterTipoUsoPredio.objects.filter(id=obj.tip_uso_predio.id)
+
+        if len(tipos):
+            return tipos[0].codigo_subclase_uso.codigo_clase_uso.name
+        else:
+            return None
         
+    def get_tip_propiedad_nombre(self, obj):
+        if obj.tip_propiedad is None:
+            return None
+        tipos=MasterTipoPropiedad.objects.filter(id=obj.tip_propiedad.id)
+
+        if len(tipos):
+            return tipos[0].name
+        else:
+            return None
+        
+    def get_tip_transferencia_nombre(self, obj):
+        if obj.tip_transferencia is None:
+            return None
+
+        tipos=MasterTipoTransferencia.objects.filter(id=obj.tip_transferencia.id)
+
+        if len(tipos):
+            return tipos[0].name
+        else:
+            return None
         
 class LandSerializer(serializers.ModelSerializer):
     has_owners = serializers.SerializerMethodField(read_only=True)
@@ -86,10 +149,22 @@ class LandSerializer(serializers.ModelSerializer):
     applications = serializers.SerializerMethodField()
     #lands_affected_applications = serializers.SerializerMethodField(read_only=True)
     #caracteristicas =  LandOwnerDetailSerializer2()
-    tipo_predio_nombre = serializers.CharField(source='cod_tipo_predio.name')
+    #tipo_predio_nombre = serializers.CharField(source='cod_tipo_predio.name')
+    tipo_predio_nombre = serializers.SerializerMethodField()
     class Meta:
         model = Land
         fields = '__all__'  # ToDo: estandarizar listado de predios
+
+    def get_tipo_predio_nombre(self, obj):
+
+        if obj.cod_tipo_predio is None:
+            return None
+        tipos=MasterTipoPredio.objects.filter(id=obj.cod_tipo_predio)
+        if len(tipos):
+            return tipos[0].name
+        else:
+            return None
+    
 
     def get_has_owners(self, obj):
         return LandOwnerDetail.objects.filter(land_id=obj.id).exists()
