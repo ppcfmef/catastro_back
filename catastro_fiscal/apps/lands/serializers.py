@@ -159,7 +159,7 @@ class LandSerializer(serializers.ModelSerializer):
 
         if obj.cod_tipo_predio is None:
             return None
-        tipos=MasterTipoPredio.objects.filter(id=obj.cod_tipo_predio)
+        tipos=MasterTipoPredio.objects.filter(id=obj.cod_tipo_predio.id)
         if len(tipos):
             return tipos[0].name
         else:

@@ -90,31 +90,44 @@
 
 {% block documento %}
 
-<p style="text-align: right;" >Municipalidad {{distrito.name}}, {% now F %} </p>
+<p style="text-align: right;" >{{distrito.municipal_name}}, {% now F %} </p>
 <p>Estimado vecino(a)</p>
 <p>SR(A). {{contribuyente|upper}}</p>
 <p>Presente.-</p>
 
 <p>De mi mayor consideración:</p>
-<p>La Municipalidad Distrital de {{distrito.name}}, a través de la Gerencia de Administración Tributaria le hace llegar saludos
-cordiales y a la vez comunicarle que se ha realizado un proceso de inspección de los predios del distrito, a fin de
-verificar la fehaciencia de la información brindada por los contribuyentes en su Declaración Jurada de Autoavaluo,
-es por ello que hacemos llegar a usted la Ficha de levantamiento de campo de(l/los) predio(s) a su nombre y
-detallamos a continuación:
+<p>Nos dirigimos a usted en representación de  {{distrito.municipal_name}}, con el propósito de recordarle la importancia de cumplir con sus obligaciones tributarias. Puesto que hemos observado que la Declaración Jurada de Autoavalúo correspondiente a su propiedad no guarda relación con la Ficha de levantamiento de campo del predio registrado a su nombre y que detallamos a continuación:
 </p>
 
 <h1>INFORMACIÓN CONSIGNADA EN LA DECLARACIÓN JURADA DE AUTOVALÚO</h1>
 <h2> Caracteristicas</h2>
 <table  >
         <tr >
-        <td class ='green'>Long. Frente</td>
-        <td  class ='celda-green'></td>
-        <td class ='green'>Arancel</td>
-        <td class ='celda-green'></td>
-        <td class ='green'>Area Terreno</td>
-        <td class ='celda-green'></td>
-        <td class ='green' >Predio</td>
-        <td class ='celda-green'></td>
+        <td class ='green'>Tipo de Predio</td>
+        <td  class ='celda-green'> </td>
+        <td class ='green'>Numero de Partida</td>
+        <td class ='celda-green'> </td>
+        <td class ='green'>Clase de uso</td>
+        <td class ='celda-green'> </td>
+        <td class ='green' >Sub clase de uso</td>
+        <td class ='celda-green'> </td>
+
+        <td class ='green' >Uso del predio</td>
+        <td class ='celda-green'> </td>
+
+
+        <td class ='green' >Area Terreno</td>
+        <td class ='celda-green'> </td>
+
+
+        <td class ='green' >Area común terreno</td>
+        <td class ='celda-green'> </td>
+
+
+        
+        <td class ='green' >Cant. de hab. o aforo</td>
+        <td class ='celda-green'> </td>
+
       </tr>
 </table>
 
