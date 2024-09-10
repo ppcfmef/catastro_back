@@ -133,7 +133,7 @@ class LandOwnerViewSet(mixins.ListModelMixin, GenericViewSet):
     search_fields = ['dni', 'name', 'paternal_surname', 'maternal_surname', 'code',]
     #filterset_fields = ['id', 'dni','ubigeo' ]
     ordering_fields = ['document_type', 'dni', 'name', 'paternal_surname', 'maternal_surname', 'creation_date']
-    ordering = ['-code','-creation_date',]
+    ordering = ['code','-creation_date',]
 
     @action(methods=['GET'], detail=False, url_path='by-land/(?P<land_id>[0-9]+)')
     def owners_by_land(self, request, *args, **kwargs):
