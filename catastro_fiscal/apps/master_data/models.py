@@ -132,9 +132,11 @@ class MasterTipoEstadoConservacion(MasterType):
         verbose_name = _('tipo de estado de conservacion')
         verbose_name_plural = _('tipos de estado de conservacion')
 
-
-
-
+class MasterTipoObraComplementaria(MasterType):
+    class Meta:
+        db_table = 'M_TIPO_OBRA_COMPLEMENTARIA'
+        verbose_name = _('tipo de material')
+        verbose_name_plural = _('tipos de material')
 
 class MasterClaseUso(MasterType):
     class Meta:
