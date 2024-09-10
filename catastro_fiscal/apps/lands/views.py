@@ -130,7 +130,7 @@ class LandOwnerViewSet(mixins.ListModelMixin, GenericViewSet):
     serializer_class = LandOwnerSerializer
     filter_class = LandOwnerFilter
     filter_backends = [DjangoFilterBackend, SearchFilter, CamelCaseOrderFilter]
-    search_fields = ['dni', 'name', 'paternal_surname', 'maternal_surname', 'code',]
+    search_fields = ['^code','dni', 'name', 'paternal_surname', 'maternal_surname']
     #filterset_fields = ['id', 'dni','ubigeo' ]
     ordering_fields = ['document_type', 'dni', 'name', 'paternal_surname', 'maternal_surname', 'creation_date']
     ordering = ['code','-creation_date',]
