@@ -3,6 +3,7 @@ from import_export.admin import ImportExportModelAdmin
 from .models import (
     MasterTypeUrbanUnit, MasterSide, MasterCodeStreet, MasterTipoPredio, MasterResolutionType, Institution,MasterTipoDocumentoIdentidad,MasterTipoContribuyente,
     MasterTipoPropiedad,MasterTipoTransferencia,MasterTipoNivel, MasterTipoMaterial,MasterTipoEstadoConservacion, MasterClaseUso, MasterSubClaseUso,MasterTipoUsoPredio
+    ,MasterTipoObraComplementaria
 )
 
 
@@ -92,4 +93,9 @@ class MasterClaseUsoAdmin(MasterAdminMixin, ImportExportModelAdmin):
 
 @admin.register(MasterSubClaseUso)
 class MasterSubClaseUsoAdmin(MasterAdminMixin, ImportExportModelAdmin):
+    pass
+
+
+@admin.register(MasterTipoObraComplementaria)
+class MasterTipoObraComplementariaAdmin(MasterAdminMixin, ImportExportModelAdmin):
     pass
