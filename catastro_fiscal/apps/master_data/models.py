@@ -138,6 +138,7 @@ class MasterTipoObraComplementaria(MasterType):
         verbose_name = _('tipo de material')
         verbose_name_plural = _('tipos de material')
 
+
 class MasterClaseUso(MasterType):
     class Meta:
         db_table = 'M_CLASE_USO'

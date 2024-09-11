@@ -26,3 +26,4 @@ class ContactoAdmin(admin.ModelAdmin):
 class TipoMedioContactoAdmin(admin.ModelAdmin):
     pass
 
+
