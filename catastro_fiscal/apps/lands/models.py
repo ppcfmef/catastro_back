@@ -366,43 +366,17 @@ class LandNivelConstruccion(models.Model):
 
 
 
-class LandNivelConstruccion(models.Model):
 
-    id = models.AutoField(primary_key=True)
-    ubigeo = models.ForeignKey(District, on_delete=models.DO_NOTHING, db_column='ubigeo', related_name='nivel_ubigeo')
-    land_owner_detail= models.ForeignKey(LandOwnerDetail, on_delete=models.DO_NOTHING, related_name='niveles_construccion')
-    tip_nivel = models.ForeignKey(MasterTipoNivel, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='nivel_tipo_nivel')
-    num_piso = models.IntegerField(blank=True, null=True)
-    tip_material = models.ForeignKey(MasterTipoMaterial, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='nivel_tipo_material')
-    est_conservacion = models.ForeignKey(MasterTipoEstadoConservacion, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='nivel_estado_conservacion')
-    anio_construccion = models.IntegerField( blank=True, null=True)
-    mes_construccion = models.IntegerField( blank=True, null=True)
-    area_construida = models.FloatField( blank=True, null=True)
-    area_construida_comun =models.FloatField( blank=True, null=True)
-    por_area_construida_comun =models.FloatField( blank=True, null=True)
-    categoria_techo = models.CharField(max_length=10, blank=True, null=True)
-    categoria_piso = models.CharField(max_length=10, blank=True, null=True)
-    categoria_muro_columna = models.CharField(max_length=10, blank=True, null=True)
-    categoria_puerta_ventana = models.CharField(max_length=10, blank=True, null=True)
-    categoria_revestimiento = models.CharField(max_length=10, blank=True, null=True)
-    categoria_bano = models.CharField(max_length=10, blank=True, null=True)
-    categoria_inst_electrica_sanita = models.CharField(max_length=10, blank=True, null=True)
-    estado = models.IntegerField( blank=True, null=True,default=1)
-
-    class Meta:
-        db_table = 'PREDIO_NIVEL_CONSTRUCCION'
-        verbose_name = _('nivel de construccion')
-        verbose_name_plural = _('niveles de construccion')
 
 
 class ObrComConstruccion(models.Model):
     id = models.AutoField(primary_key=True)
-    ubigeo = models.ForeignKey(District, on_delete=models.DO_NOTHING, db_column='ubigeo', related_name='nivel_ubigeo')
-    land_owner_detail= models.ForeignKey(LandOwnerDetail, on_delete=models.DO_NOTHING, related_name='niveles_construccion')
+    ubigeo = models.ForeignKey(District, on_delete=models.DO_NOTHING, db_column='ubigeo', related_name='obr_ubigeo')
+    land_owner_detail= models.ForeignKey(LandOwnerDetail, on_delete=models.DO_NOTHING, related_name='obr_construccion')
     num_piso = models.IntegerField(blank=True, null=True)
-    tip_obra_complementaria = models.ForeignKey(MasterTipoObraComplementaria, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='nivel_tipo_material')
-    tip_material = models.ForeignKey(MasterTipoMaterial, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='nivel_tipo_material')
-    est_conservacion = models.ForeignKey(MasterTipoEstadoConservacion, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='nivel_estado_conservacion')
+    tip_obra_complementaria = models.ForeignKey(MasterTipoObraComplementaria, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='obr_tipo_material')
+    tip_material = models.ForeignKey(MasterTipoMaterial, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='obr_tipo_material')
+    est_conservacion = models.ForeignKey(MasterTipoEstadoConservacion, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='obr_estado_conservacion')
     anio_construccion = models.IntegerField( blank=True, null=True)
     mes_construccion = models.IntegerField( blank=True, null=True)
     categoria = models.CharField(max_length=10, blank=True, null=True)
