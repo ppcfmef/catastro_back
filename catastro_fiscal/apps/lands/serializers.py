@@ -169,7 +169,7 @@ class LandSerializer(serializers.ModelSerializer):
 
     applications = serializers.SerializerMethodField()
 
-    tipo_predio_nombre = serializers.SerializerMethodField(source='cod_tipo_predio.name',allow_null=True)
+    tipo_predio_nombre = serializers.CharField(source='cod_tipo_predio.name',allow_null=True)
     class Meta:
         model = Land
         fields = '__all__'  # ToDo: estandarizar listado de predios
