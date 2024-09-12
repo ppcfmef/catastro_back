@@ -137,6 +137,8 @@ class RecordOwnerShipRetriveSerializer(serializers.ModelSerializer):
     predio_inspeccion = LandInspectionSerializer(many=False,read_only=True)
     tipo_tit = serializers.CharField(source='cod_tipo_tit.desc_tipo_tit',allow_null=True)
     predio_padron = serializers.SerializerMethodField(read_only=True)
+
+    municipal_name = serializers.CharField(source='ubigeo.municipal_name',allow_null=True)
     class Meta:
         model = RecordOwnerShip
         fields = '__all__'
