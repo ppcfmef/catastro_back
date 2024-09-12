@@ -90,13 +90,13 @@
 
 {% block documento %}
 
-<p style="text-align: right;" >{{distrito.municipal_name}}, {% now F %} </p>
+<p style="text-align: right;" >{{data_registro_titularidad.municipal_name}}, {% now F %} </p>
 <p>Estimado vecino(a)</p>
 <p>SR(A). {{contribuyente|upper}}</p>
 <p>Presente.-</p>
 
 <p>De mi mayor consideración:</p>
-<p>Nos dirigimos a usted en representación de  {{distrito.municipal_name}}, con el propósito de recordarle la importancia de cumplir con sus obligaciones tributarias. Puesto que hemos observado que la Declaración Jurada de Autoavalúo correspondiente a su propiedad no guarda relación con la Ficha de levantamiento de campo del predio registrado a su nombre y que detallamos a continuación:
+<p>Nos dirigimos a usted en representación de  {{data_registro_titularidad.municipal_name}}, con el propósito de recordarle la importancia de cumplir con sus obligaciones tributarias. Puesto que hemos observado que la Declaración Jurada de Autoavalúo correspondiente a su propiedad no guarda relación con la Ficha de levantamiento de campo del predio registrado a su nombre y que detallamos a continuación:
 </p>
 
 <h1>INFORMACIÓN CONSIGNADA EN LA DECLARACIÓN JURADA DE AUTOVALÚO</h1>
@@ -154,9 +154,16 @@
     <td class ='blue' >Instal. Elec. Sant.</td>
     <td class ='blue' >Area Construida</td>
   </tr>
+  
 
+ {% if data_registro_titularidad.predio_padron.predio_contribuyente.0.niveles_construccion.count == 0 %}
 
+    <tr >
+    <td class ='blue' colspan="13">Sin niveles de construcción declarados</td>
 
+    </tr>
+
+  {% else %}
   {% for n in data_registro_titularidad.predio_padron.predio_contribuyente.0.niveles_construccion %}
   <tr >
     <td  class ='celda-blue'>{{n.tip_nivel_nombre}}</td>
@@ -174,7 +181,9 @@
     <td class ='celda-blue'>{{n.area_construida}}</td>
 
   </tr>
-  {% endfor %}  
+  {% endfor %}
+  
+  {% endif %}
 </table>
 
 
@@ -199,7 +208,16 @@
                     <td class ='blue-small' >Metro Redondeado</td>
                     <td class ='blue-small' >Total metrado</td>
                 </tr>
-                {% for i in data_registro_titularidad.predio_padron.predio_contribuyente.0.obrasComplementarias %}
+
+                {% if data_registro_titularidad.predio_padron.predio_contribuyente.0.obras_complementarias.count == 0 %}
+
+                <tr >
+                <td class ='blue' colspan="9">Sin niveles de construcción declarados</td>
+            
+                </tr>
+
+                {% else %}
+                {% for i in data_registro_titularidad.predio_padron.predio_contribuyente.0.obras_complementarias %}
                 <tr >
                     <td class ='celda-blue'>{{i.num_piso}}</td>
                     <td class ='celda-blue'>{{i.tip_obra_complementaria_nombre}}</td>
@@ -214,6 +232,7 @@
                 
                   </tr>
                   {% endfor %}  
+                  {% endif %}
             </table>
 
         </td>
@@ -306,36 +325,7 @@
         <td class ='celda-blue'>{{data_registro_titularidad.caracteristicas.categoria_electrica}}</td>
         <td class ='celda-blue'>{{data_registro_titularidad.caracteristicas.area_construida}}</td>
       </tr>
-    <!-- <tr >
-    <td class ='blue'>Nivel</td>
-    <td class ='blue'>Material pred</td>
-    <td class ='blue'>Estado conserva</td>
-    <td class ='blue' >Clasificacion pred</td>
-    <td class ='blue'>Año construcción</td>
-    <td class ='blue'>C. Muro columna</td>
-    <td class ='blue'>C.Techo</td>
-    <td class ='blue'>C.Piso</td>
-    <td class ='blue' >C.Puerta Ventana</td>
-    <td class ='blue' >C.Revestimiento</td>
-    <td class ='blue' >C.Baño</td>
-    <td class ='blue' >C.Electricidad</td>
-    <td class ='blue' >Area Construida</td>
-  </tr>
-  <tr >
-    <td  class ='celda-blue'>{{caracteristicas.nivel}}</td>
-    <td class ='celda-blue'>{{caracteristicas.material_pred}}</td>
-    <td class ='celda-blue'>{{caracteristicas.estado_conserva}}</td>
-    <td class ='celda-blue'>{{caracteristicas.clasificacion_pred}}</td>
-    <td class ='celda-blue'>{{caracteristicas.anio_construccion}}</td>
-    <td class ='celda-blue'>{{caracteristicas.categoria_muro_columna}}</td>
-    <td class ='celda-blue'>{{caracteristicas.catergoria_techo}}</td>
-    <td class ='celda-blue'>{{caracteristicas.catergoria_piso}}</td>
-    <td class ='celda-blue'>{{caracteristicas.catergoria_puerta_ventana}}</td>
-    <td class ='celda-blue'>{{caracteristicas.categoria_revestimiento}}</td>
-    <td class ='celda-blue'>{{caracteristicas.catergoria_bano}}</td>
-    <td class ='celda-blue'>{{caracteristicas.categoria_electrica}}</td>
-    <td class ='celda-blue'>{{caracteristicas.area_construida}}</td>
-  </tr> -->
+    
   
 </table>
 
@@ -360,7 +350,14 @@
                 <td class ='blue-small' >Total metrado</td>
             </tr>
 
-           
+            {% if data_registro_titularidad.instalaciones.count == 0 %}
+            <tr >
+              <td class ='celda-blue' span="9">Sin registros</td>
+
+            </tr>
+
+            {% else %}
+
               {% for i in data_registro_titularidad.instalaciones %}
               <tr >
                 <td class ='celda-blue'>{{i.num_piso}}</td>
@@ -376,53 +373,18 @@
               </tr>
 
               {% endfor %}  
-                <!-- <tr >
-
-
-                {% for i in data_registro_titularidad.predio_padron.predio_contribuyente.0.obrasComplementarias %}
-                <tr >
-                    <td class ='celda-blue'>{{i.num_piso}}</td>
-                    <td class ='celda-blue'>{{i.tip_obra_complementaria_nombre}}</td>
-                    <td class ='celda-blue'>{{i.tip_material_nombre}}</td>
-                    <td class ='celda-blue'>{{i.est_conservacion_nombre}}</td>
-                    <td class ='celda-blue'>{{i.anio_construccion}} - {{i.mes_construccion}}</td>
-                    <td class ='celda-blue'>{{i.categoria}}</td>
-                    <td class ='celda-blue'>{{i.cantidad}}</td>
-                    <td class ='celda-blue'>{{i.metro_redondeado}}</td>
-                    <td class ='celda-blue'>{{i.total_metrado}}</td>
-            
-                
-                  </tr>
-                  {% endfor %}  
-
-                <td class ='blue-small'  >Cod. inst</td>
-                <td class ='blue-small'>Cod. tipo inst </td>
-                <td class ='blue-small'>Año const</td>
-                <td class ='blue-small' >Estado conserva</td>
-                <td class ='blue-small'>Dimensión</td>
-                
-              </tr>
-              {% for i in instalaciones %}
-              <tr>
-                <td  class ='celda-blue-small'>{{i.cod_inst}}</td>
-                <td class ='celda-blue-small'>{{i.cod_tipo_inst}}</td>
-                <td class ='celda-blue-small'>{{i.anio_construccion}}</td>
-                <td class ='celda-blue-small'>{{i.estado_conserva}}</td>
-                <td class ='celda-blue-small'>{{i.dimension}}</td>
-                
-              </tr>
-              {% endfor %} -->
+              {% endif %}
             </table>
 
         </td>
 
         <td>
-            {% if fotos.count > 0 %}
+            {% if ubicacion.fotos.count > 0 %}
             <table  >
       
                 <tr>
                    
-                    {% for f in fotos %}
+                    {% for f in ubicacion.fotos %}
                     <td  class ='celda-blue-small2'>
                         <img class="img" src="{{ f.foto.path }}" >
                     </td>

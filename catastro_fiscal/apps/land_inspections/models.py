@@ -5,7 +5,7 @@ from apps.lands.models import LandOwner
 from apps.master_data.models import MasterClaseUso, MasterSubClaseUso, MasterTipoPredio ,MasterTipoEstadoConservacion,MasterTipoMaterial, MasterTipoUsoPredio,MasterTipoObraComplementaria
 # Create your models here.
 from apps.master_data.models import MasterTypeUrbanUnit 
-
+from apps.places.models import District
 class LandInspectionUpload(models.Model):
     """LandInspectionUpload
     Utilizado para el nodo del API tbProperties
@@ -193,7 +193,7 @@ class RecordOwnerShip(models.Model):
     )
     """Registro Titularidad"""
     cod_tit = models.CharField(max_length=30, primary_key=True)
-    ubigeo = models.CharField(max_length=6, blank=True, null=True, default=None)
+    ubigeo = models.ForeignKey(District, on_delete=models.SET_NULL, blank=True, null=True, db_column="ubigeo")
     cod_tipo_tit = models.ForeignKey(
         OwnerShipType, blank=True, null=True, on_delete=models.SET_NULL, db_column="cod_tipo_tit"
     )

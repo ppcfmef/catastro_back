@@ -113,7 +113,7 @@ class ExportPdfViewSet(GenericViewSet):
                 if r is not None:
                     l=Location.objects.get(cod_ubicacion=r.cod_ubicacion)
                     locationSerializer=LocationRetriveSerializer(l,many=False)
-                    fotos = LocationPhoto.objects.filter(cod_ubicacion=r.cod_ubicacion)
+                    #fotos = LocationPhoto.objects.filter(cod_ubicacion=r.cod_ubicacion)
                     # d=District.objects.get(code = r.ubigeo)
                     # fotos = []
                     # fotos2 = []
