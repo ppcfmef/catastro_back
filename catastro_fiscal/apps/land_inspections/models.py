@@ -2,9 +2,9 @@ from django.db import models
 from apps.users.models import User
 from django.utils.translation import gettext_lazy as _
 from apps.lands.models import LandOwner
-from apps.master_data.models import MasterClaseUso, MasterSubClaseUso, MasterTipoPredio ,MasterTipoEstadoConservacion,MasterTipoMaterial, MasterTipoUsoPredio
+from apps.master_data.models import MasterClaseUso, MasterSubClaseUso, MasterTipoPredio ,MasterTipoEstadoConservacion,MasterTipoMaterial, MasterTipoUsoPredio,MasterTipoObraComplementaria
 # Create your models here.
-from apps.master_data.models import MasterTypeUrbanUnit
+from apps.master_data.models import MasterTypeUrbanUnit 
 
 class LandInspectionUpload(models.Model):
     """LandInspectionUpload
@@ -259,12 +259,17 @@ class LandFacility(models.Model):
     """Instalaciones"""
     cod_inst = models.CharField(max_length=30, primary_key=True)
     cod_tit = models.ForeignKey(RecordOwnerShip, on_delete=models.CASCADE, db_column="cod_tit",related_name='instalaciones')
-    cod_tipo_inst = models.ForeignKey(
-        FacilityType, blank=True, null=True, on_delete=models.SET_NULL, db_column="cod_tipo_inst"
-    )
-    anio_construccion = models.CharField(max_length=20, blank=True, null=True)
-    estado_conserva = models.IntegerField( blank=True, null=True)
-    dimension = models.CharField(max_length=100, blank=True, null=True)
+    num_piso = models.IntegerField(blank=True, null=True)
+    tip_material = models.ForeignKey(MasterTipoMaterial, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='instalacion_tipo_material')
+    tip_obra_complementaria = models.ForeignKey(MasterTipoObraComplementaria, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='tip_instalacion')
+    anio_construccion = models.IntegerField( null=True)
+    mes_construccion = models.IntegerField(  null=True)
+    estado_conserva = models.ForeignKey(MasterTipoEstadoConservacion,  on_delete=models.SET_NULL,blank=True, null=True)
+    categoria = models.CharField(max_length=10, blank=True, null=True)
+    cantidad = models.IntegerField( null=True)
+    metro_redondeado = models.FloatField(null=True)
+    total_metrado = models.FloatField(null=True)
+    estado = models.IntegerField( blank=True, null=True,default=1)
 
     class Meta:
         db_table = 'TB_INSTALACIONES'

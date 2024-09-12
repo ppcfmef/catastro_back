@@ -3,7 +3,7 @@ from rest_framework import serializers
 from .models import Ticket, TicketSendStation, LandOwnerInspection, Location, LocationPhoto, LandFacility, SupplyType, LandSupply, LandFacility, LandInspectionType, RecordOwnerShip, LandCharacteristic, LandInspection,LocationPhoto,LandOwnerDetailInspection
 from apps.lands.models import Land, LandOwner,LandOwnerDetail,MasterCodeStreet
 from apps.lands.serializers import LandOwnerDetailSerializer
-
+from core.utils.formato import Format
 
 class LandSupplyOwnerSerializer(serializers.ModelSerializer):
     ap_pat =serializers.CharField(source='paternal_surname')
@@ -26,7 +26,7 @@ class LandOwnerSerializer(serializers.ModelSerializer):
         fields = ['id','ap_pat','ap_mat','nombre','doc_iden','email','phone']
 
 class LandSupplyRetriveSerializer(serializers.ModelSerializer):
-    tipo_sumi = serializers.CharField(source='cod_tipo_sumi.desc_tipo_sumi')
+    tipo_sumi = serializers.CharField(source='cod_tipo_sumi.desc_tipo_sumi',allow_null=True)
     contribuyente = LandSupplyOwnerSerializer(source='cod_contr',many=False, read_only=True)
     class Meta:
         model = LandSupply
@@ -54,11 +54,11 @@ class LandOwnerDetailInspectionSerializer(serializers.ModelSerializer):
 class LandInspectionSerializer(serializers.ModelSerializer):
     predio_contribuyente = LandOwnerDetailInspectionSerializer(many=True, read_only=True)
     
-    tipo_predio_nombre = serializers.CharField(source='cod_tipo_predio.name')
+    tipo_predio_nombre = serializers.CharField(source='cod_tipo_predio.name',allow_null=True)
 
-    clase_uso_nombre  =  serializers.CharField(source='codigo_clase_uso.name')
-    subclase_uso_nombre = serializers.CharField(source='codigo_sub_clase_uso.name')
-    tipo_uso_nombre = serializers.CharField(source='codigo_uso.name')
+    clase_uso_nombre  =  serializers.CharField(source='codigo_clase_uso.name',allow_null=True)
+    subclase_uso_nombre = serializers.CharField(source='codigo_sub_clase_uso.name',allow_null=True)
+    tipo_uso_nombre = serializers.CharField(source='codigo_uso.name',allow_null=True)
     
     #contribuyente= serializers.SerializerMethodField(read_only=True)
     class Meta:
@@ -82,14 +82,17 @@ class LandInspectionSerializer(serializers.ModelSerializer):
         
         
 class LandFacilitySerializer(serializers.ModelSerializer):
+    tip_obra_complementaria_nombre = serializers.CharField(source='tip_obra_complementaria.name')
+    tip_material_nombre = serializers.CharField(source='tip_material.name')
+    est_conservacion_nombre = serializers.CharField(source='est_conservacion.name')
     class Meta:
         model = LandFacility
         fields = '__all__'
 
 
 class LandCharacteristicSerializer(serializers.ModelSerializer):
-    estado_conserva_nombre =  serializers.CharField(source='estado_conserva.name')
-    material_pred_nombre = serializers.CharField(source='material_pred.name')
+    estado_conserva_nombre =  serializers.CharField(source='estado_conserva.name',allow_null=True)
+    material_pred_nombre = serializers.CharField(source='material_pred.name',allow_null=True)
     class Meta:
         model = LandCharacteristic
         fields = '__all__'
@@ -109,16 +112,22 @@ class LocationPhotoSerializer(serializers.ModelSerializer):
 #         fields = '__all__'
 
 class LandPadronRetrieveSerializer(serializers.ModelSerializer):
-    predio_contribuyente = LandOwnerDetailSerializer(many=True, read_only=True)
+    #predio_contribuyente = LandOwnerDetailSerializer(many=True, read_only=True)
+    predio_contribuyente = serializers.SerializerMethodField()
     address = serializers.SerializerMethodField()
-    tipo_predio_nombre = serializers.CharField(source='cod_tipo_predio.name')
+    tipo_predio_nombre = serializers.CharField(source='cod_tipo_predio.name',allow_null=True)
     class Meta:
         model = Land
         fields = '__all__'
         
     
     def get_address(self,obj):
-        return '{street_type} {street_name} {municipal_number} {urban_mza} {urban_lot_number}'.format(street_type=obj.street_type,street_name = obj.street_name,municipal_number = obj.municipal_number if obj.municipal_number is not None else '' ,urban_mza =' Mz.{}'.format(obj.urban_mza) if obj.urban_mza is not None else '' ,urban_lot_number =' Lote {}'.format( obj.urban_lot_number) if  obj.urban_lot_number is not None else '' )
+        return '{street_type} {street_name} {municipal_number} {urban_mza} {urban_lot_number}'.format(street_type=obj.street_type.name,street_name = obj.street_name,municipal_number =obj.municipal_number,urban_mza ='Mz.{}'.format(obj.urban_mza) if Format.isNoneOrBlank(obj.urban_mza) else '' ,urban_lot_number ='Lote {}'.format( obj.urban_lot_number) if  Format.isNoneOrBlank(obj.urban_lot_number)  else '' )
+    
+    def get_predio_contribuyente(self, obj):
+        dj=LandOwnerDetail.objects.filter(land_id=obj.id,estado_dj=1)
+        return LandOwnerDetailSerializer(dj,many=True).data
+
 
     
 class RecordOwnerShipRetriveSerializer(serializers.ModelSerializer):
@@ -126,7 +135,7 @@ class RecordOwnerShipRetriveSerializer(serializers.ModelSerializer):
     instalaciones  = LandFacilitySerializer(many=True,read_only=True)
     suministro = LandSupplyRetriveSerializer(many=False,read_only=True)
     predio_inspeccion = LandInspectionSerializer(many=False,read_only=True)
-    tipo_tit = serializers.CharField(source='cod_tipo_tit.desc_tipo_tit')
+    tipo_tit = serializers.CharField(source='cod_tipo_tit.desc_tipo_tit',allow_null=True)
     predio_padron = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = RecordOwnerShip
@@ -177,8 +186,12 @@ class LocationRetriveSerializer(serializers.ModelSerializer):
         
     def get_address(self,obj):
         street_type=MasterCodeStreet.objects.get(id= obj.cod_tip_via)
-        return '{street_type} {street_name} {municipal_number} {urban_mza} {urban_lot_number}'.format(street_type=street_type,street_name = obj.nom_via,municipal_number =obj.num_mun if obj.num_mun is not None else '' ,urban_mza =' Mz.{}'.format(obj.mzn_urb) if obj.mzn_urb is not None else '' ,urban_lot_number =' Lote {}'.format( obj.lot_urb) if  obj.lot_urb is not None else '' )
-
+        return """{street_type} {street_name} {municipal_number} {urban_mza} {urban_lot_number}""".format(street_type=street_type.name,street_name = obj.nom_via,
+                                                                                                        municipal_number = obj.num_mun if Format.isNoneOrBlank(obj.num_mun) else '' ,
+                                                                                                        urban_mza ='Mz.{}'.format(obj.mzn_urb) if Format.isNoneOrBlank(obj.mzn_urb) else '', 
+                                                                                                        urban_lot_number ='Lote {}'.format( obj.lot_urb) if  Format.isNoneOrBlank(obj.lot_urb)   else '',
+                                                                                                        )
+        
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
@@ -186,16 +199,16 @@ class LocationSerializer(serializers.ModelSerializer):
 
 
 class TicketSerializer(serializers.ModelSerializer):
-    estTrabajoTicket = serializers.CharField(source='cod_est_trabajo_ticket.desc_est_trabajo_ticket')
-    tipoTicket = serializers.CharField(source='cod_tipo_ticket.desc_tipo_ticket')
+    estTrabajoTicket = serializers.CharField(source='cod_est_trabajo_ticket.desc_est_trabajo_ticket',allow_null=True)
+    tipoTicket = serializers.CharField(source='cod_tipo_ticket.desc_tipo_ticket',allow_null=True)
     class Meta:
         model = Ticket
         fields = '__all__'
 
 
 class TicketListSerializer(serializers.ModelSerializer):
-    tipoTicket = serializers.CharField(source='cod_tipo_ticket.desc_tipo_ticket')
-    estTrabajoTicket = serializers.CharField(source='cod_est_trabajo_ticket.desc_est_trabajo_ticket')
+    tipoTicket = serializers.CharField(source='cod_tipo_ticket.desc_tipo_ticket',allow_null=True)
+    estTrabajoTicket = serializers.CharField(source='cod_est_trabajo_ticket.desc_est_trabajo_ticket',allow_null=True)
 
     class Meta:
         model = Ticket
@@ -203,7 +216,7 @@ class TicketListSerializer(serializers.ModelSerializer):
 
 
 class TicketRetriveSerializer(serializers.ModelSerializer):
-    tipoTicket = serializers.CharField(source='cod_tipo_ticket.desc_tipo_ticket')
+    tipoTicket = serializers.CharField(source='cod_tipo_ticket.desc_tipo_ticket',allow_null=True)
     total_ubicaciones = serializers.SerializerMethodField(read_only=True)
     ubicaciones = LocationRetriveSerializer(many=True, read_only=True)
     # ubicaciones = serializers.SerializerMethodField(read_only=True)

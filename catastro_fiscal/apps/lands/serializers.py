@@ -1,6 +1,6 @@
 from django.db import transaction
 from rest_framework import serializers
-from .models import UploadHistory, Land, LandOwner, OwnerAddress, LandAudit, LandOwnerDetail , Domicilio, Contacto , LandNivelConstruccion,OwnerDeuda, TipoMedioContacto
+from .models import UploadHistory, Land, LandOwner, OwnerAddress, LandAudit, LandOwnerDetail , Domicilio, Contacto , LandNivelConstruccion,OwnerDeuda, TipoMedioContacto,ObrComConstruccion
 from apps.maintenance.models import ApplicationLandDetail , Application
 from .tasks import process_upload_tenporal, process_upload_land
 from .services.upload_temporal import UploadTemporalService
@@ -48,7 +48,19 @@ class UploadStatusSerializer(serializers.ModelSerializer):
 
         return instance
 
+
+class ObrComConstruccionSerializer(serializers.ModelSerializer):
+    tip_obra_complementaria_nombre = serializers.CharField(source='tip_obra_complementaria.name')
+    tip_material_nombre = serializers.CharField(source='tip_material.name')
+    est_conservacion_nombre = serializers.CharField(source='est_conservacion.name')
+    class Meta:
+        model = ObrComConstruccion
+        fields ='__all__' 
+
 class LandNivelConstruccionSerializer(serializers.ModelSerializer):
+    tip_nivel_nombre = serializers.CharField(source='tip_nivel.name',allow_null=True)
+    tip_material_nombre =  serializers.CharField(source='tip_material.name',allow_null=True)
+    est_conservacion_nombre = serializers.CharField(source='est_conservacion.name',allow_null=True)
     class Meta:
         model = LandNivelConstruccion
         fields = '__all__'
@@ -66,104 +78,111 @@ class LandNivelConstruccionSerializer(serializers.ModelSerializer):
         detail = LandNivelConstruccion.objects.create(**validated_data)
         return detail
 
+class LandOwnerSerializer(serializers.ModelSerializer):
+    ap_pat =serializers.CharField(source='paternal_surname')
+    ap_mat = serializers.CharField(source='maternal_surname')
+    nombre = serializers.CharField(source='name')
+    doc_iden = serializers.CharField(source='dni')
 
+    class Meta:
+        model = LandOwner
+        fields = ['id','ap_pat','ap_mat','nombre','doc_iden','email','phone']
 
 class LandOwnerDetailSerializer(serializers.ModelSerializer):
-    niveles_construccion = LandNivelConstruccionSerializer(many = True, read_only=True)
-    # tip_uso_predio_nombre  =  serializers.CharField(source='tip_uso_predio.name')
-    # subclase_uso_nombre  =  serializers.CharField(source='tip_uso_predio.codigo_subclase_uso.name')
-    # clase_uso_nombre  =  serializers.CharField(source='tip_uso_predio.codigo_subclase_uso.codigo_clase_uso.name')
-    # tip_propiedad_nombre = serializers.CharField(source='tip_propiedad.name')
-    # tip_transferencia_nombre = serializers.CharField(source='tip_transferencia.name')
+    niveles_construccion = LandNivelConstruccionSerializer(many = True, read_only=True,allow_null=True)
+    obras_complementarias = ObrComConstruccionSerializer(many = True, read_only=True,allow_null=True)
+    tip_uso_predio_nombre  =  serializers.CharField(source='tip_uso_predio.name',allow_null=True)
+    subclase_uso_nombre  =  serializers.CharField(source='tip_uso_predio.codigo_subclase_uso.name',allow_null=True)
+    clase_uso_nombre  =  serializers.CharField(source='tip_uso_predio.codigo_subclase_uso.codigo_clase_uso.name',allow_null=True)
+    tip_propiedad_nombre = serializers.CharField(source='tip_propiedad.name',allow_null=True)
+    tip_transferencia_nombre = serializers.CharField(source='tip_transferencia.name',allow_null=True)
+    contribuyente = LandOwnerSerializer(source='owner',many=False, read_only=True)
 
-
-    tip_uso_predio_nombre  =  serializers.SerializerMethodField()
-    subclase_uso_nombre  =  serializers.SerializerMethodField()
-    clase_uso_nombre  =  serializers.SerializerMethodField()
-    tip_propiedad_nombre = serializers.SerializerMethodField()
-    tip_transferencia_nombre = serializers.SerializerMethodField()
+    # tip_uso_predio_nombre  =  serializers.SerializerMethodField()
+    # subclase_uso_nombre  =  serializers.SerializerMethodField()
+    # clase_uso_nombre  =  serializers.SerializerMethodField()
+    # tip_propiedad_nombre = serializers.SerializerMethodField()
+    # tip_transferencia_nombre = serializers.SerializerMethodField()
 
     
     class Meta:
         model = LandOwnerDetail
         fields = '__all__'
 
-    def get_tip_uso_predio_nombre(self, obj):
+    # def get_tip_uso_predio_nombre(self, obj):
 
-        if obj.tip_uso_predio is None:
-            return None
+    #     if obj.tip_uso_predio is None:
+    #         return None
 
-        tipos=MasterTipoUsoPredio.objects.filter(id=obj.tip_uso_predio.id)
-        if len(tipos):
-            return tipos[0].name
-        else:
-            return None
+    #     tipos=MasterTipoUsoPredio.objects.filter(id=obj.tip_uso_predio.id)
+    #     if len(tipos):
+    #         return tipos[0].name
+    #     else:
+    #         return None
         
-    def get_subclase_uso_nombre(self, obj):
+    # def get_subclase_uso_nombre(self, obj):
 
-        if obj.tip_uso_predio is None:
-            return None
-        tipos=MasterTipoUsoPredio.objects.filter(id=obj.tip_uso_predio.id)
+    #     if obj.tip_uso_predio is None:
+    #         return None
+    #     tipos=MasterTipoUsoPredio.objects.filter(id=obj.tip_uso_predio.id)
 
-        if len(tipos):
-            return tipos[0].codigo_subclase_uso.name
-        else:
-            return None
+    #     if len(tipos):
+    #         return tipos[0].codigo_subclase_uso.name
+    #     else:
+    #         return None
 
 
-    def get_clase_uso_nombre(self, obj):
-        if obj.tip_uso_predio is None:
-            return None
-        tipos=MasterTipoUsoPredio.objects.filter(id=obj.tip_uso_predio.id)
+    # def get_clase_uso_nombre(self, obj):
+    #     if obj.tip_uso_predio is None:
+    #         return None
+    #     tipos=MasterTipoUsoPredio.objects.filter(id=obj.tip_uso_predio.id)
 
-        if len(tipos):
-            return tipos[0].codigo_subclase_uso.codigo_clase_uso.name
-        else:
-            return None
+    #     if len(tipos):
+    #         return tipos[0].codigo_subclase_uso.codigo_clase_uso.name
+    #     else:
+    #         return None
         
-    def get_tip_propiedad_nombre(self, obj):
-        if obj.tip_propiedad is None:
-            return None
-        tipos=MasterTipoPropiedad.objects.filter(id=obj.tip_propiedad.id)
+    # def get_tip_propiedad_nombre(self, obj):
+    #     if obj.tip_propiedad is None:
+    #         return None
+    #     tipos=MasterTipoPropiedad.objects.filter(id=obj.tip_propiedad.id)
 
-        if len(tipos):
-            return tipos[0].name
-        else:
-            return None
+    #     if len(tipos):
+    #         return tipos[0].name
+    #     else:
+    #         return None
         
-    def get_tip_transferencia_nombre(self, obj):
-        if obj.tip_transferencia is None:
-            return None
+    # def get_tip_transferencia_nombre(self, obj):
+    #     if obj.tip_transferencia is None:
+    #         return None
 
-        tipos=MasterTipoTransferencia.objects.filter(id=obj.tip_transferencia.id)
+    #     tipos=MasterTipoTransferencia.objects.filter(id=obj.tip_transferencia.id)
 
-        if len(tipos):
-            return tipos[0].name
-        else:
-            return None
+    #     if len(tipos):
+    #         return tipos[0].name
+    #     else:
+    #         return None
         
 class LandSerializer(serializers.ModelSerializer):
     has_owners = serializers.SerializerMethodField(read_only=True)
     has_applications  = serializers.SerializerMethodField()
-    #has_lands_affected_applications = serializers.SerializerMethodField(read_only=True)
+
     applications = serializers.SerializerMethodField()
-    #lands_affected_applications = serializers.SerializerMethodField(read_only=True)
-    #caracteristicas =  LandOwnerDetailSerializer2()
-    #tipo_predio_nombre = serializers.CharField(source='cod_tipo_predio.name')
-    tipo_predio_nombre = serializers.SerializerMethodField()
+
+    tipo_predio_nombre = serializers.SerializerMethodField(source='cod_tipo_predio.name',allow_null=True)
     class Meta:
         model = Land
         fields = '__all__'  # ToDo: estandarizar listado de predios
 
-    def get_tipo_predio_nombre(self, obj):
+    # def get_tipo_predio_nombre(self, obj):
 
-        if obj.cod_tipo_predio is None:
-            return None
-        tipos=MasterTipoPredio.objects.filter(id=obj.cod_tipo_predio.id)
-        if len(tipos):
-            return tipos[0].name
-        else:
-            return None
+    #     if obj.cod_tipo_predio is None:
+    #         return None
+    #     tipos=MasterTipoPredio.objects.filter(id=obj.cod_tipo_predio.id)
+    #     if len(tipos):
+    #         return tipos[0].name
+    #     else:
+    #         return None
     
 
     def get_has_owners(self, obj):
@@ -288,6 +307,19 @@ class LandNivelConstruccionCreateSerializer(serializers.ModelSerializer):
                   )
 
 
+class ObrComConstruccionCreateSerializer(serializers.ModelSerializer):
+
+    tip_obra_complementaria_id =  serializers.IntegerField(write_only=True)
+    tip_material_id = serializers.IntegerField(write_only=True)
+
+    est_conservacion_id = serializers.IntegerField(write_only=True)
+    
+    class Meta:
+        model = ObrComConstruccion
+        fields = ('tip_obra_complementaria_id','num_piso','tip_material_id','est_conservacion_id','anio_construccion','mes_construccion',
+                  'categoria','cantidad','metro_redondeado','total_metrado',)
+
+
 class LandDetailSRTMSerializer(serializers.Serializer):
 
     ubigeo_predio =  serializers.CharField()
@@ -317,6 +349,8 @@ class LandDetailSRTMSerializer(serializers.Serializer):
     longitud_frente =  serializers.FloatField(allow_null=True,required= False)
     fecha_adquisicion = serializers.CharField(allow_null=True,required= False)
     niveles_construccion = LandNivelConstruccionCreateSerializer(allow_null=True,many= True,required= False)
+    obras_complementarias = ObrComConstruccionCreateSerializer(allow_null=True,many= True,required= False)
+    
     class Meta:
         
         fields = '__all__'
@@ -339,6 +373,7 @@ class LandOwnerDetailSRTMSerializer(serializers.Serializer):
         cpm = record.get('codigo_predio_municipal',None)
         ubigeo = record.get('ubigeo_predio')
         niveles_construccion =record.pop('niveles_construccion')   if record.get('niveles_construccion') else []
+        obras_complementarias =record.pop('obras_complementarias')   if record.get('obras_complementarias') else []
         data = {
                 'sec_ejec' :record.get('municipalidad_id',None),
                 'code': code_owner,
@@ -387,16 +422,22 @@ class LandOwnerDetailSRTMSerializer(serializers.Serializer):
         data.update({'land_id':land.id,'owner_id': owner.id})
 
             
-        # if self.exists_detail(data=data):
-        #     landOwnerDetails=LandOwnerDetail.objects.filter(owner=data.get('owner'), land=data.get('land'),ubigeo =data.get('ubigeo'))
-        #     landOwnerDetails.update(estado_dj=3)
+        if self.exists_detail(data=data):
+            landOwnerDetails=LandOwnerDetail.objects.filter(owner=data.get('owner'), land=data.get('land'),ubigeo =data.get('ubigeo'))
+            landOwnerDetails.update(estado_dj=0)
         detail = LandOwnerDetail.objects.create(**data)
 
         for nivel in niveles_construccion:
             nivel['land_owner_detail_id']= detail.id
             nivel['ubigeo_id']= record.get('ubigeo_predio',None)
             landNivel =LandNivelConstruccion.objects.create(**nivel)
+        
+        for obra in obras_complementarias:
+            obra['land_owner_detail_id']= detail.id
+            obra['ubigeo_id']= record.get('ubigeo_predio',None)
+            obrCom =ObrComConstruccion.objects.create(**obra)
             
+
 
         return detail
     

@@ -372,7 +372,7 @@ class LandNivelConstruccion(models.Model):
 class ObrComConstruccion(models.Model):
     id = models.AutoField(primary_key=True)
     ubigeo = models.ForeignKey(District, on_delete=models.DO_NOTHING, db_column='ubigeo', related_name='obr_ubigeo')
-    land_owner_detail= models.ForeignKey(LandOwnerDetail, on_delete=models.DO_NOTHING, related_name='obr_construccion')
+    land_owner_detail= models.ForeignKey(LandOwnerDetail, on_delete=models.DO_NOTHING, related_name='obras_complementarias')
     num_piso = models.IntegerField(blank=True, null=True)
     tip_obra_complementaria = models.ForeignKey(MasterTipoObraComplementaria, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='obr_tipo_material')
     tip_material = models.ForeignKey(MasterTipoMaterial, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='obr_tipo_material')
@@ -381,8 +381,8 @@ class ObrComConstruccion(models.Model):
     mes_construccion = models.IntegerField( blank=True, null=True)
     categoria = models.CharField(max_length=10, blank=True, null=True)
     cantidad = models.IntegerField( null=True)
-    metreo_redondeado = models.FloatField(null=True)
-    total_metreado = models.FloatField(null=True)
+    metro_redondeado = models.FloatField(null=True)
+    total_metrado = models.FloatField(null=True)
     estado = models.IntegerField( blank=True, null=True,default=1)
     class Meta:
         db_table = 'OBR_COM_CONSTRUCCION'
