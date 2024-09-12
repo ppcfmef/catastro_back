@@ -7,6 +7,8 @@ from apps.lands.models import Land
 from apps.master_data.models import MasterCodeStreet,MasterResolutionType
 import django_filters
 from django import forms
+
+from core.utils.formato import Format
 # class AplicationType(serializers.ModelSerializer):
 #     class Meta:
 #         model = AplicationType
@@ -130,7 +132,7 @@ class LandByApplicationListSerializer(serializers.ModelSerializer):
     def get_address(self,obj):
         #print('obj.street_type>>',obj.street_type)
         #street_type=MasterCodeStreet.objects.get(id= obj.street_type)
-        return '{street_type} {street_name} {municipal_number} {urban_mza} {urban_lot_number}'.format(street_type=obj.street_type,street_name = obj.street_name,municipal_number =obj.municipal_number,urban_mza =' Mz.{}'.format(obj.urban_mza) if obj.urban_mza is not None else '' ,urban_lot_number =' Lote {}'.format( obj.urban_lot_number) if  obj.urban_lot_number is not None else '' )
+        return '{street_type} {street_name} {municipal_number} {urban_mza} {urban_lot_number}'.format(street_type=obj.street_type.name,street_name = obj.street_name,municipal_number =obj.municipal_number,urban_mza ='Mz.{}'.format(obj.urban_mza) if Format.isNoneOrBlank(obj.urban_mza) else '' ,urban_lot_number ='Lote {}'.format( obj.urban_lot_number) if Format.isNoneOrBlank(obj.urban_lot_number)  else '' )
 
 
      
@@ -156,12 +158,11 @@ class ResultDetailCustomSerializer(serializers.ModelSerializer):
         
     def get_address(self,obj):
         street_type=MasterCodeStreet.objects.get(id= obj.street_type)
-        return """{street_type} {street_name} {municipal_number} {urban_mza} {urban_lot_number} {urban_lot_number} {urban_piso}""".format(street_type=street_type,street_name = obj.street_name,
-                                                                                                        municipal_number =obj.municipal_number if obj.municipal_number is not None else '' ,
-                                                                                                        urban_mza =' Mz.{}'.format(obj.urban_mza) if obj.urban_mza is not None else '', 
-                                                                                                        urban_lot_number =' Lote {}'.format( obj.urban_lot_number) if  obj.urban_lot_number is not None else '',
-                                                                                                        urban_piso = ' Piso {}'.format( obj.floor) if  obj.floor is not None else '',
-                                                                                                        )
+        return """{street_type} {street_name} {municipal_number} {urban_mza} {urban_lot_number}""".format(street_type=street_type,street_name = obj.street_name, municipal_number =obj.municipal_number if Format.isNoneOrBlank(obj.municipal_number) else '' ,urban_mza ='Mz.{}'.format(obj.urban_mza) if Format.isNoneOrBlank(obj.urban_mza) else '', 
+                                                                                                        urban_lot_number ='Lote {}'.format( obj.urban_lot_number) if  Format.isNoneOrBlank(obj.urban_lot_number) else '')
+
+                                                                                                        
+                                                                                                        
     
     def get_resolution_type_name(self,obj):
         try:

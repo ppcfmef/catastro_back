@@ -241,8 +241,8 @@ class SummaryRecord(GenericAPIView):
         }
 
 
-# @authentication_classes([])
-# @permission_classes([])
+@authentication_classes([])
+@permission_classes([])
 class SRTMViewSet(GenericViewSet):
     queryset = Land.objects.all()
     serializer_class = LandSerializer

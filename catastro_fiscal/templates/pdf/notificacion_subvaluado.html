@@ -104,74 +104,82 @@
 <table  >
         <tr >
         <td class ='green'>Tipo de Predio</td>
-        <td  class ='celda-green'> </td>
+       
         <td class ='green'>Numero de Partida</td>
-        <td class ='celda-green'> </td>
+      
         <td class ='green'>Clase de uso</td>
-        <td class ='celda-green'> </td>
+       
         <td class ='green' >Sub clase de uso</td>
-        <td class ='celda-green'> </td>
+        
 
         <td class ='green' >Uso del predio</td>
-        <td class ='celda-green'> </td>
-
-
+       
         <td class ='green' >Area Terreno</td>
-        <td class ='celda-green'> </td>
-
+   
 
         <td class ='green' >Area común terreno</td>
-        <td class ='celda-green'> </td>
-
-
-        
+       
         <td class ='green' >Cant. de hab. o aforo</td>
-        <td class ='celda-green'> </td>
+       
+
+      </tr>
+
+      <tr >
+        <td  class ='celda-green'>{{data_registro_titularidad.predio_padron.tipo_predio_nombre }} </td>
+        <td class ='celda-green'>{{data_registro_titularidad.predio_padron.predio_contribuyente.0.par_registral }}</td>
+        <td class ='celda-green'>{{data_registro_titularidad.predio_padron.predio_contribuyente.0.clase_uso_nombre }}</td>
+        <td class ='celda-green'>{{data_registro_titularidad.predio_padron.predio_contribuyente.0.subclase_uso_nombre }}</td>
+        <td class ='celda-green'>{{data_registro_titularidad.predio_padron.predio_contribuyente.0.tip_uso_predio_nombre }}</td>
+        <td class ='celda-green'>{{data_registro_titularidad.predio_padron.predio_contribuyente.0.area_terreno }}</td>
+        <td class ='celda-green'>{{data_registro_titularidad.predio_padron.predio_contribuyente.0.area_tot_cons_comun }}</td>
+        <td class ='celda-green'>{{data_registro_titularidad.predio_padron.predio_contribuyente.0.cantidad_habitantes }}</td>
 
       </tr>
 </table>
-
-<h2>DATOS DE LAS EDIFICACIONES</h2>
 <br>
-
+<h2>DATOS DE LAS EDIFICACIONES</h2>
 <table  >
     <tr >
-    <td class ='blue'>Nivel</td>
-    <td class ='blue'>Año Contruccion</td>
-    
+    <td class ='blue'>Tipo de Nivel</td>
+    <td class ='blue'>Año-mes de Contruccion</td>
+    <td class ='blue'>N° Piso</td>
     <td class ='blue'>Material predominante</td>
-    <td class ='blue'>Estado conservacion</td>
-    
+    <td class ='blue'>Estado de conservación</td>
     <td class ='blue'>Muros y columnas</td>
     <td class ='blue'>Techos</td>
     <td class ='blue'>Piso</td>
     <td class ='blue' >Puertas Ventanas</td>
     <td class ='blue' >Revestimiento</td>
     <td class ='blue' >Baños</td>
-    <td class ='blue' >Intal. Elec. Sant.</td>
+    <td class ='blue' >Instal. Elec. Sant.</td>
     <td class ='blue' >Area Construida</td>
   </tr>
+
+
+
+  {% for n in data_registro_titularidad.predio_padron.predio_contribuyente.0.niveles_construccion %}
   <tr >
-    <td  class ='celda-blue'></td>
-    <td class ='celda-blue'></td>
-    <td class ='celda-blue'></td>
-    <td class ='celda-blue'></td>
-    <td class ='celda-blue'></td>
-    <td class ='celda-blue'></td>
-    <td class ='celda-blue'></td>
-    <td class ='celda-blue'></td>
-    <td class ='celda-blue'></td>
-    <td class ='celda-blue'></td>
-    <td class ='celda-blue'></td>
-    <td class ='celda-blue'></td>
+    <td  class ='celda-blue'>{{n.tip_nivel_nombre}}</td>
+    <td class ='celda-blue'>{{n.anio_construccion }}-{{n.mes_construccion }}</td>
+    <td class ='celda-blue'>{{n.num_piso}}</td>
+    <td class ='celda-blue'>{{n.tip_material_nombre}}</td>
+    <td class ='celda-blue'>{{n.est_conservacion_nombre}}</td>
+    <td class ='celda-blue'>{{n.categoria_muro_columna}}</td>
+    <td class ='celda-blue'>{{n.categoria_techo}}</td>
+    <td class ='celda-blue'>{{n.categoria_piso}}</td>
+    <td class ='celda-blue'>{{n.categoria_puerta_ventana}}</td>
+    <td class ='celda-blue'>{{n.categoria_revestimiento}}</td>
+    <td class ='celda-blue'>{{n.categoria_bano}}</td>
+    <td class ='celda-blue'>{{n.categoria_inst_electrica_sanita}}</td>
+    <td class ='celda-blue'>{{n.area_construida}}</td>
 
   </tr>
-  
+  {% endfor %}  
 </table>
 
 
 <br>
-<h2> Instalaciones</h2>
+<h2>DATOS DE OTRAS INSTALACIONES</h2>
 <table>
 
     <tr>
@@ -179,30 +187,38 @@
         <td style="vertical-align: top;">
 
             <table  >
+                
                 <tr >
-                    <td class ='blue-small'  >Numero piso</td>
+                    <td class ='blue-small' >Numero piso</td>
                     <td class ='blue-small'>Tipo de obra </td>
                     <td class ='blue-small'>Tipo de material</td>
                     <td class ='blue-small' >Estado conserva</td>
-                  
-                
+                    <td class ='blue-small' >Año y mes de Obra</td>
+                    <td class ='blue-small' >Categoria</td>
+                    <td class ='blue-small' >Cantidad</td>
+                    <td class ='blue-small' >Metro Redondeado</td>
+                    <td class ='blue-small' >Total metrado</td>
                 </tr>
-           
+                {% for i in data_registro_titularidad.predio_padron.predio_contribuyente.0.obrasComplementarias %}
+                <tr >
+                    <td class ='celda-blue'>{{i.num_piso}}</td>
+                    <td class ='celda-blue'>{{i.tip_obra_complementaria_nombre}}</td>
+                    <td class ='celda-blue'>{{i.tip_material_nombre}}</td>
+                    <td class ='celda-blue'>{{i.est_conservacion_nombre}}</td>
+                    <td class ='celda-blue'>{{i.anio_construccion}} - {{i.mes_construccion}}</td>
+                    <td class ='celda-blue'>{{i.categoria}}</td>
+                    <td class ='celda-blue'>{{i.cantidad}}</td>
+                    <td class ='celda-blue'>{{i.metro_redondeado}}</td>
+                    <td class ='celda-blue'>{{i.total_metrado}}</td>
+            
+                
+                  </tr>
+                  {% endfor %}  
             </table>
 
         </td>
 
-        <td>
-
-            <table  >
-      
-                <tr>
-                  <td></td>
-                </tr>
-                
-              </table>
-          
-        </td>
+       
     </tr>
 </table>
 
@@ -210,24 +226,87 @@
 
 
 <h1>INFORMACIÓN RESULTANTE DE LA INSPECCIÓN PREDIAL</h1>
-<h2> Caracteristicas</h2>
-<table  >
-        <tr >
-        <td class ='green'>Long. Frente</td>
-        <td  class ='celda-green'>{{caracteristicas.longitud_frente}}</td>
-        <td class ='green'>Arancel</td>
-        <td class ='celda-green'>{{caracteristicas.arancel}}</td>
-        <td class ='green'>Area Terreno</td>
-        <td class ='celda-green'>{{caracteristicas.area_terreno}}</td>
-        <td class ='green' >Predio</td>
-        <td class ='celda-green'></td>
+<h2>DATOS DEL PREDIO</h2>
+
+<table >
+    <tr >
+        <td class ='green'>Tipo de Predio</td>
+       
+        <td class ='green'>Numero de Partida</td>
+      
+        <td class ='green'>Clase de uso</td>
+       
+        <td class ='green' >Sub clase de uso</td>
+        
+
+        <td class ='green' >Uso del predio</td>
+       
+        <td class ='green' >Area Terreno</td>
+   
+
+        <td class ='green' >Area común terreno</td>
+       
+        <td class ='green' >Cant. de hab. o aforo</td>
+       
+
       </tr>
+
+      <tr >
+        <td  class ='celda-green'>{{data_registro_titularidad.predio_inspeccion.tipo_predio_nombre }} </td>
+        <td class ='celda-green'></td>
+        <td class ='celda-green'>{{data_registro_titularidad.predio_inspeccion.clase_uso_nombre }}</td>
+        <td class ='celda-green'>{{data_registro_titularidad.predio_inspeccion.subclase_uso_nombre }}</td>
+        <td class ='celda-green'>{{data_registro_titularidad.predio_inspeccion.tipo_uso_nombre }}</td>
+        <td class ='celda-green'></td>
+        <td class ='celda-green'></td>
+        <td class ='celda-green'></td>
+
+      </tr>
+
+
+
+
 </table>
 
-<br>
 
+
+<br>
+<h2>DATOS DE LAS EDIFICACIONES</h2>
 <table  >
+
     <tr >
+        <td class ='blue'>Tipo de Nivel</td>
+        <td class ='blue'>Año-mes de Contruccion</td>
+        <td class ='blue'>N° Piso</td>
+        <td class ='blue'>Material predominante</td>
+        <td class ='blue'>Estado de conservación</td>
+        <td class ='blue'>Muros y columnas</td>
+        <td class ='blue'>Techos</td>
+        <td class ='blue'>Piso</td>
+        <td class ='blue' >Puertas Ventanas</td>
+        <td class ='blue' >Revestimiento</td>
+        <td class ='blue' >Baños</td>
+        <td class ='blue' >Instal. Elec. Sant.</td>
+        <td class ='blue' >Area Construida</td>
+      </tr>
+
+
+      <tr >
+        <td  class ='celda-blue'>PISO</td>
+        <td class ='celda-blue'></td>
+        <td class ='celda-blue'>{{data_registro_titularidad.caracteristicas.piso}}</td>
+        <td class ='celda-blue'>{{data_registro_titularidad.caracteristicas.material_pred_nombre}}</td>
+        <td class ='celda-blue'>{{data_registro_titularidad.caracteristicas.estado_conserva_nombre}}</td>
+        <td class ='celda-blue'>{{data_registro_titularidad.caracteristicas.categoria_muro_columna}}</td>
+        <td class ='celda-blue'>{{data_registro_titularidad.caracteristicas.catergoria_techo}}</td>
+        <td class ='celda-blue'>{{data_registro_titularidad.caracteristicas.catergoria_piso}}</td>
+        <td class ='celda-blue'>{{data_registro_titularidad.caracteristicas.catergoria_puerta_ventana}}</td>
+        <td class ='celda-blue'>{{data_registro_titularidad.caracteristicas.categoria_revestimiento}}</td>
+        <td class ='celda-blue'>{{data_registro_titularidad.caracteristicas.catergoria_bano}}</td>
+        <td class ='celda-blue'>{{data_registro_titularidad.caracteristicas.categoria_electrica}}</td>
+        <td class ='celda-blue'>{{data_registro_titularidad.caracteristicas.area_construida}}</td>
+      </tr>
+    <!-- <tr >
     <td class ='blue'>Nivel</td>
     <td class ='blue'>Material pred</td>
     <td class ='blue'>Estado conserva</td>
@@ -256,21 +335,66 @@
     <td class ='celda-blue'>{{caracteristicas.catergoria_bano}}</td>
     <td class ='celda-blue'>{{caracteristicas.categoria_electrica}}</td>
     <td class ='celda-blue'>{{caracteristicas.area_construida}}</td>
-  </tr>
+  </tr> -->
   
 </table>
 
 
 <br>
-<h2> Instalaciones</h2>
+<h2>DATOS DE OTRAS INSTALACIONES</h2>
 <table>
 
     <tr>
 
         <td style="vertical-align: top;">
-            
             <table  >
+            <tr >
+                <td class ='blue-small'  >Numero piso</td>
+                <td class ='blue-small'>Tipo de obra </td>
+                <td class ='blue-small'>Tipo de material</td>
+                <td class ='blue-small' >Estado conserva</td>
+                <td class ='blue-small' >Año y mes de Obra</td>
+                <td class ='blue-small' >Categoria</td>
+                <td class ='blue-small' >Cantidad</td>
+                <td class ='blue-small' >Metro Redondeado</td>
+                <td class ='blue-small' >Total metrado</td>
+            </tr>
+
+           
+              {% for i in data_registro_titularidad.instalaciones %}
+              <tr >
+                <td class ='celda-blue'>{{i.num_piso}}</td>
+                <td class ='celda-blue'>{{i.tip_obra_complementaria_nombre}}</td>
+                <td class ='celda-blue'>{{i.tip_material_nombre}}</td>
+                <td class ='celda-blue'>{{i.est_conservacion_nombre}}</td>
+                <td class ='celda-blue'>{{i.anio_construccion}} - {{i.mes_construccion}}</td>
+                <td class ='celda-blue'>{{i.categoria}}</td>
+                <td class ='celda-blue'>{{i.cantidad}}</td>
+                <td class ='celda-blue'>{{i.metro_redondeado}}</td>
+                <td class ='celda-blue'>{{i.total_metrado}}</td>
+            
+              </tr>
+
+              {% endfor %}  
+                <!-- <tr >
+
+
+                {% for i in data_registro_titularidad.predio_padron.predio_contribuyente.0.obrasComplementarias %}
                 <tr >
+                    <td class ='celda-blue'>{{i.num_piso}}</td>
+                    <td class ='celda-blue'>{{i.tip_obra_complementaria_nombre}}</td>
+                    <td class ='celda-blue'>{{i.tip_material_nombre}}</td>
+                    <td class ='celda-blue'>{{i.est_conservacion_nombre}}</td>
+                    <td class ='celda-blue'>{{i.anio_construccion}} - {{i.mes_construccion}}</td>
+                    <td class ='celda-blue'>{{i.categoria}}</td>
+                    <td class ='celda-blue'>{{i.cantidad}}</td>
+                    <td class ='celda-blue'>{{i.metro_redondeado}}</td>
+                    <td class ='celda-blue'>{{i.total_metrado}}</td>
+            
+                
+                  </tr>
+                  {% endfor %}  
+
                 <td class ='blue-small'  >Cod. inst</td>
                 <td class ='blue-small'>Cod. tipo inst </td>
                 <td class ='blue-small'>Año const</td>
@@ -287,7 +411,7 @@
                 <td class ='celda-blue-small'>{{i.dimension}}</td>
                 
               </tr>
-              {% endfor %}
+              {% endfor %} -->
             </table>
 
         </td>
@@ -335,15 +459,12 @@
 <br>
 <br>
 
-<p>Si encontrara divergencias en lo que obra en su Declaración Jurada de Autoavaluo con lo señalado en la Ficha
-adjunta sírvase cumplir con modificar su Declaración acercándose a la Municipalidad y llenar los formularios HR y
-PU que serán proporcionados en {{texto}}
+<p>Es fundamental recordarle la importancia de cumplir con esta obligación tributaria, así como con el pago puntual del impuesto predial y los arbitrios municipales, por ello sírvase cumplir con modificar su Declaración acercándose a la Municipalidad y llenar los formularios HR y PU que serán proporcionados en {{texto}}
 </p>
     
-<p>Tenga en cuenta que omitir información en la declaración jurada del Impuesto Predial constituye una infracción
-tipificada en el Código Tributario Art 176 Numeral 4 “Presentar otras declaraciones o comunicaciones en forma
-incompleta o no conformes con la realidad” siendo la sanción el pago del 30% de la UIT(S/.5,150.00) que equivale
-a S/.1,485.00.
+<p>Tenga en cuenta que el incumplimiento de presentar las declaraciones que contengan la determinación de la deuda tributaria dentro de los plazos establecidos, así como presentar otras declaraciones o comunicaciones de manera incompleta o no conformes con la realidad, 
+    constituyen faltas según lo establecido en el Artículo 176, Numerales 1 y 4 del Código Tributario. 
+    Las sanciones por estas faltas pueden variar desde el 30% hasta el 50% de la UIT. Para lo cual tiene 5 días hábiles para apersonase a ………………………….. o comunicarse ……………………………….. o ……… bajo apercibimiento de iniciar el procedimiento de fiscalización y sanción.
 </p>
 
 <p> Estimado vecino, tributar es el camino al desarrollo de nuestro distrito, del mismo modo el pago de los arbitrios
