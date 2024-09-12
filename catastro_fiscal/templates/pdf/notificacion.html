@@ -79,7 +79,29 @@
 
 {% block cabecera %}
 
-<h1 style="padding-top: 0px; margin-top: 0px;  font-weight: bold;text-align: center;">GERENCIA DE ADMINISTRACION TRIBUTARIA</h1>
+
+<table  >
+ 
+    
+    <tr>
+
+    <td class="celda">
+        <img class="img" src="{{ distrito.logo.path }}" >
+    </td>
+   
+    <td class="celda">
+        <h1 style="padding-top: 0px; margin-top: 0px;  font-weight: bold;text-align: center;">GERENCIA DE ADMINISTRACION TRIBUTARIA</h1>
+        <h1 style="padding-top: 0px; margin-top: 0px;  font-weight: bold;text-align: center;">{{distrito.municipal_name}}</h1>
+        <p style="padding-top: 0px; margin-top: 0px; font-size:4px; text-align: center;"> (Decreto Supremo Nº 156-2004-EF, TUO de la Ley de Tributación Municipal)</p> 
+
+    </td>
+   
+       
+  </tr>
+  
+</table>
+
+
 <h1 style="padding-top: 0px; margin-top: 0px; font-weight: bold;text-align: center;">CARTA DE INVITACION {{cod_ticket}}-{{nro_notificacion}}-{% now "Y" %}</h1>
 
 
@@ -91,12 +113,12 @@
 
 {% block documento %}
 
-<p style="text-align: right;" >Municipalidad {{distrito.name}}, {% now F %} </p>
+<p style="text-align: right;" >{{distrito.municipal_name}}, {% now F %} </p>
 <p>Estimado vecino(a)</p>
 <p>SR(A). {{contribuyente|upper}}</p>
 <p>Presente.-</p>
 
-<p>{{texto}}</p>
+<p>Nos dirigimos a usted en representación de la Municipalidad Distrital de TARAPOTO, a través de la Gerencia de Administración Tributaria ,con el propósito de recordarle la importancia de cumplir con sus obligaciones tributarias. Hemos observado que hasta la fecha no ha presentado la Declaración Jurada correspondiente a su propiedad. Es fundamental recordarle la importancia de cumplir con esta obligación tributaria, así como con el pago puntual del impuesto predial y los arbitrios municipales.</p>
 
 
 <table  >
@@ -134,10 +156,10 @@
         {% for f in fotos %}
     
             <img class="img" src="{{ f.foto.path }}" >
-      
+            
         {% endfor %} 
         <br>
-        Fecha: {% now F %}
+        Fecha: {% ticket.fec_ultima_actualizacion "DD-MM-YYYY" %} 
     </td>
 
   </tr>
@@ -146,12 +168,9 @@
 
 
     
-<p>Es importante tener en cuenta que el incumplimiento de presentar las declaraciones que contengan la determinación de la deuda tributaria dentro de los plazos establecidos, así como presentar otras declaraciones o comunicaciones de manera incompleta o no conformes con la realidad, constituyen faltas según lo establecido en el Artículo 176, Numerales 1 y 4 del Código Tributario. Las sanciones por estas faltas pueden variar desde el 30% hasta el 50% de la UIT.
-</p>
 
-<p> Estimado vecino, tributar es el camino al desarrollo de nuestro distrito, del mismo modo el pago de los arbitrios
-municipales (limpieza pública, parques y jardines y serenazgo) garantizamos la prestación eficiente y eficaz de
-estos servicios como también la seguridad ciudadana del distrito; mejorando así nuestra calidad de vida.
+
+<p> Es importante tener en cuenta que el incumplimiento de presentar las declaraciones que contengan la determinación de la deuda tributaria dentro de los plazos establecidos, así como presentar otras declaraciones o comunicaciones de manera incompleta o no conformes con la realidad, constituyen faltas según lo establecido en el Artículo 176, Numerales 1 y 4 del Código Tributario. Las sanciones por estas faltas pueden variar desde el 30% hasta el 50% de la UIT. Para lo cual tiene 5 días hábiles para apersonase a ………………………….. o comunicarse ……………………………….. o ……… bajo apercibimiento de iniciar el procedimiento de fiscalización y sanción.
 </p>
 <p>
 Agradecemos su atención y colaboración en este importante asunto. Si necesita asistencia adicional o tiene alguna pregunta, no dude en comunicarse con nosotros.

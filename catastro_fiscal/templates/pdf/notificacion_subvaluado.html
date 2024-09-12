@@ -55,8 +55,8 @@
     border: 1px solid #0795FA;
     text-align: center;
     padding-top: 2px;
-    width: 120px;
-    height: 150px;
+    width: 200px;
+    height: 300px;
 }
 
 
@@ -378,34 +378,19 @@
 
         </td>
 
-        <td>
-            {% if ubicacion.fotos.count > 0 %}
-            <table  >
       
-                <tr>
-                   
-                    {% for f in ubicacion.fotos %}
-                    <td  class ='celda-blue-small2'>
-                        <img class="img" src="{{ f.foto.path }}" >
-                    </td>
-                    {% endfor %}  
-                    
-                  
-                </tr>
-                
-              </table>
-              {% endif %}
-        </td>
     </tr>
 </table>
 
-{% if fotos2.count > 0 %}
 <br>
-<table  >
+
+
+<table >
 
     <tr>
        
-        {% for f in fotos2 %}
+        {% for f in fotos %}
+        
         <td  class ='celda-blue-small2'>
             <img class="img" src="{{ f.foto.path }}" >
         </td>
@@ -415,10 +400,10 @@
     </tr>
     
   </table>
-  {% endif %}
+
 
   
-<br>
+
 <br>
 
 <p>Es fundamental recordarle la importancia de cumplir con esta obligación tributaria, así como con el pago puntual del impuesto predial y los arbitrios municipales, por ello sírvase cumplir con modificar su Declaración acercándose a la Municipalidad y llenar los formularios HR y PU que serán proporcionados en {{texto}}
