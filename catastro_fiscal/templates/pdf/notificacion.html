@@ -4,6 +4,7 @@
 <style>
     @page {
         margin: 2cm; /* Establecer los márgenes superiores, derechos, inferiores e izquierdos a 2cm */
+       
     }
     .head{
         border: 1px solid #000000;
@@ -63,12 +64,27 @@
 
 
 .card-img{
-    border:2px solid #0795FA;
+    border:2px solid #BFE1FF !important;
 
     width: 100px;
     
 }
 
+.celda-blue{
+    border: 1px solid #000000;
+       
+        padding-top: 2px;
+    
+    }
+
+    .blue{
+        border: 1px solid #000000;
+        background-color: #BFE1FF !important;
+        color: black;
+        text-align: center;
+        padding-top: 2px;
+    
+    }
 
 </style>
 
@@ -86,13 +102,18 @@
     <tr>
 
     <td class="celda">
-        <img class="img" src="{{ distrito.logo.path }}" >
+        {% if distrito.logo %}
+        <img class="logo" src="{{ distrito.logo.path }}" >
+        {% endif %}
     </td>
    
-    <td class="celda">
-        <h1 style="padding-top: 0px; margin-top: 0px;  font-weight: bold;text-align: center;">GERENCIA DE ADMINISTRACION TRIBUTARIA</h1>
-        <h1 style="padding-top: 0px; margin-top: 0px;  font-weight: bold;text-align: center;">{{distrito.municipal_name}}</h1>
-        <p style="padding-top: 0px; margin-top: 0px; font-size:4px; text-align: center;"> (Decreto Supremo Nº 156-2004-EF, TUO de la Ley de Tributación Municipal)</p> 
+    <td  style="width:80%;padding: 5px;   text-align: center; vertical-align: middle; border: 1px solid #000000;">
+           
+            <b  style="font-size:14px;">GERENCIA DE ADMINISTRACION TRIBUTARIA </b>
+            <br>
+            <b style="font-size:14px;">{{distrito.municipal_name}}</b>
+            <br> 
+            <b style="font-size:6px;">(Decreto Supremo Nº 156-2004-EF, TUO de la Ley de Tributación Municipal)</b>
 
     </td>
    
@@ -101,7 +122,7 @@
   
 </table>
 
-
+<br>
 <h1 style="padding-top: 0px; margin-top: 0px; font-weight: bold;text-align: center;">CARTA DE INVITACION {{cod_ticket}}-{{nro_notificacion}}-{% now "Y" %}</h1>
 
 
@@ -117,22 +138,20 @@
 <p>Estimado vecino(a)</p>
 <p>SR(A). {{contribuyente|upper}}</p>
 <p>Presente.-</p>
-
-<p>Nos dirigimos a usted en representación de la Municipalidad Distrital de TARAPOTO, a través de la Gerencia de Administración Tributaria ,con el propósito de recordarle la importancia de cumplir con sus obligaciones tributarias. Hemos observado que hasta la fecha no ha presentado la Declaración Jurada correspondiente a su propiedad. Es fundamental recordarle la importancia de cumplir con esta obligación tributaria, así como con el pago puntual del impuesto predial y los arbitrios municipales.</p>
-
+<p style=" text-align: justify;">Nos dirigimos a usted en representación de la Municipalidad Distrital de TARAPOTO, a través de la Gerencia de Administración Tributaria ,con el propósito de recordarle la importancia de cumplir con sus obligaciones tributarias. Hemos observado que hasta la fecha no ha presentado la Declaración Jurada correspondiente a su propiedad. Es fundamental recordarle la importancia de cumplir con esta obligación tributaria, así como con el pago puntual del impuesto predial y los arbitrios municipales.</p>
 
 <table  >
     <tr >
-    <td class ='head'>Datos del Predio</td>
-    <td class ='head'>Fotografía del Predio</td>
+    <td class ='blue'>Datos del Predio</td>
+    <td class ='blue'>Fotografía del Predio</td>
  
     </tr>
     
     <tr>
 
-    <td class="celda">
+    <td class="celda-blue">
 
-        <b>Tipo de Predio:</b> {{ land.cod_tipo_predio.desc_tipo_predio}}
+        <b>Tipo de Predio:</b> {{ land.cod_tipo_predio.name}}
         <br>
         <b>Ubicación del Predio:</b>
         <br>
@@ -151,7 +170,7 @@
   
          
     </td>
-    <td class="celda">
+    <td class="celda-blue">
 
         {% for f in fotos %}
     
@@ -159,7 +178,7 @@
             
         {% endfor %} 
         <br>
-        Fecha: {% ticket.fec_ultima_actualizacion "DD-MM-YYYY" %} 
+        Fecha: {{ ticket.fec_ultima_actualizacion |date:'d-m-Y' }}
     </td>
 
   </tr>
@@ -170,11 +189,9 @@
     
 
 
-<p> Es importante tener en cuenta que el incumplimiento de presentar las declaraciones que contengan la determinación de la deuda tributaria dentro de los plazos establecidos, así como presentar otras declaraciones o comunicaciones de manera incompleta o no conformes con la realidad, constituyen faltas según lo establecido en el Artículo 176, Numerales 1 y 4 del Código Tributario. Las sanciones por estas faltas pueden variar desde el 30% hasta el 50% de la UIT. Para lo cual tiene 5 días hábiles para apersonase a ………………………….. o comunicarse ……………………………….. o ……… bajo apercibimiento de iniciar el procedimiento de fiscalización y sanción.
-</p>
-<p>
-Agradecemos su atención y colaboración en este importante asunto. Si necesita asistencia adicional o tiene alguna pregunta, no dude en comunicarse con nosotros.
-</p>
+<p style=" text-align: justify;">{{texto}}</p>
+
+<p style=" text-align: justify;">Agradecemos su atención y colaboración en este importante asunto. Si necesita asistencia adicional o tiene alguna pregunta, no dude en comunicarse con nosotros.</p>
 <p>Atentamente</p>
     
 <br>

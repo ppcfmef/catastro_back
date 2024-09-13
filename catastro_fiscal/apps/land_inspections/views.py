@@ -114,7 +114,7 @@ class ExportPdfViewSet(GenericViewSet):
                     l=Location.objects.get(cod_ubicacion=r.cod_ubicacion)
                     locationSerializer=LocationRetriveSerializer(l,many=False)
                     fotos = LocationPhoto.objects.filter(cod_ubicacion=r.cod_ubicacion)
-                    # d=District.objects.get(code = r.ubigeo)
+                    d=District.objects.get(code = r.ubigeo.code)
                     # fotos = []
                     # fotos2 = []
                     
@@ -140,6 +140,7 @@ class ExportPdfViewSet(GenericViewSet):
                                 'data_registro_titularidad':recordOwnerShipSerializer.data,
                                 # 'caracteristicas':c,
                                 'ubicacion':locationSerializer.data,
+                                'distrito': d,
                                 'fotos':fotos,
                                 # 'instalaciones':i,
                                 
@@ -167,7 +168,7 @@ class ExportPdfViewSet(GenericViewSet):
                     fotos = LocationPhoto.objects.filter(cod_ubicacion=r.cod_ubicacion,cod_tipo_foto__in =[1])
                     #print('fotos>>',fotos)
                     l=Location.objects.get(cod_ubicacion=r.cod_ubicacion)
-                    d=District.objects.get(code = r.ubigeo)
+                    d=District.objects.get(code = r.ubigeo.code)
                     land=LandInspection.objects.get(id = id_land)
                     if r is not None:
                         c=LandCharacteristic.objects.get(cod_tit=r.cod_tit )

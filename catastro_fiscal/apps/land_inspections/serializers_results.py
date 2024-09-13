@@ -139,6 +139,7 @@ class RecordOwnerShipRetriveSerializer(serializers.ModelSerializer):
     predio_padron = serializers.SerializerMethodField(read_only=True)
 
     municipal_name = serializers.CharField(source='ubigeo.municipal_name',allow_null=True)
+    municipal_logo = serializers.ImageField(source='ubigeo.logo',allow_null=True)
     class Meta:
         model = RecordOwnerShip
         fields = '__all__'
