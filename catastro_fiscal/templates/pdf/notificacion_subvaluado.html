@@ -2,72 +2,120 @@
 {% load static %}
 {%block css%} 
 <style>
-
+    @page {
+        margin: 2cm; /* Establecer los márgenes superiores, derechos, inferiores e izquierdos a 2cm */
+        text-align: justify;
+    }
+    .celda{
+        border: 1px solid #000000;
+        padding: 2px;
+    
+    }
     .blue{
-        border: 1px solid #0795FA;
-        background-color: #0795FA;
-        color: white;
+        border: 1px solid #000 !important;
+        background-color: #BFE1FF !important;
+        color: black;
         text-align: center;
         padding-top: 2px;
+        word-break: break-all; /* Fuerza un salto de línea en palabras largas */
+        white-space: normal; /* Permite el salto de línea en el contenido */
+        overflow: hidden; /* Evita que el contenido se desborde fuera de la celda */
+        
     
     }
+    
 
+    .blue2{
+        border: 1px solid #000 !important;
+        background-color: #BFE1FF !important;
+        color: black;
+        text-align: center;
+        padding-top: 2px;
+        word-break: break-all; /* Fuerza un salto de línea en palabras largas */
+        white-space: normal; /* Permite el salto de línea en el contenido */
+        overflow: hidden; /* Evita que el contenido se desborde fuera de la celda */
+        font-size: 7px;
+    
+    }
+    
+     /* .rotated-text {
+  
+        -moz-transform: rotate(7.5deg);  
+       -o-transform: rotate(7.5deg); 
+  -webkit-transform: rotate(7.5deg);  
+
+      transform-origin: left top; 
+      white-space: nowrap; 
+      display: inline-block; 
+    }
+    
+    */
     .celda-blue{
-        border: 1px solid #0795FA;
+        border: 1px solid #000;
         text-align: center;
         padding-top: 2px;
-    
+        font-size: 8px;
     }
 
+ 
 .green{
-    border: 1px solid #66BB6A;
-    background-color: #66BB6A;
-    color: white;
     text-align: center;
     padding-top: 2px;
-
+    font-weight: bold;
+    
 }
 
 .celda-green{
-    border: 1px solid #66BB6A;
+    /*border: 1px solid #66BB6A;*/
     text-align: center;
-    
     padding-top: 2px;
 }
 
 .blue-small{
-    border: 1px solid #0795FA;
-    background-color: #0795FA;
-    color: white;
+    border: 1px solid #000;
+    background-color: #BFE1FF;
+    /*color: white;*/
     text-align: center;
     padding-top: 2px;
     width: 60px;
 }
 
 .celda-blue-small{
-    border: 1px solid #0795FA;
+    border: 1px solid #000;
     text-align: center;
     padding-top: 2px;
     width: 60px;
 }
 
-.celda-blue-small2{
-    border: 1px solid #0795FA;
+
+.celda-small{
+    border: 1px solid #000;
     text-align: center;
     padding-top: 2px;
-    width: 200px;
+    width: 33%;
     height: 300px;
 }
 
 
 
 .card-img{
-    border:2px solid #0795FA;
-
-    width: 100px;
+    width: 200px;
     
 }
 
+.container {
+  display: flex;
+  justify-content: space-between; /* Equal space between the divs */
+ 
+}
+
+.box {
+  
+  /*background-color: #BFE1FF;*/
+  width: 240px;
+  padding: 20px;
+  border: 1px solid black;
+}
 
 </style>
 
@@ -77,10 +125,31 @@
 {% endblock %}
 
 {% block cabecera %}
+<table  >
+ 
+    
+  <tr>
 
-<h1 style="padding-top: 0px; margin-top: 0px;  font-weight: bold;text-align: center;">GERENCIA DE ADMINISTRACION TRIBUTARIA</h1>
-<h1 style="padding-top: 0px; margin-top: 0px; font-weight: bold;text-align: center;">CARTA DE ACTUALIZACION DE VALOR {{cod_ticket}}-{{nro_notificacion}}-{% now "Y" %}</h1>
+  <td class="celda">
+      {% if distrito.logo %}
+      <img class="logo" src="{{ distrito.logo.path }}" >
+      {% endif %}
+  </td>
+ 
+  <td  style="width:80%;padding: 5px;   text-align: center; vertical-align: middle; border: 1px solid #000000;">
+         
+          <b  style="font-size:14px;">GERENCIA DE ADMINISTRACION TRIBUTARIA </b>
+          <br>
+          <b style="font-size:14px;">{{distrito.municipal_name}}</b>
+          <br> 
+          <b style="font-size:6px;">(Decreto Supremo Nº 156-2004-EF, TUO de la Ley de Tributación Municipal)</b>
 
+  </td>
+ 
+     
+</tr>
+
+</table>
 
 {% endblock %}
 
@@ -90,13 +159,13 @@
 
 {% block documento %}
 
-<p style="text-align: right;" >{{data_registro_titularidad.municipal_name}}, {% now F %} </p>
+<p style="text-align: right;" >{{distrito.municipal_name}}, {% now F %} </p>
 <p>Estimado vecino(a)</p>
 <p>SR(A). {{contribuyente|upper}}</p>
 <p>Presente.-</p>
 
-<p>De mi mayor consideración:</p>
-<p>Nos dirigimos a usted en representación de  {{data_registro_titularidad.municipal_name}}, con el propósito de recordarle la importancia de cumplir con sus obligaciones tributarias. Puesto que hemos observado que la Declaración Jurada de Autoavalúo correspondiente a su propiedad no guarda relación con la Ficha de levantamiento de campo del predio registrado a su nombre y que detallamos a continuación:
+<p >De mi mayor consideración:</p>
+<p style=" text-align: justify;">Nos dirigimos a usted en representación de  {{distrito.municipal_name}}, con el propósito de recordarle la importancia de cumplir con sus obligaciones tributarias. Puesto que hemos observado que la Declaración Jurada de Autoavalúo correspondiente a su propiedad no guarda relación con la Ficha de levantamiento de campo del predio registrado a su nombre y que detallamos a continuación:
 </p>
 
 <h1>INFORMACIÓN CONSIGNADA EN LA DECLARACIÓN JURADA DE AUTOVALÚO</h1>
@@ -140,19 +209,19 @@
 <h2>DATOS DE LAS EDIFICACIONES</h2>
 <table  >
     <tr >
-    <td class ='blue'>Tipo de Nivel</td>
-    <td class ='blue'>Año-mes de Contruccion</td>
+    <td class ='blue2'>Tipo de Nivel</td>
+    <td class ='blue2'>Año-mes de Contruccion</td>
     <td class ='blue'>N° Piso</td>
-    <td class ='blue'>Material predominante</td>
-    <td class ='blue'>Estado de conservación</td>
-    <td class ='blue'>Muros y columnas</td>
+    <td class ='blue2'>Material predominante</td>
+    <td class ='blue2'>Estado de conservación</td>
+    <td class ='blue' > Muros y columnas  </td>
     <td class ='blue'>Techos</td>
     <td class ='blue'>Piso</td>
-    <td class ='blue' >Puertas Ventanas</td>
-    <td class ='blue' >Revestimiento</td>
+    <td class ='blue2' >Puertas Ventanas</td>
+    <td class ='blue2' >Revestimiento</td>
     <td class ='blue' >Baños</td>
     <td class ='blue' >Instal. Elec. Sant.</td>
-    <td class ='blue' >Area Construida</td>
+    <td class ='blue2' >Area Construida</td>
   </tr>
   
 
@@ -294,19 +363,19 @@
 <table  >
 
     <tr >
-        <td class ='blue'>Tipo de Nivel</td>
-        <td class ='blue'>Año-mes de Contruccion</td>
-        <td class ='blue'>N° Piso</td>
-        <td class ='blue'>Material predominante</td>
-        <td class ='blue'>Estado de conservación</td>
-        <td class ='blue'>Muros y columnas</td>
-        <td class ='blue'>Techos</td>
-        <td class ='blue'>Piso</td>
-        <td class ='blue' >Puertas Ventanas</td>
-        <td class ='blue' >Revestimiento</td>
-        <td class ='blue' >Baños</td>
-        <td class ='blue' >Instal. Elec. Sant.</td>
-        <td class ='blue' >Area Construida</td>
+      <td class ='blue2'>Tipo de Nivel</td>
+      <td class ='blue2'>Año-mes de Contruccion</td>
+      <td class ='blue'>N° Piso</td>
+      <td class ='blue2'>Material predominante</td>
+      <td class ='blue2'>Estado de conservación</td>
+      <td class ='blue' > Muros y columnas  </td>
+      <td class ='blue'>Techos</td>
+      <td class ='blue'>Piso</td>
+      <td class ='blue2' >Puertas Ventanas</td>
+      <td class ='blue2' >Revestimiento</td>
+      <td class ='blue' >Baños</td>
+      <td class ='blue' >Instal. Elec. Sant.</td>
+      <td class ='blue2' >Area Construida</td>
       </tr>
 
 
@@ -385,7 +454,36 @@
 <br>
 
 
+
 <table >
+
+  <tr>
+     
+      {% for f in fotos %}
+      
+      <td  class ='celda-small'>
+          <img  class="card-img" src="{{ f.foto.path }}" >
+          <br>
+          Fecha: {{ ticket.fec_ultima_actualizacion |date:'d-m-Y' }}
+      </td>
+      {% endfor %}  
+      
+    
+  </tr>
+  
+</table>
+
+<!-- 
+<div class="container">
+    {% for f in fotos %}
+    <div class="box"> 
+        <img  class="card-img" src="{{ f.foto.path }}" >
+        
+    </div>
+    {% endfor %}  
+</div>
+-->
+<!-- <table >
 
     <tr>
        
@@ -399,22 +497,20 @@
       
     </tr>
     
-  </table>
+  </table> -->
 
 
   
 
 <br>
 
-<p>Es fundamental recordarle la importancia de cumplir con esta obligación tributaria, así como con el pago puntual del impuesto predial y los arbitrios municipales, por ello sírvase cumplir con modificar su Declaración acercándose a la Municipalidad y llenar los formularios HR y PU que serán proporcionados en {{texto}}
+<p style=" text-align: justify;">Es fundamental recordarle la importancia de cumplir con esta obligación tributaria, así como con el pago puntual del impuesto predial y los arbitrios municipales, por ello sírvase cumplir con modificar su declaración 
 </p>
     
-<p>Tenga en cuenta que el incumplimiento de presentar las declaraciones que contengan la determinación de la deuda tributaria dentro de los plazos establecidos, así como presentar otras declaraciones o comunicaciones de manera incompleta o no conformes con la realidad, 
-    constituyen faltas según lo establecido en el Artículo 176, Numerales 1 y 4 del Código Tributario. 
-    Las sanciones por estas faltas pueden variar desde el 30% hasta el 50% de la UIT. Para lo cual tiene 5 días hábiles para apersonase a ………………………….. o comunicarse ……………………………….. o ……… bajo apercibimiento de iniciar el procedimiento de fiscalización y sanción.
-</p>
 
-<p> Estimado vecino, tributar es el camino al desarrollo de nuestro distrito, del mismo modo el pago de los arbitrios
+<p style=" text-align: justify;">{{texto}}</p>
+
+<p style=" text-align: justify;"> Estimado vecino, tributar es el camino al desarrollo de nuestro distrito, del mismo modo el pago de los arbitrios
 municipales (limpieza pública, parques y jardines y serenazgo) garantizamos la prestación eficiente y eficaz de
 estos servicios como también la seguridad ciudadana del distrito; mejorando así nuestra calidad de vida.
 </p>
