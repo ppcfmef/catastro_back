@@ -6,7 +6,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from core.filters import CamelCaseOrderFilter
 from .models import Ticket , Location,LandInspection, RecordOwnerShip,LandSupply,LandCharacteristic ,LocationPhoto,LandFacility
 from apps.places.models import District
-from .serializers_results import TicketSerializer, TicketListSerializer,TicketRetriveSerializer,LocationSerializer,RecordOwnerShipRetriveSerializer ,LandInspectionSerializer,LocationRetriveSerializer,RecordOwnerShipSerializer,  LandSupplyRetriveSerializer, LandSupplySerializer
+from .serializers_results import TicketSerializer, TicketListSerializer,TicketRetriveSerializer,LocationSerializer,RecordOwnerShipRetriveSerializer ,LandInspectionSerializer,LocationRetriveSerializer,RecordOwnerShipSerializer,  LandSupplyRetriveSerializer, LandSupplySerializer,ExportPdfSerializer
 from rest_framework.viewsets import GenericViewSet ,ModelViewSet
 import django_filters
 from core.utils.exports import render_to_pdf
@@ -90,6 +90,7 @@ class LandSupplyViewSet(ModelViewSet):
 @authentication_classes([])
 @permission_classes([])
 class ExportPdfViewSet(GenericViewSet):
+    serializer_class = ExportPdfSerializer
     @action(methods=['post'], detail=False, url_path='generar_notificacion_subvaluado')
     def generar_notificacion_subvaluado(self, request, *args, **kwargs):
         

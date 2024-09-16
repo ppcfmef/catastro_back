@@ -78,7 +78,7 @@ class LandNivelConstruccionSerializer(serializers.ModelSerializer):
         detail = LandNivelConstruccion.objects.create(**validated_data)
         return detail
 
-class LandOwnerSerializer(serializers.ModelSerializer):
+class LandOwnerShortSerializer(serializers.ModelSerializer):
     ap_pat =serializers.CharField(source='paternal_surname')
     ap_mat = serializers.CharField(source='maternal_surname')
     nombre = serializers.CharField(source='name')
@@ -88,6 +88,11 @@ class LandOwnerSerializer(serializers.ModelSerializer):
         model = LandOwner
         fields = ['id','ap_pat','ap_mat','nombre','doc_iden','email','phone']
 
+class LandOwnerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LandOwner
+        fields = '__all__'
+        
 class LandOwnerDetailSerializer(serializers.ModelSerializer):
     niveles_construccion = LandNivelConstruccionSerializer(many = True, read_only=True,allow_null=True)
     obras_complementarias = ObrComConstruccionSerializer(many = True, read_only=True,allow_null=True)
@@ -96,7 +101,7 @@ class LandOwnerDetailSerializer(serializers.ModelSerializer):
     clase_uso_nombre  =  serializers.CharField(source='tip_uso_predio.codigo_subclase_uso.codigo_clase_uso.name',allow_null=True)
     tip_propiedad_nombre = serializers.CharField(source='tip_propiedad.name',allow_null=True)
     tip_transferencia_nombre = serializers.CharField(source='tip_transferencia.name',allow_null=True)
-    contribuyente = LandOwnerSerializer(source='owner',many=False, read_only=True)
+    contribuyente = LandOwnerShortSerializer(source='owner',many=False, read_only=True)
 
     # tip_uso_predio_nombre  =  serializers.SerializerMethodField()
     # subclase_uso_nombre  =  serializers.SerializerMethodField()
@@ -274,10 +279,6 @@ class LandSaveSerializer(serializers.ModelSerializer):
         return instance
 
 
-class LandOwnerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = LandOwner
-        fields = '__all__'
 
 
 class OwnerAddressSerializer(serializers.ModelSerializer):
