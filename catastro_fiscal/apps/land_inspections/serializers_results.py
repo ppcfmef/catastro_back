@@ -15,15 +15,15 @@ class LandSupplyOwnerSerializer(serializers.ModelSerializer):
         model = LandOwner
         fields = ['id','ap_pat','ap_mat','nombre','doc_iden','email','phone']
 
-class LandOwnerSerializer(serializers.ModelSerializer):
-    ap_pat =serializers.CharField(source='paternal_surname')
-    ap_mat = serializers.CharField(source='maternal_surname')
-    nombre = serializers.CharField(source='name')
-    doc_iden = serializers.CharField(source='dni')
+# class LandOwnerSerializer(serializers.ModelSerializer):
+#     ap_pat =serializers.CharField(source='paternal_surname')
+#     ap_mat = serializers.CharField(source='maternal_surname')
+#     nombre = serializers.CharField(source='name')
+#     doc_iden = serializers.CharField(source='dni')
 
-    class Meta:
-        model = LandOwner
-        fields = ['id','ap_pat','ap_mat','nombre','doc_iden','email','phone']
+#     class Meta:
+#         model = LandOwner
+#         fields = ['id','ap_pat','ap_mat','nombre','doc_iden','email','phone']
 
 class LandSupplyRetriveSerializer(serializers.ModelSerializer):
     tipo_sumi = serializers.CharField(source='cod_tipo_sumi.desc_tipo_sumi',allow_null=True)
@@ -230,3 +230,15 @@ class TicketRetriveSerializer(serializers.ModelSerializer):
     def get_total_ubicaciones(self, obj):
         return len(Location.objects.filter(cod_ticket=obj.cod_ticket))
 
+class ExportPdfSerializer(serializers.Serializer):
+
+    username=serializers.CharField(allow_blank=True, allow_null=True)
+    cod_ticket=serializers.CharField(allow_blank=True, allow_null=True)
+    cod_tit=serializers.CharField(allow_blank=True, allow_null=True)
+    texto=serializers.CharField(allow_blank=True, allow_null=True)
+    contribuyente =serializers.CharField(allow_blank=True, allow_null=True)
+
+
+
+    class Meta:
+        ref_name = 'export_pdf_serializer'

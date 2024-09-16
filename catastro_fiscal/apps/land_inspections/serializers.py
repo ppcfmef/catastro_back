@@ -40,7 +40,7 @@ class LandOwnerDetailInspectionSerializer(serializers.Serializer):
         ref_name = 'mobile_owner_datail_serializer'
 
 
-class LandInspectionSerializer(serializers.ModelSerializer):
+class LandInspectionSerializer(serializers.Serializer):
     """tb_predio"""
 
 
@@ -70,7 +70,7 @@ class LandInspectionSerializer(serializers.ModelSerializer):
     tb_predio_contribuyente = LandOwnerDetailInspectionSerializer(many=True)
 
     class Meta:
-        ref_name = 'mobile_land_serializer'
+        ref_name = 'mobile_land_inspection_serializer'
 
 
 class LandSupplySerializer(serializers.Serializer):
@@ -480,3 +480,4 @@ class MobileLandInspectionSerializer(serializers.Serializer):
         if value == "":
             return None
         return value
+
